@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root>
+    <totalNumberShips>100</totalNumberShips>
+    <frequency>70</frequency>
+    <simulationRandomSeed></simulationRandomSeed>
+    <cargoRandomSeed></cargoRandomSeed>
+    <cruiseRandomSeed></cruiseRandomSeed>
+    <petrolRandomSeed></petrolRandomSeed>
+    <cargoProba>34</cargoProba>
+    <cruiseProba>33</cruiseProba>
+    <petrolProba>33</petrolProba>
+    <simulationStart>0</simulationStart>
+    <simulationEnd>30000</simulationEnd>
+    <simulationDist>Uniform</simulationDist>
+    <cargoDist>Uniform</cargoDist>
+    <cruiseDist>Uniform</cruiseDist>
+    <petrolDist>Uniform</petrolDist>
+    <repeatTimes>500</repeatTimes>
+    <dockingbays/>
+</root>
