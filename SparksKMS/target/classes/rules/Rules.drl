@@ -1,0 +1,222 @@
+package com.rules
+ 
+import com.model.Evidence;
+import com.model.Hypothesis;
+import com.model.Conclusion;
+import com.model.Fact;
+import com.model.Thyroid;
+import com.view.DroolsInterface;
+
+query "Conclusions"
+	$conclusion : Conclusion()
+end
+
+global com.view.DroolsInterface dUI;
+
+rule "r1_amiodarona"
+//@rule_name(r1,r2)
+	when
+		eval(dUI.answerChoices(Evidence.DRUG_USE, "amiodarona", Thyroid.DRUG_CHOICES))
+	then
+		Conclusion c = new Conclusion("Influência de Amiodarona","Realizar um teste de TSH e de T4L a cada 6 meses, enquanto está a tomar Amiodarona.");
+		insert(c);
+end
+
+rule "r1_litio"
+//@rule_name(r1,r2)
+	when
+		eval(dUI.answerChoices(Evidence.DRUG_USE, "lítio", Thyroid.DRUG_CHOICES))
+	then
+		Conclusion c = new Conclusion("Influência de Lítio","Realizar um teste de TSH e de T4L anualmente, enquanto está a tomar Litio.");
+		insert(c);
+end
+
+rule "r1_interferao"
+//@rule_name(r1,r2)
+	when
+		eval(dUI.answerChoices(Evidence.DRUG_USE, "interferão", Thyroid.DRUG_CHOICES))
+	then
+		Conclusion c = new Conclusion("Influência de Interferão","Fazer controlo inicial de 1 a 3 meses. Depois, realizar um teste de TSH e de T4L.");
+		insert(c);
+end
+
+rule "r0_base_criteria_yes"
+//@rule_name(r1,r2)
+	when
+		eval(!dUI.answerChoices(Evidence.THYROID_SHOULD_DO_TEST,"nenhuma das anteriores",Thyroid.TEST_REASONS))
+	then
+		Hypothesis h = new Hypothesis("test_reasons_valid","sim");
+		insert(h);
+end
+
+rule "r0_base_criteria_no"
+//@rule_name(r1,r2)
+	when
+		eval(dUI.answerChoices(Evidence.THYROID_SHOULD_DO_TEST,"nenhuma das anteriores",Thyroid.TEST_REASONS))
+	then
+		Hypothesis h = new Hypothesis("test_reasons_valid","não");
+		insert(h);
+end
+
+rule "r2_tsh_low"
+	when
+		
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.VALOR_TSH) &&
+		dUI.insertIfNotExistsInputChoices(Evidence.IDADE_TSH,Thyroid.TSH_STAGE_CHOICES) &&
+		dUI.insertIfNotExistsCombineTSH(Evidence.TSH_LEVELS) &&
+		dUI.answer(Evidence.TSH_LEVELS,"LOW"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("tsh_levels", "low");
+		insert(h);
+end
+
+rule "r2_tsh_normal"
+	when
+		
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.VALOR_TSH) &&
+		dUI.insertIfNotExistsInputChoices(Evidence.IDADE_TSH,Thyroid.TSH_STAGE_CHOICES) &&
+		dUI.insertIfNotExistsCombineTSH(Evidence.TSH_LEVELS) &&
+		dUI.answer(Evidence.TSH_LEVELS,"NORMAL"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("tsh_levels", "normal");
+		insert(h);
+end
+
+rule "r2_tsh_high"
+	when
+		
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.VALOR_TSH) &&
+		dUI.insertIfNotExistsInputChoices(Evidence.IDADE_TSH,Thyroid.TSH_STAGE_CHOICES) &&
+		dUI.insertIfNotExistsCombineTSH(Evidence.TSH_LEVELS) &&
+		dUI.answer(Evidence.TSH_LEVELS,"HIGH"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("tsh_levels", "high");
+		insert(h);
+end
+
+rule "r3_t4l_low"
+	when
+		
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.VALOR_T4L) &&
+		dUI.insertIfNotExistsInputChoices(Evidence.IDADE_T4L,Thyroid.T4L_STAGE_CHOICES) &&
+		dUI.insertIfNotExistsCombineT4L(Evidence.T4L_LEVELS) &&
+		dUI.answer(Evidence.T4L_LEVELS,"LOW"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("t4l_levels", "low");
+		insert(h);
+end
+
+rule "r3_t4l_normal"
+	when
+		
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.VALOR_T4L) &&
+		dUI.insertIfNotExistsInputChoices(Evidence.IDADE_T4L,Thyroid.T4L_STAGE_CHOICES) &&
+		dUI.insertIfNotExistsCombineT4L(Evidence.T4L_LEVELS) &&
+		dUI.answer(Evidence.T4L_LEVELS,"NORMAL"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("t4l_levels", "normal");
+		insert(h);
+end
+
+rule "r3_t4l_high"
+	when
+		
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.VALOR_T4L) &&
+		dUI.insertIfNotExistsInputChoices(Evidence.IDADE_T4L,Thyroid.T4L_STAGE_CHOICES) &&
+		dUI.insertIfNotExistsCombineT4L(Evidence.T4L_LEVELS) &&
+		dUI.answer(Evidence.T4L_LEVELS,"HIGH"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("t4l_levels", "high");
+		insert(h);
+end
+
+rule "r4_base_eutiroidismo"
+	when
+		Hypothesis( description == "tsh_levels", value == "normal")
+		Hypothesis( description == "t4l_levels", value == "normal")
+	then
+		Conclusion c = new Conclusion(Conclusion.EUTIROIDISMO,"Os níveis encontram-se regulares. Se sente problemas, consulte o médico para testes mais especializados.");
+		insert(c);
+end
+
+rule "r4_hipotiroidismo"
+	when
+		Hypothesis( description == "tsh_levels", value == "high")
+		Hypothesis( description == "t4l_levels", value == "low")
+		
+	then
+		Conclusion c = new Conclusion(Conclusion.HIPOTIROIDISMO, "Administração de L-Tiroxina. Após 4 a 6 semanas, fazer outro teste TSH e T4L.");
+		insert(c);
+end
+
+rule "r5_hipertiroidismo_secund"
+	when
+		Hypothesis( description == "tsh_levels", value == "high")
+		Hypothesis( description == "t4l_levels", value == "high")
+	then
+		Conclusion c = new Conclusion(Conclusion.HIPERTIROIDISMO_SECUNDARIO, "Deve deslocar-se à area de Endocrinologia");
+		insert(c);
+end
+
+rule "r6_hipotiroidismo_sub"
+	when
+		Hypothesis( description == "tsh_levels", value == "high")
+		Hypothesis( description == "t4l_levels", value == "normal")
+	then
+		Conclusion c = new Conclusion(Conclusion.HIPOTIROIDISMO_SUBCLINICO,"Deve realizar mais testes para averiguar causas. Consulte o médico.");
+		insert(c);
+end
+
+rule "r7_hipertiroidismo_subclinico"
+	when
+		Hypothesis( description == "tsh_levels", value == "low")
+		Hypothesis( description == "t4l_levels", value == "normal")
+	then
+		Conclusion c = new Conclusion(Conclusion.HIPERTIROIDISMO_SUBCLINICO,"Deve realizar mais testes para averiguar causas. Consulte o médico.");
+		insert(c);
+end
+
+rule "r8_t3l_low"
+	when
+		Hypothesis( description == "tsh_levels", value == "low")
+		Hypothesis( description == "t4l_levels", value == "low")
+	then
+		Conclusion c = new Conclusion(Conclusion.T3L_BAIXA,"Consultar o médico.");
+		insert(c);
+end
+
+rule "r8_hipertiroidismo"
+	when
+		Hypothesis( description == "tsh_levels", value == "low")
+		Hypothesis( description == "t4l_levels", value == "high")
+	then
+		Conclusion c = new Conclusion(Conclusion.HIPERTIROIDISMO,"Monitorizar os níveis de TSH e T4L a cada 4-6 semanas, até ter Eutiroidismo. DEpois, repetir os testes a cada 12 semanas.");
+		insert(c);
+end
+
+rule "no_reason"
+	when
+		Hypothesis( description == "test_reasons_valid", value =="não")
+	then
+		Conclusion c = new Conclusion("Saudável", "Não foram detetadas razões para realizar a análise dos resultados.");
+		insert(c);
+end
+
+rule "unknown"
+	when
+		not Conclusion()
+	then
+		Conclusion c = new Conclusion(Conclusion.UNKNOWN, "Não foi possível encontrar nenhum resultado com as condições especificadas.");
+		insert(c);
+end
+
+query "evidence"(String ev, String v)
+	e : Evidence( evidence == ev, value == v )
+end
+

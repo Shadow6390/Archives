@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Thyroid Diagnosis</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/round-about.css" rel="stylesheet">
+	<style>
+		.loader {
+		  border: 16px solid #f3f3f3;
+		  border-radius: 50%;
+		  border-top: 16px solid #3498db;
+		  width: 120px;
+		  height: 120px;
+		  -webkit-animation: spin 2s linear infinite; /* Safari */
+		  animation: spin 2s linear infinite;
+		}
+
+		/* Safari */
+		@-webkit-keyframes spin {
+		  0% { -webkit-transform: rotate(0deg); }
+		  100% { -webkit-transform: rotate(360deg); }
+		}
+
+		@keyframes spin {
+		  0% { transform: rotate(0deg); }
+		  100% { transform: rotate(360deg); }
+		}
+		</style>
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">DiagnoWeb</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Página Principal
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <!-- Introduction Row -->
+      <div class="col-lg-12 text-center">
+          <h1 class="mt-5">Diagnóstico da Tiróide</h1>
+          <p class="lead">Sistema baseado em regras que ajuda com o diagnóstico e tratamento de doenças da tiróide. Clique no botão "Começar Diagnóstico" para começar o processo.</p>
+          <br>
+		  <button id="start-button" type="button" class="btn btn-info" onclick="startDiagnosis()">Começar Diagnóstico</button>
+		  <div id="query-container">
+		  <br>
+		  <div id="query-container-content">
+		  <br id="br-0">
+		  <br id="br-1">
+		  <br id="br-2">
+		  <br id="br-3">
+		  <br id="br-4">
+			<div class="loader mx-auto invisible" id="loading-bar"></div>
+		  <br id="br-5">
+		  <br id="br-6">
+		  <br id="br-7">
+		  <br id="br-8">
+		  <br id="br-9">
+		  </div>
+		  <br>
+		  </div>
+        </div>
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Prototype 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+	<script>
+		var line=0;
+		function removeWhitespace()
+		{
+			if (line==0)
+			{
+				removeChildren(document.getElementById("query-container-content"));
+				line++;
+			}
+		}
+		
+		function startDiagnosis()
+		{
+			var btn = document.getElementById("start-button");
+			btn.onclick="";
+			btn.classList.remove("btn-info");
+			var lbar = document.getElementById("loading-bar");
+			lbar.classList.remove("invisible");
+			fetchData(null,"start",null);
+		}
+		
+		function addQuestion(type,params)
+		{
+			if (type=="input")
+			{
+				var div = addQuestionInput(params[0],params[1],params[2]);
+			}
+			else if (type="choice")
+			{
+				var div = addQuestionChoices(params[0],params[1]);
+			}
+			var container = document.getElementById("query-container");
+			container.appendChild(div);
+		}
+		
+		function displayResults(conclusion,conclusionInfo)
+		{
+			var divMain = createBase();
+			var title = document.createElement("h4");
+			title.classList.add("card-title");
+			title.appendChild(document.createTextNode("Resultados"));
+			divMain.appendChild(title);
+			divMain.appendChild(document.createElement("br"));
+			divMain.appendChild(document.createTextNode(conclusion));
+			divMain.appendChild(document.createElement("br"));
+			divMain.appendChild(document.createElement("br"));
+			var exblock = document.createElement("p");
+			exblock.appendChild(document.createTextNode(conclusionInfo));
+			exblock.style.fontStyle= "italic";
+			divMain.appendChild(exblock);
+			divMain.appendChild(createEndButton("Fim"));
+			divMain.appendChild(createExplainButton("Explicar"));
+			var exContainer = document.createElement("div");
+			exContainer.id="explanation-container";
+			divMain.appendChild(document.createElement("br"));
+			divMain.appendChild(exContainer);
+			var container = document.getElementById("query-container");
+			container.appendChild(divMain);
+		}
+		
+		function removeChildren(myNode)
+		{
+			while (myNode.firstChild) {
+				myNode.removeChild(myNode.firstChild);
+			}
+		}
+		
+		function addQuestionChoices(question,choices)
+		{
+			var divMain = createBase();
+			var title = document.createElement("h5");
+			title.classList.add("card-title");
+			title.appendChild(document.createTextNode(question));
+			divMain.appendChild(title);
+			divMain.appendChild(document.createElement("br"));
+			var dropdown = createDropdown(choices);
+			var nb = createNextButton("Seguinte");
+			nb.onclick=function(){fetchData(dropdown,"continue",nb);};
+			divMain.appendChild(dropdown);
+			divMain.appendChild(nb);
+			return divMain;
+		}
+		
+		function addQuestionInput(question,type,defaultValue)
+		{
+			var divMain = createBase();
+			var title = document.createElement("h5");
+			title.classList.add("card-title");
+			title.appendChild(document.createTextNode(question));
+			divMain.appendChild(title);
+			divMain.appendChild(document.createElement("br"));
+			var elem = createInput(type,defaultValue);
+			var nb = createNextButton("Seguinte");
+			nb.onclick=function(){fetchData(elem,"continue",nb);};
+			divMain.appendChild(elem);
+			divMain.appendChild(nb);
+			return divMain;
+		}
+		
+		function createExplainButton(text)
+		{
+			var result = document.createElement("div");
+			result.classList.add("text-center");
+			var next = document.createElement("button");
+			next.classList.add("btn");
+			next.classList.add("btn-info");
+			next.classList.add("w-25");
+			next.classList.add("mt-4");
+			next.appendChild(document.createTextNode(text));
+			next.onclick=function(){
+				var exContainer = document.getElementById("explanation-container");
+				if (!exContainer.hasChildNodes())
+				{
+					var explanation = createExplanationElement();
+					exContainer.appendChild(explanation);
+				}
+			};
+			result.appendChild(next);
+			return result;
+		}
+		
+		function createExplanationElement()
+		{
+			var result = document.createElement("div");
+			if (cachedExplanation!=null)
+			{
+				var title = document.createElement("h3");
+				title.appendChild(document.createTextNode("Explicação"));
+				result.appendChild(title);
+				result.appendChild(document.createElement("br"));
+				var list = recurseAddExplain(cachedExplanation);
+				list.classList.add("text-left");
+				result.appendChild(list);
+			}
+			return result;
+		}
+		
+		function recurseAddExplain(arr)
+		{
+			var list = document.createElement("ul");
+			var li = document.createElement("li");
+			var text = arr[0];
+			if (arr[2].length>0)
+			{
+				text+=" foi obtido porque:";
+			}
+			li.appendChild(document.createTextNode(text));
+			list.appendChild(li);
+			var subElements = arr[2];
+			for (var i=0;i<subElements.length;i++)
+			{
+				if (subElements[i] instanceof Array)
+				{
+					var tList = recurseAddExplain(subElements[i]);
+					list.appendChild(tList);
+				}
+				else
+				{
+					var li = document.createElement("li");
+					li.appendChild(document.createTextNode(subElements[i]));
+					li.style.fontStyle="italic";
+					list.appendChild(li);
+				}
+			}
+			return list;
+		}
+		
+		function createEndButton(text)
+		{
+			var result = document.createElement("div");
+			result.classList.add("text-center");
+			var next = document.createElement("button");
+			next.classList.add("btn");
+			next.classList.add("btn-success");
+			next.classList.add("w-25");
+			next.classList.add("mt-4");
+			next.appendChild(document.createTextNode(text));
+			next.onclick=function(){fetchData(null,"end",next);};
+			result.appendChild(next);
+			return result;
+		}
+		
+		function createNextButton(text)
+		{
+			var result = document.createElement("div");
+			result.classList.add("text-right");
+			var next = document.createElement("button");
+			next.classList.add("btn");
+			next.classList.add("btn-primary");
+			next.classList.add("w-25");
+			next.classList.add("mt-2");
+			next.classList.add("next-button");
+			next.appendChild(document.createTextNode(text));
+			result.appendChild(next);
+			return result;
+		}
+		
+		function createInput(type,defVal)
+		{
+			var elem = document.createElement("input");
+			elem.type=type;
+			elem.classList.add("form-control");
+			elem.placeholder=defVal;
+			return elem;
+		}
+		
+		function createDropdown(options)
+		{
+			var elem = document.createElement("select");
+			elem.classList.add("form-control");
+			for (var i=0;i<options.length;i++)
+			{
+				var op = document.createElement("option");
+				op.appendChild(document.createTextNode(options[i]));
+				elem.appendChild(op);
+			}
+			return elem;
+		}
+		
+		function createBase()
+		{
+			var divMain = document.createElement("div");
+			divMain.classList.add("card");
+			var body = document.createElement("div")
+			body.classList.add("card-body");
+			divMain.classList.add("m-5")
+			divMain.classList.add("p-5");
+			return divMain;
+		}
+	</script>
+	<script> //JQuery
+	
+		var sessionKey = "";
+		var cachedExplanation=null;
+		
+		function fetchData(elem,calltype,inv){
+			if (calltype=="start")
+			{
+				$.ajax({
+					url: 'http://localhost:4566/queryThyroid-start',
+					crossDomain: true,
+					type: 'GET',
+					contentType: "application/json",
+					dataType: 'json',
+					success: function(result){
+						removeWhitespace();
+						var params = [result.question,result.choices];
+						sessionKey = result.key;
+						addQuestion(result.input_type,params);
+					}
+				})
+			}
+			else if (calltype=="continue" && elem!=null)
+			{
+				inv.classList.add("disabled");
+				inv.onclick=null;
+				var answer="N/A";
+				if (elem.nodeName=="SELECT")
+				{
+					answer = elem.options[elem.selectedIndex].value;
+				}
+				else if (elem.nodeName=="INPUT")
+				{
+					answer = elem.value;
+				}
+				$.ajax({
+					url: 'http://localhost:4566/queryThyroid?key='+sessionKey+'&answer='+answer,
+					crossDomain: true,
+					type: 'GET',
+					contentType: "application/json",
+					dataType: 'json',
+					success: function(result){
+						if (result.hasConclusion=="yes")
+						{
+							console.log(result);
+							displayResults(result.conclusion,result.conclusionInfo);
+							console.log(result.conclusion);
+							cachedExplanation=result.explanation;
+						}
+						else{
+							var params = [result.question,result.choices];
+							addQuestion(result.input_type,params);
+						}
+					}
+				})
+			}
+			else if (calltype=="end")
+			{
+				inv.classList.add("disabled");
+				inv.onclick=null;
+				$.ajax({
+					url: 'http://localhost:4566/queryThyroidStop?key='+sessionKey,
+					crossDomain: true,
+					type: 'GET',
+					contentType: "text/plain",
+					success: function(result){
+						window.location.href="/";
+					}
+				})
+			}
+		}
+	</script>
+  </body>
+
+</html>

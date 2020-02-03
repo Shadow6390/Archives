@@ -1,0 +1,262 @@
+package com.heartrules
+ 
+import com.model.Evidence;
+import com.model.Hypothesis;
+import com.model.Conclusion;
+import com.model.Fact;
+import com.model.Hypertension;
+import com.model.Thyroid;
+import com.view.DroolsInterface;
+
+query "Conclusions"
+	$conclusion : Conclusion()
+end
+
+global com.view.DroolsInterface dUI;
+
+rule "r0_requirements_yes"
+//@rule_name(r1,r2)
+	when
+		eval(!dUI.answerChoices(Evidence.HYPERTENSION_SHOULD_DO_TEST,"nenhuma das anteriores",Hypertension.TEST_REASONS))
+	then
+		Hypothesis h = new Hypothesis("test_reasons_valid","sim");
+		insert(h);
+end
+
+rule "r0_requirements_no"
+//@rule_name(r1,r2)
+	when
+		eval(dUI.answerChoices(Evidence.HYPERTENSION_SHOULD_DO_TEST,"nenhuma das anteriores",Hypertension.TEST_REASONS))
+	then
+		Hypothesis h = new Hypothesis("test_reasons_valid","não");
+		insert(h);
+end
+
+rule "r1_hta_sis_single"
+	when
+		
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.HYPERTENSION_TA_DG) &&
+		dUI.insertIfNotExistsInputDouble(Evidence.HYPERTENSION_TA_SG))
+		eval(dUI.compare(Evidence.HYPERTENSION_TA_DG,"<","80") &&
+		dUI.compare(Evidence.HYPERTENSION_TA_SG,">","130"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Conclusion c = new Conclusion(Conclusion.HTA_SISTOLICA_ISOLADA, "Corresponde apenas a um caso espontâneo. No entanto, deverá confirmar com o seu médico.");
+		insert(c);
+end
+
+rule "r1_hta_dia_single"
+	when
+		
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.HYPERTENSION_TA_DG) &&
+		dUI.insertIfNotExistsInputDouble(Evidence.HYPERTENSION_TA_SG))
+		eval(dUI.compare(Evidence.HYPERTENSION_TA_DG,">","80") &&
+		dUI.compare(Evidence.HYPERTENSION_TA_SG,"<","125"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Conclusion c = new Conclusion(Conclusion.HTA_DIASTOLICA_ISOLADA, "Corresponde apenas a um caso espontâneo. No entanto, deverá confirmar com o seu médico.");
+		insert(c);
+end
+
+
+rule "r1_must_hta_nocturne"
+	when
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.HYPERTENSION_TA_DG) &&
+		dUI.insertIfNotExistsInputDouble(Evidence.HYPERTENSION_TA_SG))
+		eval(dUI.compare(Evidence.HYPERTENSION_TA_DG,">","80") &&
+		dUI.compare(Evidence.HYPERTENSION_TA_SG,">","130"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("evaluate_nocturne","sim");
+		insert(h);
+		dUI.insertIfNotExistsInputDouble(Evidence.HTA_TA_SG_NOC);
+		dUI.insertIfNotExistsInputDouble(Evidence.HTA_TA_DG_NOC);
+end
+
+rule "r2_hta_noc_isolada"
+	when
+		eval(dUI.compare(Evidence.HYPERTENSION_TA_DG,"<","80") &&
+		dUI.compare(Evidence.HYPERTENSION_TA_SG,"<","125") &&
+		dUI.insertIfNotExistsInputDouble(Evidence.HTA_TA_SG_NOC) &&
+		dUI.insertIfNotExistsInputDouble(Evidence.HTA_TA_DG_NOC) &&
+		dUI.compare(Evidence.HTA_TA_DG_NOC,">","70") &&
+		dUI.compare(Evidence.HTA_TA_SG_NOC,">","120"))
+		Hypothesis( description == "test_reasons_valid", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("HTA Noturna Isolada", "sim");
+		insert(h);
+end
+
+rule "r2_hta_dipper_normal"
+	when
+		eval(
+		dUI.compare(Evidence.HTA_TA_DG_NOC,"<","70") &&
+		dUI.compare(Evidence.HTA_TA_SG_NOC,"<","120"))
+		Hypothesis( description == "evaluate_nocturne", value == "sim")
+	then
+		Conclusion c = new Conclusion("HTA Dipper Normal", "Deve apresentar os resultados deste teste ao médico e proceder a tratamentos específicos.");
+		insert(c);
+end
+
+rule "r2_hta_non_dipper_or_reverse"
+	when
+		eval(dUI.compare(Evidence.HTA_TA_DG_NOC,">","70") &&
+		dUI.compare(Evidence.HTA_TA_SG_NOC,">","120"))
+		Hypothesis( description == "evaluate_nocturne", value == "sim")
+	then
+		Hypothesis h1 = new Hypothesis("HTA Não-Dipper", "sim");
+		insert(h1);
+		Hypothesis h2 = new Hypothesis("HTA Reverse-Dipper", "sim");
+		insert(h2);
+end
+
+rule "r2_r3_motivos_para_hta_secundaria_1"
+	when
+		Hypothesis( description == "HTA Noturna Isolada", value == "sim" )
+	then
+		Hypothesis h = new Hypothesis("motivos_hta_secundaria", "sim");
+		insert(h);
+end
+rule "r2_r3_motivos_para_hta_secundaria_2"
+	when
+		Hypothesis( description == "HTA Reverse-Dipper", value == "sim" )
+	then
+		Hypothesis h = new Hypothesis("motivos_hta_secundaria", "sim");
+		insert(h);
+end
+rule "r2_r3_motivos_para_hta_secundaria_3"
+	when
+		Hypothesis( description == "HTA Não-Dipper", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("motivos_hta_secundaria", "sim");
+		insert(h);
+end
+
+rule "r3_hta_secundaria_hints_yes"
+//@rule_name(r1,r2)
+	when
+		Hypothesis( description == "motivos_hta_secundaria", value == "sim")
+		eval(!dUI.answerChoices(Evidence.HYPERTENSION_HINT_SECONDARY,"nenhuma das anteriores",Hypertension.HTA_SEC_HINTS))
+	then
+		Hypothesis h = new Hypothesis("secondary_hta_hints","sim");
+		insert(h);
+end
+
+rule "r3_hta_secundaria_hints_no"
+//@rule_name(r1,r2)
+	when
+		Hypothesis( description == "motivos_hta_secundaria", value == "sim")
+		eval(dUI.answerChoices(Evidence.HYPERTENSION_HINT_SECONDARY,"nenhuma das anteriores",Hypertension.HTA_SEC_HINTS))
+	then
+		Hypothesis h = new Hypothesis("secondary_hta_hints","não");
+		insert(h);
+end
+
+rule "r4_cumpre_requisitos_yes"
+//@rule_name(r1,r2)
+	when
+		Hypothesis( description == "secondary_hta_hints", value == "sim")
+		eval(dUI.answerChoices(Evidence.HTA_SECUNDARY_REQUISITES,"nenhuma das anteriores",Hypertension.HTA_SECUNDARY_REQUISITES))
+	then
+		Hypothesis h = new Hypothesis("sec_requisitos","sim");
+		insert(h);
+end
+
+rule "r4_cumpre_requisitos_no"
+//@rule_name(r1,r2)
+	when
+		Hypothesis( description == "secondary_hta_hints", value == "sim")
+		eval(!dUI.answerChoices(Evidence.HTA_SECUNDARY_REQUISITES,"nenhuma das anteriores",Hypertension.HTA_SECUNDARY_REQUISITES))
+	then
+		Conclusion c = new Conclusion("Correção Estilo de Vida","Deve corrigir a alternativa do estilo de vida que selecionou, pois poderá afetar a sua tensão arterial.");
+		insert(c);
+end
+
+rule "r5_epworth"
+	when
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.ESCALA_EPWORTH) && 
+		dUI.compare(Evidence.ESCALA_EPWORTH,">=","10"))
+		Hypothesis( description == "sec_requisitos", value == "sim")
+		Hypothesis( description == "secondary_hta_hints", value == "sim")
+	then
+		Hypothesis h = new Hypothesis("polissonografia","sim");
+		insert(h);
+end
+
+rule "r5_polissonografia"
+	when
+		Hypothesis( description == "polissonografia", value == "sim")
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.VALOR_IAH) &&
+		dUI.compare(Evidence.VALOR_IAH,">=","30"))
+	then
+		Conclusion c = new Conclusion(Conclusion.MEDICINA_SONO, "O doente deve ser referenciado para o hospital para fazer Investigação Diagnóstica sobre Medicina do Sono.");
+		insert(c);
+end
+
+rule "r5_polissonografia_v2"
+	when
+		Hypothesis( description == "polissonografia", value == "sim")
+		eval(dUI.insertIfNotExistsInputDouble(Evidence.VALOR_IAH) &&
+		dUI.compare(Evidence.VALOR_IAH,">=","5"))
+	then
+		Hypothesis h = new Hypothesis("might_be_saos","sim");
+		insert(h);
+end
+
+
+rule "r5_1_saos"
+	when
+		Hypothesis( description == "might_be_saos", value == "sim")
+		eval(dUI.answer(Evidence.HIPERSONOLENCIA_OU_PATOLOGIA,"sim"))
+	then
+		Conclusion c = new Conclusion(Conclusion.MEDICINA_SONO, "O doente deve ser referenciado para o hospital para fazer Investigação Diagnóstica sobre Medicina do Sono.");
+		insert(c);
+end
+
+rule "r6_suspeita_renal"
+	when
+		Hypothesis( description == "motivos_hta_secundaria", value == "sim")
+		eval(dUI.answer(Evidence.SUSPEITA_DOENCA_RENAL,"sim"))
+	then
+		Hypothesis h = new Hypothesis("suspeita_renal", "sim");
+		insert(h);
+end
+
+rule "r6_ref_sim"
+	when
+		Hypothesis( description == "suspeita_renal", value == "sim")
+		eval(!dUI.answerChoices(Evidence.ALTERACOES_RENAIS,"nenhuma das anteriores",Hypertension.ALTERACOES_RENAIS))
+	then
+		Conclusion c = new Conclusion(Conclusion.REFERENCIACAO_HOSPITAL, "O doente deve ser referenciado para o hospital para a secção renal.");
+		insert(c);
+end
+
+rule "r6_ref_nao"
+	when
+		Hypothesis( description == "suspeita_renal", value == "sim")
+		eval(!dUI.answerChoices(Evidence.ALTERACOES_RENAIS,"nenhuma das anteriores",Hypertension.ALTERACOES_RENAIS))
+	then
+		Conclusion c = new Conclusion(Conclusion.UNKNOWN, "Devem ser analisadas outras causas com peritos. HTA secundária deriva de vários problemas, dos quais o sistema não consegui identificar.");
+		insert(c);
+end
+
+rule "no_reason"
+	when
+		Hypothesis( description == "test_reasons_valid", value =="não")
+	then
+		Conclusion c = new Conclusion("Saudável", "Não foram detetadas razões para realizar a análise dos resultados.");
+		insert(c);
+end
+
+rule "unknown"
+	when
+		not Conclusion()
+	then
+		Conclusion c = new Conclusion(Conclusion.UNKNOWN, "Não foi possível encontrar nenhum resultado com as condições especificadas.");
+		insert(c);
+end
+
+query "evidence"(String ev, String v)
+	e : Evidence( evidence == ev, value == v )
+end
+
