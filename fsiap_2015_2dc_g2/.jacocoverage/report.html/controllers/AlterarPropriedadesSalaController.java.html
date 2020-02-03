@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>AlterarPropriedadesSalaController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">AlterarPropriedadesSalaController.java</span></div><h1>AlterarPropriedadesSalaController.java</h1><pre class="source lang-java linenums">package controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import model.ListaMateriaisParede;
+import model.Material;
+import model.Parede;
+import model.Sala;
+import model.Simulacao;
+
+/**
+ * Representa um controlador que gere o caso de uso 1, alterar propriedades da
+ * sala, através de uma simulação, uma versão temporária da sala, uma lista de
+ * paredes e uma lista de materiais das mesmas.
+ */
+public class AlterarPropriedadesSalaController {
+
+    /**
+     * Simulação à qual pertence a sala.
+     */
+    private Simulacao simulacao;
+
+    /**
+     * Clone da Sala, de forma a guardar as informações temporariamente.
+     */
+    private Sala salaTemp;
+
+    /**
+     * Lista de paredes temporária da sala.
+     */
+    private List&lt;Parede&gt; listaParedesTemp;
+
+    /**
+     * Lista de materias e respetivas espessuras de cada parede da sala.
+     */
+    private List&lt;ListaMateriaisParede&gt; listaMateriaisParedesTemp;
+
+    /**
+     * Lista de Materias de uma parede especifica.
+     */
+    private ListaMateriaisParede focusListaPTemp;
+
+    /**
+     * Parede temporária.
+     */
+    private Parede sParede;
+
+    /**
+     * Constrói uma instância do controlador que gere o caso de uso 1, alterar
+     * propriedades da sala, através de uma simulação, uma versão temporária da
+     * sala, uma lista de paredes e uma lista de materiais das mesmas.
+     *
+     * @param simulacao Sala cuja as propriedades vão ser alteradas.
+     */
+<span class="nc" id="L55">    public AlterarPropriedadesSalaController(Simulacao simulacao) {</span>
+<span class="nc" id="L56">        this.simulacao = simulacao;</span>
+<span class="nc" id="L57">        this.salaTemp = new Sala(simulacao.getSala());</span>
+
+        // Preencher a lista de paredes da sala.
+<span class="nc" id="L60">        this.listaParedesTemp = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        for (Parede focus : salaTemp.getListaParedes()) {</span>
+<span class="nc" id="L62">            listaParedesTemp.add(new Parede(focus));</span>
+<span class="nc" id="L63">        }</span>
+<span class="nc" id="L64">        this.listaParedesTemp.add(new Parede(this.salaTemp.getTeto()));</span>
+
+        // Preencher a lista de materiais e espessura de cada parede da sala.
+<span class="nc" id="L67">        this.listaMateriaisParedesTemp = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for (Parede parede : this.salaTemp.getListaParedes()) {</span>
+<span class="nc" id="L69">            this.listaMateriaisParedesTemp.add(new ListaMateriaisParede(parede.getListaMateriais()));</span>
+<span class="nc" id="L70">        }</span>
+<span class="nc" id="L71">        this.listaMateriaisParedesTemp.add(new ListaMateriaisParede(</span>
+<span class="nc" id="L72">                this.salaTemp.getTeto().getListaMateriais()));</span>
+<span class="nc" id="L73">    }</span>
+
+    /**
+     * Devolve o comprimento da sala.
+     *
+     * @return Comprimento da sala.
+     */
+    public String getComprimento() {
+<span class="nc" id="L81">        return String.format(&quot;%.2f&quot;, this.salaTemp.getComprimento());</span>
+    }
+
+    /**
+     * Devolve a largura da sala.
+     *
+     * @return Largura da sala.
+     */
+    public String getLargura() {
+<span class="nc" id="L90">        return String.format(&quot;%.2f&quot;, this.salaTemp.getLargura());</span>
+    }
+
+    /**
+     * Devolve a altura da sala.
+     *
+     * @return Altura da sala.
+     */
+    public String getAltura() {
+<span class="nc" id="L99">        return String.format(&quot;%.2f&quot;, this.salaTemp.getAltura());</span>
+    }
+
+    /**
+     * Devolve o teto da sala.
+     *
+     * @return Teto da sala.
+     */
+    public Parede getTeto() {
+<span class="nc" id="L108">        return this.salaTemp.getTeto();</span>
+    }
+
+    /**
+     * Altera o comprimento da sala.
+     *
+     * @param comprimento Novo comprimento da sala.
+     */
+    public void setComprimento(double comprimento) {
+<span class="nc" id="L117">        this.salaTemp.setComprimento(comprimento);</span>
+<span class="nc" id="L118">    }</span>
+
+    /**
+     * Altera a largura da sala.
+     *
+     * @param largura Nova largura da sala.
+     */
+    public void setLargura(double largura) {
+<span class="nc" id="L126">        this.salaTemp.setLargura(largura);</span>
+<span class="nc" id="L127">    }</span>
+
+    /**
+     * Altera a altura da sala.
+     *
+     * @param altura Nova altura da sala.
+     */
+    public void setAltura(double altura) {
+<span class="nc" id="L135">        this.salaTemp.setAltura(altura);</span>
+<span class="nc" id="L136">    }</span>
+
+    /**
+     * Altera o teto da sala.
+     *
+     * @param teto Novo teto da sala.
+     */
+    public void setTeto(Parede teto) {
+<span class="nc" id="L144">        this.salaTemp.setTeto(teto);</span>
+<span class="nc" id="L145">    }</span>
+
+    /**
+     * Cria uma lista de materiais temporária, relativa a uma parede, onde irão
+     * ser feitas as alterações, antes das mesmas se tornarem definitivas.
+     * 
+     * @param index Indice que indica a parede.
+     */
+    public void novoListaParedes(int index) {
+<span class="nc" id="L154">        focusListaPTemp = new ListaMateriaisParede(listaMateriaisParedesTemp.get(index));</span>
+<span class="nc" id="L155">    }</span>
+
+    /**
+     * Devolve a temperatura da parede especificada.
+     * @param paredeIndex (int) O índice da parede.
+     * @return (double) A temperatura da parede.
+     */
+    public double getTemperatura(int paredeIndex)
+    {
+<span class="nc" id="L164">        return listaParedesTemp.get(paredeIndex).getTemperatura();</span>
+    }
+    
+    /**
+     * Cria uma parede temporária, sob a qual irão ser feitas as alterações,
+     * antes das mesmas se tornarem definitivas.
+     *
+     * @param index Indice que indica a parede.
+     * @return Verdadeiro se for possível criar a parede temporária, falso caso
+     * não o seja.
+     */
+    public boolean backupParede(int index) {
+        boolean result;
+<span class="nc" id="L177">        sParede = new Parede(listaParedesTemp.get(index));</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        result = sParede != null;</span>
+<span class="nc" id="L179">        return result;</span>
+    }
+
+    /**
+     * Reverte as alterações realizadas a uma parede.
+     * 
+     * @param index Indice que indica a parede.
+     */
+    public void revertParedeChanges(int index) {
+<span class="nc" id="L188">        listaParedesTemp.set(index, sParede);</span>
+<span class="nc" id="L189">    }</span>
+
+    /**
+     * Devolve uma lista com o nome de cada material presente em cada uma das
+     * paredes.
+     *
+     * @return Lista de materiais de cada parede.
+     */
+    public List&lt;String[]&gt; getListaMateriaisParedes() {
+<span class="nc" id="L198">        List&lt;String[]&gt; listaMateriaisParedes = new ArrayList&lt;&gt;();</span>
+        String[] listaNomeMateriais;
+        int i;
+        List&lt;Material&gt; listaMateriais;
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        for (int j = 0; j &lt; 4; j++) {</span>
+<span class="nc" id="L203">            Parede parede = listaParedesTemp.get(j);</span>
+<span class="nc" id="L204">            listaMateriais</span>
+<span class="nc" id="L205">                    = parede.getListaMateriais().getListaMateriais();</span>
+<span class="nc" id="L206">            listaNomeMateriais = new String[listaMateriais.size()];</span>
+<span class="nc" id="L207">            i = 0;</span>
+
+<span class="nc bnc" id="L209" title="All 2 branches missed.">            for (Material material : listaMateriais) {</span>
+<span class="nc" id="L210">                listaNomeMateriais[i] = material.getNome();</span>
+<span class="nc" id="L211">                i++;</span>
+<span class="nc" id="L212">            }</span>
+
+<span class="nc" id="L214">            listaMateriaisParedes.add(listaNomeMateriais);</span>
+        }
+
+<span class="nc" id="L217">        listaMateriais</span>
+<span class="nc" id="L218">                = listaParedesTemp.get(4).getListaMateriais().getListaMateriais();</span>
+<span class="nc" id="L219">        listaNomeMateriais = new String[listaMateriais.size()];</span>
+<span class="nc" id="L220">        i = 0;</span>
+        
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        for (Material material : listaMateriais) {</span>
+<span class="nc" id="L223">            listaNomeMateriais[i] = material.getNome();</span>
+<span class="nc" id="L224">            i++;</span>
+<span class="nc" id="L225">        }</span>
+
+<span class="nc" id="L227">        listaMateriaisParedes.add(listaNomeMateriais);</span>
+
+<span class="nc" id="L229">        return listaMateriaisParedes;</span>
+    }
+
+    /**
+     * Devolve uma lista com as espessuras de cada material presenta em cada uma
+     * das paredes.
+     *
+     * @return Lista de espessuras de cada parede.
+     */
+    public List&lt;String[]&gt; getListaEspessurasParedes() {
+<span class="nc" id="L239">        List&lt;String[]&gt; lep = new ArrayList&lt;&gt;();</span>
+        String[] ls;
+        int i;
+        List&lt;Double&gt; ld;
+
+<span class="nc bnc" id="L244" title="All 2 branches missed.">        for (int j = 0; j &lt; 4; j++) {</span>
+<span class="nc" id="L245">            Parede p = listaParedesTemp.get(j);</span>
+<span class="nc" id="L246">            ld = p.getListaMateriais().getListaEspessuras();</span>
+<span class="nc" id="L247">            ls = new String[ld.size()];</span>
+<span class="nc" id="L248">            i = 0;</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">            for (Double d : ld) {</span>
+<span class="nc" id="L250">                ls[i] = d.toString();</span>
+<span class="nc" id="L251">                i++;</span>
+<span class="nc" id="L252">            }</span>
+<span class="nc" id="L253">            lep.add(ls);</span>
+        }
+
+<span class="nc" id="L256">        ld = listaParedesTemp.get(4).getListaMateriais().getListaEspessuras();</span>
+<span class="nc" id="L257">        ls = new String[ld.size()];</span>
+<span class="nc" id="L258">        i = 0;</span>
+
+<span class="nc bnc" id="L260" title="All 2 branches missed.">        for (Double d : ld) {</span>
+<span class="nc" id="L261">            ls[i] = d.toString();</span>
+<span class="nc" id="L262">            i++;</span>
+<span class="nc" id="L263">        }</span>
+
+<span class="nc" id="L265">        lep.add(ls);</span>
+<span class="nc" id="L266">        return lep;</span>
+    }
+
+    /**
+     * Devolve uma lista de materiais possíveis de serem adicionados a cada uma
+     * das paredes.
+     *
+     * @return Lista de materiais.
+     */
+    public String[] getListaMateriaisExistentes() {
+<span class="nc" id="L276">        List&lt;Material&gt; lm = this.simulacao.getListaMateriaisExistentes();</span>
+<span class="nc" id="L277">        String[] s = new String[lm.size()];</span>
+<span class="nc" id="L278">        int i = 0;</span>
+
+<span class="nc bnc" id="L280" title="All 2 branches missed.">        for (Material m : lm) {</span>
+<span class="nc" id="L281">            s[i] = m.getNome();</span>
+<span class="nc" id="L282">            i++;</span>
+<span class="nc" id="L283">        }</span>
+
+<span class="nc" id="L285">        return s;</span>
+    }
+
+    /**
+     * Adiciona um material e a sua espessura a uma parede através do indice da
+     * mesmo.
+     * 
+     * @param indexMaterial Indice do material de forma a obter o material da
+     * lista.
+     * @param espessura Espessura da parede.
+     * @param indexParede Indice da parede na qual vai ser adicionado o material
+     * e a espessura.
+     */
+    public void adicionarMaterial(int indexMaterial, double espessura, int indexParede) {
+<span class="nc" id="L299">        Material material = this.simulacao.getRegistoMateriais().getMateriais().get(indexMaterial);</span>
+<span class="nc" id="L300">        focusListaPTemp.adicionarMaterial(material, espessura);</span>
+<span class="nc" id="L301">    }</span>
+
+    /**
+     * Remove um material e a sua espessura da parede indicada.
+     * 
+     * @param indexParede Indice da parede de onde o material vai ser removido.
+     * @param indexMaterial Indice do material que vai ser removido.
+     */
+    public void removerMaterial(int indexParede, int indexMaterial) {
+<span class="nc" id="L310">        this.focusListaPTemp.removerMaterial(indexMaterial);</span>
+
+<span class="nc" id="L312">    }</span>
+
+    /**
+     * Remove o ultimo material adicionado.
+     */
+    public void removerUltimo() {
+<span class="nc" id="L318">        this.focusListaPTemp.removerMaterial(this.focusListaPTemp.size() - 1);</span>
+<span class="nc" id="L319">    }</span>
+
+    /**
+     * Guarda as alterações realizadas numa parede.
+     * 
+     * @param indexParede Indice da parede à qual foram feitas as alterações.
+     * @param temperatura Temperatura da parede.
+     */
+    public void guardarParede(int indexParede, double temperatura) {
+<span class="nc" id="L328">        Parede p = listaParedesTemp.get(indexParede);</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        if (indexParede == 4) {</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">            if (p.validar())</span>
+            {
+<span class="nc" id="L332">                this.salaTemp.setTeto(p);</span>
+<span class="nc" id="L333">                this.salaTemp.getTeto().setTemperatura(temperatura);</span>
+            }
+        } else {
+<span class="nc bnc" id="L336" title="All 2 branches missed.">            if (p.validar())</span>
+            {
+<span class="nc" id="L338">                this.salaTemp.getListaParedes().remove(indexParede);</span>
+<span class="nc" id="L339">                this.salaTemp.getListaParedes().add(indexParede, p);</span>
+<span class="nc" id="L340">                p.setTemperatura(temperatura);   </span>
+            }
+        }
+<span class="nc" id="L343">    }</span>
+
+    /**
+     * Guarda a sala depois das alterações feitas.
+     */
+    public void guardarSala() {
+<span class="nc" id="L349">        this.simulacao.setSala(salaTemp);</span>
+<span class="nc" id="L350">    }</span>
+
+    /**
+     * Guarda uma lista de materiais numa dada parede.
+     * 
+     * @param indexParede Indice da parede na qual vai ser guardada a lista de 
+     * materiais.
+     */
+    public void guardarListaMateriais(int indexParede) {
+<span class="nc" id="L359">        listaMateriaisParedesTemp.set(indexParede, focusListaPTemp);</span>
+<span class="nc" id="L360">        this.listaParedesTemp.get(indexParede).setListaMateriais(focusListaPTemp);</span>
+<span class="nc" id="L361">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

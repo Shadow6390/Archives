@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DefinirServidorUI.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">DefinirServidorUI.java</span></div><h1>DefinirServidorUI.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package view;
+
+import controllers.DefinirServidorController;
+import java.awt.EventQueue;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import model.Material;
+import model.Simulacao;
+
+/**
+ *
+ * @author jbraga
+ */
+public class DefinirServidorUI extends javax.swing.JDialog {
+
+    private Simulacao sim;
+    
+    private DefinirServidorController controller;
+    
+    private Material[] arr;
+    
+    /**
+     * Creates new form DefinirServidorUI
+     */
+    public DefinirServidorUI(java.awt.Frame parent, boolean modal,Simulacao sim) {
+<span class="nc" id="L36">        super(parent, modal);</span>
+<span class="nc" id="L37">        initComponents();</span>
+<span class="nc" id="L38">        this.sim = sim;</span>
+<span class="nc" id="L39">        controller = new DefinirServidorController(sim);</span>
+<span class="nc" id="L40">        EventQueue.invokeLater(new Runnable() {</span>
+
+            @Override
+            public void run() {
+<span class="nc" id="L44">                List&lt;Material&gt; list = controller.getListaMateriais();</span>
+<span class="nc" id="L45">                arr=new Material[list.size()];</span>
+<span class="nc" id="L46">                int i=0;</span>
+<span class="nc" id="L47">                DefaultComboBoxModel&lt;String&gt; model = new DefaultComboBoxModel();</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">                for (Material focus:list)</span>
+                {
+<span class="nc" id="L50">                    model.addElement(focus.getNome());</span>
+<span class="nc" id="L51">                    arr[i++]=focus;</span>
+<span class="nc" id="L52">                }</span>
+<span class="nc" id="L53">                listaMateriais.setModel(model);</span>
+<span class="nc" id="L54">                controller.novoServidor();</span>
+<span class="nc" id="L55">                setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);</span>
+<span class="nc" id="L56">                listaMateriais.addItemListener(new ItemListener() {</span>
+
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">                        if (e.getStateChange()==ItemEvent.SELECTED)</span>
+                        {
+<span class="nc" id="L62">                            materialField.setText((String)listaMateriais.getSelectedItem());</span>
+                        }
+<span class="nc" id="L64">                    }</span>
+                });
+<span class="nc bnc" id="L66" title="All 2 branches missed.">                 if (arr.length!=0)</span>
+                 {
+<span class="nc" id="L68">                     materialField.setText(arr[0].getNome());</span>
+                 }
+<span class="nc" id="L70">            }</span>
+        });
+<span class="nc" id="L72">    }</span>
+
+     private void confirmExit()
+    {
+<span class="nc" id="L76">        UIManager.put(&quot;OptionPane.yesButtonText&quot;, Simulacao.getFrasePelaChave(&quot;JOptionPane.yes&quot;));</span>
+<span class="nc" id="L77">        UIManager.put(&quot;OptionPane.noButtonText&quot;, Simulacao.getFrasePelaChave(&quot;JOptionPane.no&quot;));</span>
+<span class="nc" id="L78">        int result = JOptionPane.showConfirmDialog(this, Simulacao.getFrasePelaChave(&quot;uc4.confirmExit&quot;),&quot;&quot;,JOptionPane.YES_NO_OPTION);</span>
+<span class="nc bnc" id="L79" title="All 3 branches missed.">        switch (result)</span>
+        {
+            case JOptionPane.YES_OPTION:
+<span class="nc" id="L82">                    dispose();</span>
+<span class="nc" id="L83">                break;</span>
+            case JOptionPane.NO_OPTION:
+<span class="nc" id="L85">                    JOptionPane.showMessageDialog(this, Simulacao.getFrasePelaChave(&quot;uc4.exit.canceled&quot;),&quot;&quot;,JOptionPane.INFORMATION_MESSAGE);</span>
+                break;
+        }
+<span class="nc" id="L88">    }</span>
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    // &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+<span class="nc" id="L99">        loadField = new javax.swing.JTextField();</span>
+<span class="nc" id="L100">        acceptButton = new javax.swing.JButton();</span>
+<span class="nc" id="L101">        jLabel6 = new javax.swing.JLabel();</span>
+<span class="nc" id="L102">        cancelButton = new javax.swing.JButton();</span>
+<span class="nc" id="L103">        lengthField = new javax.swing.JTextField();</span>
+<span class="nc" id="L104">        jLabel2 = new javax.swing.JLabel();</span>
+<span class="nc" id="L105">        widthField = new javax.swing.JTextField();</span>
+<span class="nc" id="L106">        jLabel7 = new javax.swing.JLabel();</span>
+<span class="nc" id="L107">        heightField = new javax.swing.JTextField();</span>
+<span class="nc" id="L108">        jLabel8 = new javax.swing.JLabel();</span>
+<span class="nc" id="L109">        jLabel9 = new javax.swing.JLabel();</span>
+<span class="nc" id="L110">        jLabel3 = new javax.swing.JLabel();</span>
+<span class="nc" id="L111">        nameField = new javax.swing.JTextField();</span>
+<span class="nc" id="L112">        jLabel4 = new javax.swing.JLabel();</span>
+<span class="nc" id="L113">        massField = new javax.swing.JTextField();</span>
+<span class="nc" id="L114">        materialField = new javax.swing.JTextField();</span>
+<span class="nc" id="L115">        jLabel5 = new javax.swing.JLabel();</span>
+<span class="nc" id="L116">        listaMateriais = new javax.swing.JComboBox&lt;String&gt;();</span>
+
+<span class="nc" id="L118">        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L119">        setResizable(false);</span>
+<span class="nc" id="L120">        addWindowListener(new java.awt.event.WindowAdapter() {</span>
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+<span class="nc" id="L122">                onWindowClosing(evt);</span>
+<span class="nc" id="L123">            }</span>
+        });
+
+<span class="nc" id="L126">        acceptButton.setText(Simulacao.getFrasePelaChave(&quot;uc4.button.accept&quot;));</span>
+<span class="nc" id="L127">        acceptButton.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L129">                acceptButtonActionPerformed(evt);</span>
+<span class="nc" id="L130">            }</span>
+        });
+
+<span class="nc" id="L133">        jLabel6.setText(Simulacao.getFrasePelaChave(&quot;uc4.server.dimension&quot;));</span>
+
+<span class="nc" id="L135">        cancelButton.setText(Simulacao.getFrasePelaChave(&quot;uc4.button.cancel&quot;));</span>
+<span class="nc" id="L136">        cancelButton.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L138">                cancelButtonActionPerformed(evt);</span>
+<span class="nc" id="L139">            }</span>
+        });
+
+<span class="nc" id="L142">        jLabel2.setText(Simulacao.getFrasePelaChave(&quot;uc4.server.width&quot;));</span>
+
+<span class="nc" id="L144">        jLabel7.setText(Simulacao.getFrasePelaChave(&quot;uc4.server.length&quot;));</span>
+
+<span class="nc" id="L146">        jLabel8.setText(Simulacao.getFrasePelaChave(&quot;uc4.server.height&quot;));</span>
+
+<span class="nc" id="L148">        jLabel9.setText(Simulacao.getFrasePelaChave(&quot;uc4.server.material&quot;));</span>
+
+<span class="nc" id="L150">        jLabel3.setText(Simulacao.getFrasePelaChave(&quot;uc4.server.name&quot;));</span>
+
+<span class="nc" id="L152">        jLabel4.setText(Simulacao.getFrasePelaChave(&quot;uc4.server.mass&quot;));</span>
+
+<span class="nc" id="L154">        jLabel5.setText(Simulacao.getFrasePelaChave(&quot;uc4.server.load&quot;));</span>
+
+<span class="nc" id="L156">        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());</span>
+<span class="nc" id="L157">        getContentPane().setLayout(layout);</span>
+<span class="nc" id="L158">        layout.setHorizontalGroup(</span>
+<span class="nc" id="L159">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L160">            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L161">                .addContainerGap()</span>
+<span class="nc" id="L162">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L163">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L164">                        .addComponent(jLabel3)</span>
+<span class="nc" id="L165">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L166">                        .addComponent(nameField))</span>
+<span class="nc" id="L167">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L168">                        .addComponent(jLabel4)</span>
+<span class="nc" id="L169">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L170">                        .addComponent(massField))</span>
+<span class="nc" id="L171">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L172">                        .addComponent(jLabel5)</span>
+<span class="nc" id="L173">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L174">                        .addComponent(loadField))</span>
+<span class="nc" id="L175">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L176">                        .addGap(60, 60, 60)</span>
+<span class="nc" id="L177">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L178">                            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L179">                                .addComponent(jLabel8)</span>
+<span class="nc" id="L180">                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L181">                                .addComponent(heightField))</span>
+<span class="nc" id="L182">                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()</span>
+<span class="nc" id="L183">                                .addComponent(jLabel2)</span>
+<span class="nc" id="L184">                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L185">                                .addComponent(widthField))</span>
+<span class="nc" id="L186">                            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L187">                                .addComponent(jLabel7)</span>
+<span class="nc" id="L188">                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L189">                                .addComponent(lengthField))))</span>
+<span class="nc" id="L190">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L191">                        .addComponent(jLabel6)</span>
+<span class="nc" id="L192">                        .addGap(0, 0, Short.MAX_VALUE))</span>
+<span class="nc" id="L193">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L194">                        .addComponent(jLabel9)</span>
+<span class="nc" id="L195">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L196">                        .addComponent(materialField, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L197">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L198">                        .addComponent(listaMateriais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))</span>
+<span class="nc" id="L199">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L200">                        .addGap(67, 67, 67)</span>
+<span class="nc" id="L201">                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L202">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)</span>
+<span class="nc" id="L203">                        .addComponent(acceptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))</span>
+<span class="nc" id="L204">                .addGap(34, 34, 34))</span>
+        );
+<span class="nc" id="L206">        layout.setVerticalGroup(</span>
+<span class="nc" id="L207">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L208">            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()</span>
+<span class="nc" id="L209">                .addContainerGap(31, Short.MAX_VALUE)</span>
+<span class="nc" id="L210">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L211">                    .addComponent(jLabel3)</span>
+<span class="nc" id="L212">                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L213">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L214">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L215">                    .addComponent(jLabel4)</span>
+<span class="nc" id="L216">                    .addComponent(massField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L217">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L218">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L219">                    .addComponent(jLabel5)</span>
+<span class="nc" id="L220">                    .addComponent(loadField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L221">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L222">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L223">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L224">                        .addComponent(jLabel6)</span>
+<span class="nc" id="L225">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L226">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L227">                            .addComponent(lengthField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L228">                            .addComponent(jLabel7))</span>
+<span class="nc" id="L229">                        .addGap(9, 9, 9)</span>
+<span class="nc" id="L230">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L231">                            .addComponent(widthField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L232">                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))</span>
+<span class="nc" id="L233">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L234">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L235">                            .addComponent(heightField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L236">                            .addComponent(jLabel8))</span>
+<span class="nc" id="L237">                        .addGap(15, 15, 15)</span>
+<span class="nc" id="L238">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L239">                            .addComponent(jLabel9)</span>
+<span class="nc" id="L240">                            .addComponent(materialField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L241">                            .addComponent(listaMateriais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L242">                        .addGap(65, 65, 65))</span>
+<span class="nc" id="L243">                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()</span>
+<span class="nc" id="L244">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L245">                            .addComponent(acceptButton)</span>
+<span class="nc" id="L246">                            .addComponent(cancelButton))</span>
+<span class="nc" id="L247">                        .addContainerGap())))</span>
+        );
+
+<span class="nc" id="L250">        pack();</span>
+<span class="nc" id="L251">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L252">    }// &lt;/editor-fold&gt;//GEN-END:initComponents</span>
+
+    private void acceptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_acceptButtonActionPerformed
+        // TODO add your handling code here:
+        try
+        {
+<span class="nc" id="L258">            double mass = Double.parseDouble(massField.getText());</span>
+<span class="nc" id="L259">            double load = Double.parseDouble(loadField.getText());</span>
+<span class="nc" id="L260">            double length = Double.parseDouble(lengthField.getText());</span>
+<span class="nc" id="L261">            double width = Double.parseDouble(widthField.getText());</span>
+<span class="nc" id="L262">            double height = Double.parseDouble(heightField.getText());</span>
+<span class="nc" id="L263">            Material mat = arr[listaMateriais.getSelectedIndex()];</span>
+<span class="nc" id="L264">            controller.setNome(nameField.getText());</span>
+<span class="nc" id="L265">            controller.setDados(mass,length,width,height,load);</span>
+<span class="nc" id="L266">            controller.setMaterial(mat);</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">            if (controller.adicionarServidor())</span>
+            {
+<span class="nc" id="L269">                JOptionPane.showMessageDialog(this,Simulacao.getFrasePelaChave(&quot;uc4.server.approved&quot;),&quot;&quot;,JOptionPane.INFORMATION_MESSAGE);</span>
+<span class="nc" id="L270">                controller.novoServidor();</span>
+            }
+            else
+            {
+<span class="nc" id="L274">                JOptionPane.showMessageDialog(this,Simulacao.getFrasePelaChave(&quot;uc4.server.unapproved&quot;),&quot;&quot;,JOptionPane.ERROR_MESSAGE);</span>
+            }
+        }
+<span class="nc" id="L277">        catch (NumberFormatException e)</span>
+        {
+<span class="nc" id="L279">            JOptionPane.showMessageDialog(this, Simulacao.getFrasePelaChave(&quot;uc4.numberFormat&quot;),&quot;&quot;,JOptionPane.ERROR_MESSAGE);</span>
+        }
+<span class="nc" id="L281">        catch (IllegalArgumentException e)</span>
+        {
+<span class="nc" id="L283">            JOptionPane.showMessageDialog(this,e.getMessage(),&quot;&quot;,JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L284">        }</span>
+<span class="nc" id="L285">    }//GEN-LAST:event_acceptButtonActionPerformed</span>
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L289">        confirmExit();</span>
+<span class="nc" id="L290">    }//GEN-LAST:event_cancelButtonActionPerformed</span>
+
+    private void onWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_onWindowClosing
+        // TODO add your handling code here:
+<span class="nc" id="L294">        confirmExit();</span>
+<span class="nc" id="L295">    }//GEN-LAST:event_onWindowClosing</span>
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton acceptButton;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JTextField heightField;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JTextField lengthField;
+    private javax.swing.JComboBox&lt;String&gt; listaMateriais;
+    private javax.swing.JTextField loadField;
+    private javax.swing.JTextField massField;
+    private javax.swing.JTextField materialField;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JTextField widthField;
+    // End of variables declaration//GEN-END:variables
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

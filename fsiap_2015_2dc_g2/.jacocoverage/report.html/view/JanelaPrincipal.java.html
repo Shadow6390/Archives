@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JanelaPrincipal.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">JanelaPrincipal.java</span></div><h1>JanelaPrincipal.java</h1><pre class="source lang-java linenums">package view;
+
+import bragasQuest.PointDouble;
+import controllers.CorrerSimulacaoController;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import model.Sala;
+import model.Simulacao;
+
+/**
+ *
+ */
+public class JanelaPrincipal extends javax.swing.JFrame {
+
+    private SimulacaoWindow simWindow;
+    private Simulacao simulacao;
+    private CorrerSimulacaoController controller;
+    private Timer sTimer;
+    private int playButtonState;
+
+    /**
+     * Creates new form JanelaPrincipal
+     */
+<span class="nc" id="L36">    public JanelaPrincipal() {</span>
+<span class="nc" id="L37">        this.simulacao = new Simulacao();</span>
+<span class="nc" id="L38">        initComponents();</span>
+<span class="nc" id="L39">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L40">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L41">        this.simWindow = new SimulacaoWindow(this, false);</span>
+<span class="nc" id="L42">        this.simWindow.setVisible(true);</span>
+<span class="nc" id="L43">        this.alterarIdiomaJFileChooser();</span>
+<span class="nc" id="L44">        controller = new CorrerSimulacaoController(simulacao);</span>
+<span class="nc" id="L45">        playButtonState=0;</span>
+<span class="nc" id="L46">        EventQueue.invokeLater(new Runnable() {</span>
+
+            @Override
+            public void run() {
+<span class="nc" id="L50">                simWindow.updateUniverse(simulacao.getSala());</span>
+<span class="nc" id="L51">                plotGraph1.setXScale(3);</span>
+<span class="nc" id="L52">                plotGraph1.setYScale(0.001);</span>
+<span class="nc" id="L53">                plotGraph1.setDivisionFactor(2);</span>
+<span class="nc" id="L54">                deltaTimeLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.slider.elapsedTime&quot;) + &quot;(&quot; + (controller.getDeltaTime() / 60) + &quot;)&quot;);</span>
+<span class="nc" id="L55">                deltaTimeSlider.addChangeListener(new ChangeListener() {</span>
+
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+<span class="nc bnc" id="L59" title="All 2 branches missed.">                        if (!deltaTimeSlider.getValueIsAdjusting()) {</span>
+<span class="nc" id="L60">                            controller.setDeltaTime(deltaTimeSlider.getValue() * 60);</span>
+<span class="nc" id="L61">                            deltaTimeLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.slider.elapsedTime&quot;) + &quot;(&quot; + (controller.getDeltaTime() / 60) + &quot;)&quot;);</span>
+                        }
+<span class="nc" id="L63">                    }</span>
+                });
+<span class="nc" id="L65">                uc7exportarHTML.setEnabled(false);</span>
+                
+<span class="nc" id="L67">                sTimer=new Timer(100,new ActionListener() {</span>
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        
+                        double val;
+<span class="nc" id="L73">                        controller.updateTemperatures();</span>
+<span class="nc" id="L74">                        val = controller.getRefrigerationCost();</span>
+<span class="nc" id="L75">                        energyField.setText(String.format(&quot;%.1fJ&quot;,val));</span>
+<span class="nc" id="L76">                        tempIntField.setText(String.format(&quot;%.2fºC&quot;,controller.getTemperaturaInterior()));</span>
+<span class="nc" id="L77">                        tempAlvoField.setText(controller.getTemperaturaInteriorAlvo()+&quot;ºC&quot;);</span>
+<span class="nc" id="L78">                        double time = controller.stepTime();</span>
+<span class="nc" id="L79">                        timeField.setText(time+&quot; min&quot;);</span>
+                        
+<span class="nc bnc" id="L81" title="All 2 branches missed.">                        if (!controller.isRestarting())</span>
+                        {
+<span class="nc" id="L83">                            resetButton.setEnabled(true);</span>
+                        }
+<span class="nc" id="L85">                        plotGraph1.addPoint(new PointDouble(time,val));</span>
+<span class="nc" id="L86">                        plotGraph1.repaint();</span>
+<span class="nc" id="L87">                    }</span>
+                });
+<span class="nc" id="L89">                sTimer.setRepeats(true);</span>
+<span class="nc" id="L90">            }</span>
+        });
+
+<span class="nc" id="L93">    }</span>
+
+    public void alterarIdioma() {
+<span class="nc" id="L96">        this.ficheiro.setText(Simulacao.getFrasePelaChave(&quot;menu.file&quot;));</span>
+<span class="nc" id="L97">        this.dados.setText(Simulacao.getFrasePelaChave(&quot;menu.dados&quot;));</span>
+<span class="nc" id="L98">        this.uc8importar.setText(Simulacao.getFrasePelaChave(&quot;menu.dados.importar&quot;));</span>
+<span class="nc" id="L99">        this.uc8exportar.setText(Simulacao.getFrasePelaChave(&quot;menu.dados.exportar&quot;));</span>
+<span class="nc" id="L100">        this.uc7exportarHTML.setText(Simulacao.getFrasePelaChave(&quot;menu.dados.exportarHTML&quot;));</span>
+<span class="nc" id="L101">        this.sair.setText(Simulacao.getFrasePelaChave(&quot;menu.sair&quot;));</span>
+<span class="nc" id="L102">        this.sala.setText(Simulacao.getFrasePelaChave(&quot;menu.sala&quot;));</span>
+<span class="nc" id="L103">        this.alterar.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.alterar&quot;));</span>
+<span class="nc" id="L104">        this.uc2alterarTemperatura.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.alterar.temperatura&quot;));</span>
+<span class="nc" id="L105">        this.uc1alterarPropriedades.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.alterar.propriedades&quot;));</span>
+<span class="nc" id="L106">        this.servidor.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.servidor&quot;));</span>
+<span class="nc" id="L107">        this.uc4criarServidor.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.servidor.criar&quot;));</span>
+<span class="nc" id="L108">        this.uc6alterarServidor.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.servidor.editar&quot;));</span>
+<span class="nc" id="L109">        this.material.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.material&quot;));</span>
+<span class="nc" id="L110">        this.uc3adicionarMaterial.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.material.criar&quot;));</span>
+<span class="nc" id="L111">        this.idioma.setText(Simulacao.getFrasePelaChave(&quot;menu.idioma&quot;));</span>
+<span class="nc" id="L112">        this.uc12alterarIdioma.setText(Simulacao.getFrasePelaChave(&quot;menu.idioma.alterar&quot;));</span>
+<span class="nc" id="L113">        this.uc5adicionarServidor.setText(Simulacao.getFrasePelaChave(&quot;menu.servidor.adicionar&quot;));</span>
+<span class="nc" id="L114">        resetButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.reset&quot;));</span>
+<span class="nc" id="L115">        yscaleButton.setText(Simulacao.getFrasePelaChave(&quot;menu.button.yscale&quot;));</span>
+<span class="nc" id="L116">        deltaTimeLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.slider.elapsedTime&quot;));</span>
+<span class="nc" id="L117">        deltaTimeSlider.setToolTipText(Simulacao.getFrasePelaChave(&quot;uc10.slider.toolTip&quot;));</span>
+<span class="nc" id="L118">        graphLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.plotgraph&quot;));</span>
+<span class="nc bnc" id="L119" title="All 4 branches missed.">        switch (playButtonState)</span>
+        {
+            case 0:
+<span class="nc" id="L122">                    playButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.play&quot;));</span>
+<span class="nc" id="L123">                break;</span>
+            case 1:
+<span class="nc" id="L125">                    playButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.resume&quot;));</span>
+<span class="nc" id="L126">                break;</span>
+            case 2:
+<span class="nc" id="L128">                    playButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.stop&quot;));</span>
+                break;
+        }
+<span class="nc" id="L131">        energyLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.label.refrigeration&quot;));</span>
+<span class="nc" id="L132">        tempIntLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.label.temperaturaInterior&quot;));</span>
+<span class="nc" id="L133">        tempAlvoLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.label.temperaturaAlvo&quot;));</span>
+<span class="nc" id="L134">        timeQuantumLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.label.elapsedTime&quot;));</span>
+<span class="nc" id="L135">        clearRoomButton.setText(Simulacao.getFrasePelaChave(&quot;menu.button.clearRoom&quot;));</span>
+<span class="nc" id="L136">        this.alterarIdiomaJFileChooser();</span>
+<span class="nc" id="L137">    }</span>
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    // &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+<span class="nc" id="L148">        jMenuItem4 = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L149">        jMenu3 = new javax.swing.JMenu();</span>
+<span class="nc" id="L150">        uc5adicionarServidor = new javax.swing.JButton();</span>
+<span class="nc" id="L151">        plotGraph1 = new bragasQuest.PlotGraph();</span>
+<span class="nc" id="L152">        graphLabel = new javax.swing.JLabel();</span>
+<span class="nc" id="L153">        energyLabel = new javax.swing.JLabel();</span>
+<span class="nc" id="L154">        tempIntLabel = new javax.swing.JLabel();</span>
+<span class="nc" id="L155">        tempAlvoLabel = new javax.swing.JLabel();</span>
+<span class="nc" id="L156">        energyField = new javax.swing.JTextField();</span>
+<span class="nc" id="L157">        tempIntField = new javax.swing.JTextField();</span>
+<span class="nc" id="L158">        tempAlvoField = new javax.swing.JTextField();</span>
+<span class="nc" id="L159">        playButton = new javax.swing.JButton();</span>
+<span class="nc" id="L160">        resetButton = new javax.swing.JButton();</span>
+<span class="nc" id="L161">        timeField = new javax.swing.JTextField();</span>
+<span class="nc" id="L162">        timeQuantumLabel = new javax.swing.JLabel();</span>
+<span class="nc" id="L163">        deltaTimeSlider = new javax.swing.JSlider();</span>
+<span class="nc" id="L164">        deltaTimeLabel = new javax.swing.JLabel();</span>
+<span class="nc" id="L165">        yscaleButton = new javax.swing.JButton();</span>
+<span class="nc" id="L166">        clearRoomButton = new javax.swing.JButton();</span>
+<span class="nc" id="L167">        barraMenu = new javax.swing.JMenuBar();</span>
+<span class="nc" id="L168">        ficheiro = new javax.swing.JMenu();</span>
+<span class="nc" id="L169">        dados = new javax.swing.JMenu();</span>
+<span class="nc" id="L170">        uc8importar = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L171">        uc8exportar = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L172">        uc7exportarHTML = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L173">        sair = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L174">        sala = new javax.swing.JMenu();</span>
+<span class="nc" id="L175">        alterar = new javax.swing.JMenu();</span>
+<span class="nc" id="L176">        uc2alterarTemperatura = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L177">        uc1alterarPropriedades = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L178">        servidor = new javax.swing.JMenu();</span>
+<span class="nc" id="L179">        uc4criarServidor = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L180">        uc6alterarServidor = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L181">        material = new javax.swing.JMenu();</span>
+<span class="nc" id="L182">        uc3adicionarMaterial = new javax.swing.JMenuItem();</span>
+<span class="nc" id="L183">        idioma = new javax.swing.JMenu();</span>
+<span class="nc" id="L184">        uc12alterarIdioma = new javax.swing.JMenuItem();</span>
+
+<span class="nc" id="L186">        jMenuItem4.setText(&quot;jMenuItem4&quot;);</span>
+
+<span class="nc" id="L188">        jMenu3.setText(&quot;jMenu3&quot;);</span>
+
+<span class="nc" id="L190">        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L191">        setResizable(false);</span>
+
+<span class="nc" id="L193">        uc5adicionarServidor.setText(Simulacao.getFrasePelaChave(&quot;menu.servidor.adicionar&quot;)</span>
+        );
+<span class="nc" id="L195">        uc5adicionarServidor.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L197">                uc5adicionarServidorActionPerformed(evt);</span>
+<span class="nc" id="L198">            }</span>
+        });
+
+<span class="nc" id="L201">        javax.swing.GroupLayout plotGraph1Layout = new javax.swing.GroupLayout(plotGraph1);</span>
+<span class="nc" id="L202">        plotGraph1.setLayout(plotGraph1Layout);</span>
+<span class="nc" id="L203">        plotGraph1Layout.setHorizontalGroup(</span>
+<span class="nc" id="L204">            plotGraph1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L205">            .addGap(0, 0, Short.MAX_VALUE)</span>
+        );
+<span class="nc" id="L207">        plotGraph1Layout.setVerticalGroup(</span>
+<span class="nc" id="L208">            plotGraph1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L209">            .addGap(0, 115, Short.MAX_VALUE)</span>
+        );
+
+<span class="nc" id="L212">        graphLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.plotgraph&quot;)</span>
+        );
+
+<span class="nc" id="L215">        energyLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.label.refrigeration&quot;)</span>
+        );
+
+<span class="nc" id="L218">        tempIntLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.label.temperaturaInterior&quot;)</span>
+        );
+
+<span class="nc" id="L221">        tempAlvoLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.label.temperaturaAlvo&quot;)</span>
+        );
+
+<span class="nc" id="L224">        energyField.setEditable(false);</span>
+<span class="nc" id="L225">        energyField.setText(&quot;0J&quot;);</span>
+
+<span class="nc" id="L227">        tempIntField.setEditable(false);</span>
+
+<span class="nc" id="L229">        tempAlvoField.setEditable(false);</span>
+
+<span class="nc" id="L231">        playButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.play&quot;));</span>
+<span class="nc" id="L232">        playButton.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L234">                playButtonActionPerformed(evt);</span>
+<span class="nc" id="L235">            }</span>
+        });
+
+<span class="nc" id="L238">        resetButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.reset&quot;));</span>
+<span class="nc" id="L239">        resetButton.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L241">                resetButtonActionPerformed(evt);</span>
+<span class="nc" id="L242">            }</span>
+        });
+
+<span class="nc" id="L245">        timeField.setEditable(false);</span>
+<span class="nc" id="L246">        timeField.setText(&quot;0 min&quot;);</span>
+
+<span class="nc" id="L248">        timeQuantumLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.label.elapsedTime&quot;));</span>
+
+<span class="nc" id="L250">        deltaTimeSlider.setForeground(new java.awt.Color(153, 153, 255));</span>
+<span class="nc" id="L251">        deltaTimeSlider.setMajorTickSpacing(1);</span>
+<span class="nc" id="L252">        deltaTimeSlider.setMaximum(30);</span>
+<span class="nc" id="L253">        deltaTimeSlider.setMinimum(1);</span>
+<span class="nc" id="L254">        deltaTimeSlider.setMinorTickSpacing(1);</span>
+<span class="nc" id="L255">        deltaTimeSlider.setPaintTicks(true);</span>
+<span class="nc" id="L256">        deltaTimeSlider.setSnapToTicks(true);</span>
+<span class="nc" id="L257">        deltaTimeSlider.setToolTipText(Simulacao.getFrasePelaChave(&quot;uc10.slider.toolTip&quot;));</span>
+<span class="nc" id="L258">        deltaTimeSlider.setValue(1);</span>
+
+<span class="nc" id="L260">        deltaTimeLabel.setText(Simulacao.getFrasePelaChave(&quot;uc10.slider.elapsedTime&quot;));</span>
+
+<span class="nc" id="L262">        yscaleButton.setText(Simulacao.getFrasePelaChave(&quot;menu.button.yscale&quot;));</span>
+<span class="nc" id="L263">        yscaleButton.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L265">                yscaleButtonActionPerformed(evt);</span>
+<span class="nc" id="L266">            }</span>
+        });
+
+<span class="nc" id="L269">        clearRoomButton.setText(Simulacao.getFrasePelaChave(&quot;menu.button.clearRoom&quot;));</span>
+<span class="nc" id="L270">        clearRoomButton.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L272">                clearRoomButtonActionPerformed(evt);</span>
+<span class="nc" id="L273">            }</span>
+        });
+
+<span class="nc" id="L276">        ficheiro.setText(Simulacao.getFrasePelaChave(&quot;menu.file&quot;));</span>
+
+<span class="nc" id="L278">        dados.setText(Simulacao.getFrasePelaChave(&quot;menu.dados&quot;));</span>
+
+<span class="nc" id="L280">        uc8importar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));</span>
+<span class="nc" id="L281">        uc8importar.setText(Simulacao.getFrasePelaChave(&quot;menu.dados.importar&quot;));</span>
+<span class="nc" id="L282">        uc8importar.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L284">                uc8importarActionPerformed(evt);</span>
+<span class="nc" id="L285">            }</span>
+        });
+<span class="nc" id="L287">        dados.add(uc8importar);</span>
+
+<span class="nc" id="L289">        uc8exportar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));</span>
+<span class="nc" id="L290">        uc8exportar.setText(Simulacao.getFrasePelaChave(&quot;menu.dados.exportar&quot;));</span>
+<span class="nc" id="L291">        uc8exportar.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L293">                uc8exportarActionPerformed(evt);</span>
+<span class="nc" id="L294">            }</span>
+        });
+<span class="nc" id="L296">        dados.add(uc8exportar);</span>
+
+<span class="nc" id="L298">        uc7exportarHTML.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));</span>
+<span class="nc" id="L299">        uc7exportarHTML.setText(Simulacao.getFrasePelaChave(&quot;menu.dados.exportarHTML&quot;));</span>
+<span class="nc" id="L300">        uc7exportarHTML.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L302">                uc7exportarHTMLActionPerformed(evt);</span>
+<span class="nc" id="L303">            }</span>
+        });
+<span class="nc" id="L305">        dados.add(uc7exportarHTML);</span>
+
+<span class="nc" id="L307">        ficheiro.add(dados);</span>
+
+<span class="nc" id="L309">        sair.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));</span>
+<span class="nc" id="L310">        sair.setText(Simulacao.getFrasePelaChave(&quot;menu.sair&quot;));</span>
+<span class="nc" id="L311">        sair.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L313">                sairActionPerformed(evt);</span>
+<span class="nc" id="L314">            }</span>
+        });
+<span class="nc" id="L316">        ficheiro.add(sair);</span>
+
+<span class="nc" id="L318">        barraMenu.add(ficheiro);</span>
+
+<span class="nc" id="L320">        sala.setText(Simulacao.getFrasePelaChave(&quot;menu.sala&quot;));</span>
+
+<span class="nc" id="L322">        alterar.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.alterar&quot;));</span>
+
+<span class="nc" id="L324">        uc2alterarTemperatura.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.alterar.temperatura&quot;));</span>
+<span class="nc" id="L325">        uc2alterarTemperatura.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L327">                uc2alterarTemperaturaActionPerformed(evt);</span>
+<span class="nc" id="L328">            }</span>
+        });
+<span class="nc" id="L330">        alterar.add(uc2alterarTemperatura);</span>
+
+<span class="nc" id="L332">        uc1alterarPropriedades.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.alterar.propriedades&quot;));</span>
+<span class="nc" id="L333">        uc1alterarPropriedades.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L335">                uc1alterarPropriedadesActionPerformed(evt);</span>
+<span class="nc" id="L336">            }</span>
+        });
+<span class="nc" id="L338">        alterar.add(uc1alterarPropriedades);</span>
+
+<span class="nc" id="L340">        sala.add(alterar);</span>
+
+<span class="nc" id="L342">        servidor.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.servidor&quot;));</span>
+
+<span class="nc" id="L344">        uc4criarServidor.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.servidor.criar&quot;));</span>
+<span class="nc" id="L345">        uc4criarServidor.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L347">                uc4criarServidorActionPerformed(evt);</span>
+<span class="nc" id="L348">            }</span>
+        });
+<span class="nc" id="L350">        servidor.add(uc4criarServidor);</span>
+
+<span class="nc" id="L352">        uc6alterarServidor.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.servidor.editar&quot;));</span>
+<span class="nc" id="L353">        uc6alterarServidor.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L355">                uc6alterarServidorActionPerformed(evt);</span>
+<span class="nc" id="L356">            }</span>
+        });
+<span class="nc" id="L358">        servidor.add(uc6alterarServidor);</span>
+
+<span class="nc" id="L360">        sala.add(servidor);</span>
+
+<span class="nc" id="L362">        material.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.material&quot;));</span>
+
+<span class="nc" id="L364">        uc3adicionarMaterial.setText(Simulacao.getFrasePelaChave(&quot;menu.sala.material.criar&quot;));</span>
+<span class="nc" id="L365">        uc3adicionarMaterial.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L367">                uc3adicionarMaterialActionPerformed(evt);</span>
+<span class="nc" id="L368">            }</span>
+        });
+<span class="nc" id="L370">        material.add(uc3adicionarMaterial);</span>
+
+<span class="nc" id="L372">        sala.add(material);</span>
+
+<span class="nc" id="L374">        barraMenu.add(sala);</span>
+
+<span class="nc" id="L376">        idioma.setText(Simulacao.getFrasePelaChave(&quot;menu.idioma&quot;));</span>
+
+<span class="nc" id="L378">        uc12alterarIdioma.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));</span>
+<span class="nc" id="L379">        uc12alterarIdioma.setText(Simulacao.getFrasePelaChave(&quot;menu.idioma.alterar&quot;));</span>
+<span class="nc" id="L380">        uc12alterarIdioma.addActionListener(new java.awt.event.ActionListener() {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+<span class="nc" id="L382">                uc12alterarIdiomaActionPerformed(evt);</span>
+<span class="nc" id="L383">            }</span>
+        });
+<span class="nc" id="L385">        idioma.add(uc12alterarIdioma);</span>
+
+<span class="nc" id="L387">        barraMenu.add(idioma);</span>
+
+<span class="nc" id="L389">        setJMenuBar(barraMenu);</span>
+
+<span class="nc" id="L391">        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());</span>
+<span class="nc" id="L392">        getContentPane().setLayout(layout);</span>
+<span class="nc" id="L393">        layout.setHorizontalGroup(</span>
+<span class="nc" id="L394">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L395">            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L396">                .addContainerGap()</span>
+<span class="nc" id="L397">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L398">                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()</span>
+<span class="nc" id="L399">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L400">                            .addComponent(deltaTimeSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)</span>
+<span class="nc" id="L401">                            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L402">                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)</span>
+<span class="nc" id="L403">                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()</span>
+<span class="nc" id="L404">                                        .addComponent(tempIntLabel)</span>
+<span class="nc" id="L405">                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L406">                                        .addComponent(tempIntField))</span>
+<span class="nc" id="L407">                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()</span>
+<span class="nc" id="L408">                                        .addComponent(tempAlvoLabel)</span>
+<span class="nc" id="L409">                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L410">                                        .addComponent(tempAlvoField))</span>
+<span class="nc" id="L411">                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()</span>
+<span class="nc" id="L412">                                        .addComponent(timeQuantumLabel)</span>
+<span class="nc" id="L413">                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L414">                                        .addComponent(timeField, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))</span>
+<span class="nc" id="L415">                                .addGap(0, 0, Short.MAX_VALUE))</span>
+<span class="nc" id="L416">                            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L417">                                .addComponent(energyLabel)</span>
+<span class="nc" id="L418">                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L419">                                .addComponent(energyField)))</span>
+<span class="nc" id="L420">                        .addGap(18, 18, 18)</span>
+<span class="nc" id="L421">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L422">                            .addComponent(uc5adicionarServidor, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)</span>
+<span class="nc" id="L423">                            .addComponent(plotGraph1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="nc" id="L424">                            .addComponent(yscaleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="nc" id="L425">                            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L426">                                .addComponent(graphLabel)</span>
+<span class="nc" id="L427">                                .addGap(0, 0, Short.MAX_VALUE))))</span>
+<span class="nc" id="L428">                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()</span>
+<span class="nc" id="L429">                        .addComponent(playButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L430">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="nc" id="L431">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)</span>
+<span class="nc" id="L432">                            .addComponent(clearRoomButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="nc" id="L433">                            .addComponent(resetButton, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))))</span>
+<span class="nc" id="L434">                .addContainerGap())</span>
+<span class="nc" id="L435">            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L436">                .addGap(108, 108, 108)</span>
+<span class="nc" id="L437">                .addComponent(deltaTimeLabel)</span>
+<span class="nc" id="L438">                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))</span>
+        );
+<span class="nc" id="L440">        layout.setVerticalGroup(</span>
+<span class="nc" id="L441">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L442">            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()</span>
+<span class="nc" id="L443">                .addContainerGap()</span>
+<span class="nc" id="L444">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L445">                    .addComponent(playButton)</span>
+<span class="nc" id="L446">                    .addComponent(resetButton))</span>
+<span class="nc" id="L447">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L448">                .addComponent(clearRoomButton)</span>
+<span class="nc" id="L449">                .addGap(12, 12, 12)</span>
+<span class="nc" id="L450">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L451">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L452">                        .addComponent(graphLabel)</span>
+<span class="nc" id="L453">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L454">                        .addComponent(plotGraph1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L455">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L456">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L457">                            .addComponent(energyLabel)</span>
+<span class="nc" id="L458">                            .addComponent(energyField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L459">                        .addGap(18, 18, 18)</span>
+<span class="nc" id="L460">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L461">                            .addComponent(tempIntLabel)</span>
+<span class="nc" id="L462">                            .addComponent(tempIntField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L463">                        .addGap(18, 18, 18)</span>
+<span class="nc" id="L464">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L465">                            .addComponent(tempAlvoLabel)</span>
+<span class="nc" id="L466">                            .addComponent(tempAlvoField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L467">                        .addGap(18, 18, 18)</span>
+<span class="nc" id="L468">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L469">                            .addComponent(timeField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L470">                            .addComponent(timeQuantumLabel))))</span>
+<span class="nc" id="L471">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)</span>
+<span class="nc" id="L472">                .addComponent(yscaleButton)</span>
+<span class="nc" id="L473">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)</span>
+<span class="nc" id="L474">                .addComponent(deltaTimeLabel)</span>
+<span class="nc" id="L475">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L476">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L477">                    .addComponent(uc5adicionarServidor)</span>
+<span class="nc" id="L478">                    .addComponent(deltaTimeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L479">                .addContainerGap())</span>
+        );
+
+<span class="nc" id="L482">        pack();</span>
+<span class="nc" id="L483">    }// &lt;/editor-fold&gt;//GEN-END:initComponents</span>
+
+    private void uc12alterarIdiomaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc12alterarIdiomaActionPerformed
+<span class="nc" id="L486">        new AlterarIdiomaUI(this, true, simulacao);</span>
+<span class="nc" id="L487">    }//GEN-LAST:event_uc12alterarIdiomaActionPerformed</span>
+
+    private void sairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sairActionPerformed
+<span class="nc" id="L490">        this.setVisible(false);</span>
+<span class="nc" id="L491">        this.dispose();</span>
+<span class="nc" id="L492">    }//GEN-LAST:event_sairActionPerformed</span>
+
+    private void uc8importarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc8importarActionPerformed
+<span class="nc" id="L495">        new ImportarDadosUI(this, true, this.simulacao);</span>
+<span class="nc" id="L496">    }//GEN-LAST:event_uc8importarActionPerformed</span>
+
+    private void uc8exportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc8exportarActionPerformed
+<span class="nc" id="L499">        new ExportarDadosUI(this, true, this.simulacao);</span>
+<span class="nc" id="L500">    }//GEN-LAST:event_uc8exportarActionPerformed</span>
+
+    private void uc5adicionarServidorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc5adicionarServidorActionPerformed
+<span class="nc" id="L503">        new AdicionarServidorUI(this, false, simulacao, simWindow.getUniverse()).setVisible(true);</span>
+<span class="nc" id="L504">    }//GEN-LAST:event_uc5adicionarServidorActionPerformed</span>
+
+    private void uc7exportarHTMLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc7exportarHTMLActionPerformed
+<span class="nc" id="L507">        new ExportarDadosHTMLUI(this, true, simulacao, controller).setVisible(true);</span>
+<span class="nc" id="L508">    }//GEN-LAST:event_uc7exportarHTMLActionPerformed</span>
+
+    private void uc2alterarTemperaturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc2alterarTemperaturaActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L512">        new AlterarTemperaturasUI(this, true, simulacao).setVisible(true);</span>
+<span class="nc" id="L513">    }//GEN-LAST:event_uc2alterarTemperaturaActionPerformed</span>
+
+    private void uc1alterarPropriedadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc1alterarPropriedadesActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L517">        new AlterarPropriedadesSalaUI(this, true, simulacao,simWindow).setVisible(true);</span>
+<span class="nc" id="L518">    }//GEN-LAST:event_uc1alterarPropriedadesActionPerformed</span>
+
+    private void uc4criarServidorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc4criarServidorActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L522">        new DefinirServidorUI(this, true, simulacao).setVisible(true);</span>
+<span class="nc" id="L523">    }//GEN-LAST:event_uc4criarServidorActionPerformed</span>
+
+    private void uc6alterarServidorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc6alterarServidorActionPerformed
+<span class="nc" id="L526">        new AlterarInformacaoServidorUI(this, true, simulacao).setVisible(true);</span>
+<span class="nc" id="L527">    }//GEN-LAST:event_uc6alterarServidorActionPerformed</span>
+
+    private void uc3adicionarMaterialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uc3adicionarMaterialActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L531">        new AdicionarTipoMaterialUI(this, true, simulacao).setVisible(true);</span>
+<span class="nc" id="L532">    }//GEN-LAST:event_uc3adicionarMaterialActionPerformed</span>
+
+    private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
+        // TODO add your handling code here:
+<span class="nc bnc" id="L536" title="All 2 branches missed.">        if (!playButton.getText().equalsIgnoreCase(Simulacao.getFrasePelaChave(&quot;uc10.button.play&quot;)))</span>
+        {
+<span class="nc bnc" id="L538" title="All 2 branches missed.">            if (controller.isStopped())</span>
+            {
+<span class="nc" id="L540">                playButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.stop&quot;));</span>
+<span class="nc" id="L541">                controller.continuarSimulacao();</span>
+<span class="nc" id="L542">                sTimer.start();</span>
+<span class="nc" id="L543">                playButtonState=2;</span>
+            }
+            else
+            {
+<span class="nc" id="L547">                playButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.resume&quot;));</span>
+<span class="nc" id="L548">                controller.pararSimulacao();</span>
+<span class="nc" id="L549">                sTimer.stop();</span>
+<span class="nc" id="L550">                playButtonState=1;</span>
+            }
+        }
+        else
+        {
+<span class="nc" id="L555">            uc7exportarHTML.setEnabled(true);</span>
+<span class="nc" id="L556">            playButton.setText(Simulacao.getFrasePelaChave(&quot;uc10.button.stop&quot;));</span>
+<span class="nc" id="L557">            sTimer.start();</span>
+<span class="nc" id="L558">            playButtonState=2;</span>
+        }
+<span class="nc" id="L560">    }//GEN-LAST:event_playButtonActionPerformed</span>
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L564">        resetButton.setEnabled(controller.recomecarSimulacao());</span>
+<span class="nc" id="L565">        plotGraph1.clearPoints();</span>
+<span class="nc" id="L566">    }//GEN-LAST:event_resetButtonActionPerformed</span>
+
+    private void yscaleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yscaleButtonActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L570">        JDialog dialog = new JDialog();</span>
+<span class="nc" id="L571">        dialog.setLayout(new FlowLayout());</span>
+<span class="nc" id="L572">        dialog.add(new JLabel(Simulacao.getFrasePelaChave(&quot;menu.label.yscale&quot;)));</span>
+<span class="nc" id="L573">        dialog.setLocationRelativeTo(null);</span>
+<span class="nc" id="L574">        final JTextField numberField = new JTextField(8);</span>
+<span class="nc" id="L575">        dialog.add(numberField);</span>
+<span class="nc" id="L576">        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L577">        JButton button = new JButton();</span>
+<span class="nc" id="L578">        button.setText(Simulacao.getFrasePelaChave(&quot;menu.button.yscale&quot;));</span>
+<span class="nc" id="L579">        button.addActionListener(new ActionListener() {</span>
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try
+                {
+<span class="nc" id="L585">                    plotGraph1.setYScale(Double.parseDouble(numberField.getText()));</span>
+                }
+<span class="nc" id="L587">                catch (NumberFormatException ex)</span>
+                {
+<span class="nc" id="L589">                    JOptionPane.showMessageDialog(null, String.format(Simulacao.getFrasePelaChave(&quot;menu.yscale.numberFormat&quot;),numberField.getText()),&quot;&quot;,JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L590">                }</span>
+<span class="nc" id="L591">            }</span>
+        });
+<span class="nc" id="L593">        dialog.add(button);</span>
+<span class="nc" id="L594">        dialog.pack();</span>
+<span class="nc" id="L595">        dialog.setVisible(true);</span>
+        
+<span class="nc" id="L597">    }//GEN-LAST:event_yscaleButtonActionPerformed</span>
+
+    private void clearRoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearRoomButtonActionPerformed
+        // TODO add your handling code here:
+<span class="nc" id="L601">        simulacao.getSala().removeServidoresInstanciados();</span>
+<span class="nc" id="L602">        simWindow.updateUniverse(simulacao.getSala());</span>
+<span class="nc" id="L603">    }//GEN-LAST:event_clearRoomButtonActionPerformed</span>
+
+    /**
+     * Atribui uma nova simulação a esta UI.
+     *
+     * @param simulacao ({@link model.Simulacao}) A nova simulação.
+     */
+    public void setSimulacao(Simulacao simulacao) {
+<span class="nc" id="L611">        this.simulacao = simulacao;</span>
+<span class="nc" id="L612">        controller = new CorrerSimulacaoController(simulacao);</span>
+<span class="nc" id="L613">    }</span>
+
+    public final void updateUniverse(Sala sala)
+    {
+<span class="nc" id="L617">        simWindow.updateUniverse(sala);</span>
+<span class="nc" id="L618">    }</span>
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //&lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot; Look and feel setting code (optional) &quot;&gt;
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+<span class="nc bnc" id="L630" title="All 2 branches missed.">            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {</span>
+<span class="nc bnc" id="L631" title="All 2 branches missed.">                if (&quot;Nimbus&quot;.equals(info.getName())) {</span>
+<span class="nc" id="L632">                    javax.swing.UIManager.setLookAndFeel(info.getClassName());</span>
+<span class="nc" id="L633">                    break;</span>
+                }
+            }
+<span class="nc" id="L636">        } catch (ClassNotFoundException ex) {</span>
+<span class="nc" id="L637">            java.util.logging.Logger.getLogger(JanelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L638">        } catch (InstantiationException ex) {</span>
+<span class="nc" id="L639">            java.util.logging.Logger.getLogger(JanelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L640">        } catch (IllegalAccessException ex) {</span>
+<span class="nc" id="L641">            java.util.logging.Logger.getLogger(JanelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L642">        } catch (javax.swing.UnsupportedLookAndFeelException ex) {</span>
+<span class="nc" id="L643">            java.util.logging.Logger.getLogger(JanelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);</span>
+<span class="nc" id="L644">        }</span>
+        //&lt;/editor-fold&gt;
+
+        /* Create and display the form */
+<span class="nc" id="L648">        java.awt.EventQueue.invokeLater(new Runnable() {</span>
+            @Override
+            public void run() {
+<span class="nc" id="L651">                new JanelaPrincipal().setVisible(true);</span>
+<span class="nc" id="L652">            }</span>
+        });
+<span class="nc" id="L654">    }</span>
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu alterar;
+    private javax.swing.JMenuBar barraMenu;
+    private javax.swing.JButton clearRoomButton;
+    private javax.swing.JMenu dados;
+    private javax.swing.JLabel deltaTimeLabel;
+    private javax.swing.JSlider deltaTimeSlider;
+    private javax.swing.JTextField energyField;
+    private javax.swing.JLabel energyLabel;
+    private javax.swing.JMenu ficheiro;
+    private javax.swing.JLabel graphLabel;
+    private javax.swing.JMenu idioma;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenu material;
+    private javax.swing.JButton playButton;
+    private bragasQuest.PlotGraph plotGraph1;
+    private javax.swing.JButton resetButton;
+    private javax.swing.JMenuItem sair;
+    private javax.swing.JMenu sala;
+    private javax.swing.JMenu servidor;
+    private javax.swing.JTextField tempAlvoField;
+    private javax.swing.JLabel tempAlvoLabel;
+    private javax.swing.JTextField tempIntField;
+    private javax.swing.JLabel tempIntLabel;
+    private javax.swing.JTextField timeField;
+    private javax.swing.JLabel timeQuantumLabel;
+    private javax.swing.JMenuItem uc12alterarIdioma;
+    private javax.swing.JMenuItem uc1alterarPropriedades;
+    private javax.swing.JMenuItem uc2alterarTemperatura;
+    private javax.swing.JMenuItem uc3adicionarMaterial;
+    private javax.swing.JMenuItem uc4criarServidor;
+    private javax.swing.JButton uc5adicionarServidor;
+    private javax.swing.JMenuItem uc6alterarServidor;
+    private javax.swing.JMenuItem uc7exportarHTML;
+    private javax.swing.JMenuItem uc8exportar;
+    private javax.swing.JMenuItem uc8importar;
+    private javax.swing.JButton yscaleButton;
+    // End of variables declaration//GEN-END:variables
+
+    private void alterarIdiomaJFileChooser() {
+        // Títulos das Caixas de Diálogo
+<span class="nc" id="L698">        UIManager.put(&quot;FileChooser.openDialogTitleText&quot;, Simulacao.getFrasePelaChave(&quot;openDialogTitleText&quot;));</span>
+<span class="nc" id="L699">        UIManager.put(&quot;FileChooser.saveDialogTitleText&quot;, Simulacao.getFrasePelaChave(&quot;saveDialogTitleText&quot;));</span>
+        // Botão &quot;Importar&quot;
+<span class="nc" id="L701">        UIManager.put(&quot;FileChooser.openButtonText&quot;, Simulacao.getFrasePelaChave(&quot;openButtonText&quot;));</span>
+<span class="nc" id="L702">        UIManager.put(&quot;FileChooser.openButtonMnemonic&quot;, Simulacao.getFrasePelaChave(&quot;openButtonMnemonic&quot;));</span>
+<span class="nc" id="L703">        UIManager.put(&quot;FileChooser.openButtonToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;openButtonToolTipText&quot;));</span>
+
+        // Botão &quot;Exportar&quot;
+<span class="nc" id="L706">        UIManager.put(&quot;FileChooser.saveButtonText&quot;, Simulacao.getFrasePelaChave(&quot;saveButtonText&quot;));</span>
+<span class="nc" id="L707">        UIManager.put(&quot;FileChooser.saveButtonMnemonic&quot;, Simulacao.getFrasePelaChave(&quot;saveButtonMnemonic&quot;));</span>
+<span class="nc" id="L708">        UIManager.put(&quot;FileChooser.saveButtonToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;saveButtonToolTipText&quot;));</span>
+
+        // Botão &quot;Cancelar&quot;
+<span class="nc" id="L711">        UIManager.put(&quot;FileChooser.cancelButtonText&quot;, Simulacao.getFrasePelaChave(&quot;cancelButtonText&quot;));</span>
+<span class="nc" id="L712">        UIManager.put(&quot;FileChooser.cancelButtonMnemonic&quot;, Simulacao.getFrasePelaChave(&quot;cancelButtonMnemonic&quot;));</span>
+<span class="nc" id="L713">        UIManager.put(&quot;FileChooser.cancelButtonToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;cancelButtonToolTipText&quot;));</span>
+
+        // Botão &quot;Ajuda&quot;
+<span class="nc" id="L716">        UIManager.put(&quot;FileChooser.helpButtonText&quot;, Simulacao.getFrasePelaChave(&quot;helpButtonText&quot;));</span>
+<span class="nc" id="L717">        UIManager.put(&quot;FileChooser.helpButtonMnemonic&quot;, Simulacao.getFrasePelaChave(&quot;helpButtonMnemonic&quot;));</span>
+<span class="nc" id="L718">        UIManager.put(&quot;FileChooser.helpButtonToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;helpButtonToolTipText&quot;));</span>
+
+        // Legenda &quot;Procurar em:&quot;
+<span class="nc" id="L721">        UIManager.put(&quot;FileChooser.lookInLabelMnemonic&quot;, Simulacao.getFrasePelaChave(&quot;lookInLabelMnemonic&quot;));</span>
+<span class="nc" id="L722">        UIManager.put(&quot;FileChooser.lookInLabelText&quot;, Simulacao.getFrasePelaChave(&quot;lookInLabelText&quot;));</span>
+
+        // Legenda &quot;Guardar em:&quot;
+<span class="nc" id="L725">        UIManager.put(&quot;FileChooser.saveInLabelText&quot;, Simulacao.getFrasePelaChave(&quot;saveInLabelText&quot;));</span>
+<span class="nc" id="L726">        UIManager.put(&quot;FileChooser.saveInLabelMnemonic&quot;, Simulacao.getFrasePelaChave(&quot;saveInLabelMnemonic&quot;));</span>
+
+        // Legenda &quot;Tipo de ficheiros:&quot;
+<span class="nc" id="L729">        UIManager.put(&quot;FileChooser.filesOfTypeLabelText&quot;, Simulacao.getFrasePelaChave(&quot;filesOfTypeLabelText&quot;));</span>
+<span class="nc" id="L730">        UIManager.put(&quot;FileChooser.filesOfTypeLabelMnemonic&quot;, Simulacao.getFrasePelaChave(&quot;filesOfTypeLabelMnemonic&quot;));</span>
+
+        // Legenda &quot;Nome do ficheiro:&quot;
+<span class="nc" id="L733">        UIManager.put(&quot;FileChooser.fileNameLabelMnemonic&quot;, Simulacao.getFrasePelaChave(&quot;fileNameLabelMnemonic&quot;));</span>
+<span class="nc" id="L734">        UIManager.put(&quot;FileChooser.fileNameLabelText&quot;, Simulacao.getFrasePelaChave(&quot;fileNameLabelText&quot;));</span>
+
+        // Filtro &quot;Todos os Ficheiros&quot;
+<span class="nc" id="L737">        UIManager.put(&quot;FileChooser.acceptAllFileFilterText&quot;, Simulacao.getFrasePelaChave(&quot;acceptAllFileFilterText&quot;));</span>
+
+        // Botão &quot;Um nível acima&quot;
+<span class="nc" id="L740">        UIManager.put(&quot;FileChooser.upFolderToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;upFolderToolTipText&quot;));</span>
+<span class="nc" id="L741">        UIManager.put(&quot;FileChooser.upFolderAccessibleName&quot;, Simulacao.getFrasePelaChave(&quot;upFolderAccessibleName&quot;));</span>
+
+        // Botão &quot;Ambiente de Trabalho&quot;
+<span class="nc" id="L744">        UIManager.put(&quot;FileChooser.homeFolderToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;homeFolderToolTipText&quot;));</span>
+<span class="nc" id="L745">        UIManager.put(&quot;FileChooser.homeFolderToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;homeFolderToolTipText&quot;));</span>
+<span class="nc" id="L746">        UIManager.put(&quot;FileChooser.homeFolderAccessibleName&quot;, Simulacao.getFrasePelaChave(&quot;homeFolderAccessibleName&quot;));</span>
+
+        // Botão &quot;Nova Pasta&quot;
+<span class="nc" id="L749">        UIManager.put(&quot;FileChooser.newFolderToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;newFolderToolTipText&quot;));</span>
+<span class="nc" id="L750">        UIManager.put(&quot;FileChooser.newFolderAccessibleName&quot;, Simulacao.getFrasePelaChave(&quot;newFolderAccessibleName&quot;));</span>
+
+        // Botão &quot;Vista Lista&quot;
+<span class="nc" id="L753">        UIManager.put(&quot;FileChooser.listViewButtonToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;listViewButtonToolTipText&quot;));</span>
+<span class="nc" id="L754">        UIManager.put(&quot;FileChooser.listViewButtonAccessibleName&quot;, Simulacao.getFrasePelaChave(&quot;listViewButtonAccessibleName&quot;));</span>
+
+        // Botão &quot;Vista Detalhada&quot;
+<span class="nc" id="L757">        UIManager.put(&quot;FileChooser.detailsViewButtonToolTipText&quot;, Simulacao.getFrasePelaChave(&quot;detailsViewButtonToolTipText&quot;));</span>
+<span class="nc" id="L758">        UIManager.put(&quot;FileChooser.detailsViewButtonAccessibleName&quot;, Simulacao.getFrasePelaChave(&quot;detailsViewButtonAccessibleName&quot;));</span>
+
+        // Cabeçalhos da &quot;Vista Lista Detalhada&quot;
+<span class="nc" id="L761">        UIManager.put(&quot;FileChooser.fileNameHeaderText&quot;, Simulacao.getFrasePelaChave(&quot;fileNameHeaderText&quot;));</span>
+<span class="nc" id="L762">        UIManager.put(&quot;FileChooser.fileSizeHeaderText&quot;, Simulacao.getFrasePelaChave(&quot;fileSizeHeaderText&quot;));</span>
+<span class="nc" id="L763">        UIManager.put(&quot;FileChooser.fileTypeHeaderText&quot;, Simulacao.getFrasePelaChave(&quot;fileTypeHeaderText&quot;));</span>
+<span class="nc" id="L764">        UIManager.put(&quot;FileChooser.fileDateHeaderText&quot;, Simulacao.getFrasePelaChave(&quot;fileDateHeaderText&quot;));</span>
+<span class="nc" id="L765">        UIManager.put(&quot;FileChooser.fileAttrHeaderText&quot;, Simulacao.getFrasePelaChave(&quot;fileAttrHeaderText&quot;));</span>
+<span class="nc" id="L766">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

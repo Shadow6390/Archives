@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SimulacaoWindow.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">SimulacaoWindow.java</span></div><h1>SimulacaoWindow.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package view;
+
+import java.util.ArrayList;
+import java.util.List;
+import model.Parede;
+import model.Sala;
+import model.ServidorInstanciado;
+import universe.CustomVector;
+import universe.EnhancedUniverse;
+import universe.PrimitiveFactory;
+
+/**
+ *
+ * @author jbraga
+ */
+public class SimulacaoWindow extends javax.swing.JDialog {
+
+    private EnhancedUniverse universe;
+    
+    /**
+     * Creates new form SimulacaoWindow
+     */
+    public SimulacaoWindow(java.awt.Frame parent, boolean modal) {
+<span class="nc" id="L29">        super(parent, modal);</span>
+<span class="nc" id="L30">        initComponents();</span>
+<span class="nc" id="L31">        universe=new EnhancedUniverse();</span>
+<span class="nc" id="L32">        universe.setSize(512,512);</span>
+<span class="nc" id="L33">        universe.setCameraZoomFactor(2);</span>
+<span class="nc" id="L34">        setSize(512,512);</span>
+<span class="nc" id="L35">        add(universe);</span>
+<span class="nc" id="L36">    }</span>
+
+    /**
+     * Devolve o universo tri-dimensional desta simulação.
+     * @return ({@link EnhancedUniverse}) O universo da simulação.
+     */
+    public EnhancedUniverse getUniverse()
+    {
+<span class="nc" id="L44">        return universe;</span>
+    }
+    
+    /**
+     * Atualiza o universo com os conteúdos da sala.
+     * @param sala ({@link Sala}) A sala a adicionar.
+     */
+    public void updateUniverse(Sala sala)
+    {
+<span class="nc" id="L53">        universe.removeAllEntities();</span>
+<span class="nc" id="L54">        List&lt;Parede&gt; list = new ArrayList(sala.getListaParedes());</span>
+<span class="nc" id="L55">        list.add(sala.getTeto());</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        for (int i=0;i&lt;list.size();i++)</span>
+        {
+<span class="nc" id="L58">            Parede p = list.get(i);</span>
+<span class="nc" id="L59">            double[] pos= p.getPosicao();</span>
+<span class="nc" id="L60">            double[] dim= p.getDimensoes();</span>
+<span class="nc" id="L61">            int type=p.getOrientacaoParede();</span>
+            float variantPos;
+            float depth;
+<span class="nc bnc" id="L64" title="All 4 branches missed.">            switch (type)</span>
+            {
+                case Parede.ORIENTACAO_VERTICAL:
+<span class="nc" id="L67">                    variantPos=(float) pos[0];</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">                    for (int j=0;j&lt;p.getListaMateriais().size();j++)</span>
+                    {
+<span class="nc" id="L70">                        depth = (float)p.getListaMateriais().getEspessura(j);</span>
+<span class="nc" id="L71">                        universe.addPrimitive(PrimitiveFactory.createTexturizedBoxAlpha((float)p.getListaMateriais().getEspessura(j),</span>
+<span class="nc" id="L72">                                (float)dim[2], (float)dim[1], p.getListaMateriais().getMaterial(j).getImagem(),0.5f),</span>
+                                variantPos+depth*0.5f, (float)pos[2]+(float)dim[2]*0.5f, (float)pos[1]+(float)dim[1]*0.5f);
+<span class="nc" id="L74">                        variantPos+=p.getListaMateriais().getEspessura(j);</span>
+                    }
+<span class="nc" id="L76">                    break;</span>
+                case Parede.ORIENTACAO_HORIZONTAL:
+<span class="nc" id="L78">                    variantPos=(float) pos[1];</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">                    for (int j=0;j&lt;p.getListaMateriais().size();j++)</span>
+                    {
+<span class="nc" id="L81">                        depth = (float)p.getListaMateriais().getEspessura(j);</span>
+<span class="nc" id="L82">                        universe.addPrimitive(PrimitiveFactory.createTexturizedBoxAlpha((float)dim[0],</span>
+<span class="nc" id="L83">                                (float)dim[2], (float)p.getListaMateriais().getEspessura(j), p.getListaMateriais().getMaterial(j).getImagem(),0.5f),</span>
+                                (float)pos[0]+(float)dim[0]*0.5f, (float)pos[2]+(float)dim[2]*0.5f, variantPos+depth*0.5f);
+<span class="nc" id="L85">                        variantPos+=p.getListaMateriais().getEspessura(j);</span>
+                    }
+<span class="nc" id="L87">                    break;</span>
+                case Parede.ORIENTACAO_PLANA:
+<span class="nc" id="L89">                    variantPos=(float) pos[2];</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">                    for (int j=0;j&lt;p.getListaMateriais().size();j++)</span>
+                    {
+<span class="nc" id="L92">                        depth = (float)p.getListaMateriais().getEspessura(j);</span>
+<span class="nc" id="L93">                        universe.addPrimitive(PrimitiveFactory.createTexturizedBoxAlpha((float)dim[0],</span>
+<span class="nc" id="L94">                                depth, (float)dim[1], p.getListaMateriais().getMaterial(j).getImagem(),0.5f),</span>
+                                (float)pos[0]+(float)dim[0]*0.5f, variantPos+depth*0.5f, (float)pos[1]+(float)dim[1]*0.5f);
+<span class="nc" id="L96">                        variantPos+=p.getListaMateriais().getEspessura(j);</span>
+                    }
+                    break;
+            }
+        }
+<span class="nc" id="L101">        List&lt;ServidorInstanciado&gt; iList=sala.getListaServidoresInstanciados();</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        for (ServidorInstanciado focus:iList)</span>
+        {
+<span class="nc" id="L104">            double[] pos = focus.getPosicao();</span>
+<span class="nc" id="L105">            double[] dim = focus.getDimensoes();</span>
+<span class="nc" id="L106">            universe.addPrimitive(PrimitiveFactory.createTexturizedBox((float)dim[0], </span>
+<span class="nc" id="L107">                    (float)dim[2], (float)dim[2], focus.getMaterial().getImagem()), </span>
+                    (float)pos[0], (float)pos[2], (float)pos[1]);
+<span class="nc" id="L109">        }</span>
+<span class="nc" id="L110">        double[] salaDim = sala.getDimensoes();</span>
+<span class="nc" id="L111">        float[] fSalaDim = new float[3];</span>
+<span class="nc" id="L112">        fSalaDim[0] = (float)salaDim[0];</span>
+<span class="nc" id="L113">        fSalaDim[1] = (float)salaDim[1];</span>
+<span class="nc" id="L114">        fSalaDim[2] = (float)salaDim[2];</span>
+<span class="nc" id="L115">        universe.addPrimitive(PrimitiveFactory.createColoredBoxAlpha(fSalaDim[0], </span>
+<span class="nc" id="L116">                0.2f, fSalaDim[1], new CustomVector(0f,0f,1f).toColor3f(), 0.5f),fSalaDim[0]*0.5f,-1.6f+fSalaDim[2]*0.5f,fSalaDim[1]*0.5f);</span>
+<span class="nc" id="L117">    }</span>
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    // &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+<span class="nc" id="L127">        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L128">        addComponentListener(new java.awt.event.ComponentAdapter() {</span>
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+<span class="nc" id="L130">                UniverseResize(evt);</span>
+<span class="nc" id="L131">            }</span>
+        });
+
+<span class="nc" id="L134">        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());</span>
+<span class="nc" id="L135">        getContentPane().setLayout(layout);</span>
+<span class="nc" id="L136">        layout.setHorizontalGroup(</span>
+<span class="nc" id="L137">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L138">            .addGap(0, 400, Short.MAX_VALUE)</span>
+        );
+<span class="nc" id="L140">        layout.setVerticalGroup(</span>
+<span class="nc" id="L141">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L142">            .addGap(0, 300, Short.MAX_VALUE)</span>
+        );
+
+<span class="nc" id="L145">        pack();</span>
+<span class="nc" id="L146">    }// &lt;/editor-fold&gt;//GEN-END:initComponents</span>
+
+    private void UniverseResize(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_UniverseResize
+        // TODO add your handling code here:
+<span class="nc" id="L150">        universe.setSize(getSize());</span>
+<span class="nc" id="L151">    }//GEN-LAST:event_UniverseResize</span>
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

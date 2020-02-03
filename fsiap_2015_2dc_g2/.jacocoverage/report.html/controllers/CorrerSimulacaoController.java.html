@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CorrerSimulacaoController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">CorrerSimulacaoController.java</span></div><h1>CorrerSimulacaoController.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package controllers;
+
+import model.Parede;
+import model.Sala;
+import model.Simulacao;
+import model.TransferenciaCalor;
+
+/**
+ * Class controller que controla o decorrer da simulação.
+ *
+ * @author DC_G2
+ */
+public class CorrerSimulacaoController {
+
+    /**
+     * A duração da simulação.
+     */
+    private double timeQuantum;
+
+    /**
+     * A quantidade de tempo que passa a cada segundo.
+     */
+    private int deltaTime;
+    
+    private Simulacao sim;
+
+    private TransferenciaCalor tc;
+    /**
+     * Indica se a simulação deve ser parada ou não.
+     */
+    private boolean stopSimulation;
+
+    /**
+     * Indica se a simulação deve começar de novo ou não.
+     */
+    private boolean resetSimulation;
+    
+    /**
+     * Temperaturas iniciais da simulação. Repostas quando é reiniciada.
+     */
+    private double[] initTemps;
+
+    /**
+     * Cria uma instância de {@link CorrerSimulacaoController} com os parâmetros
+     * especificados.
+     *
+     * @param sim ({@link model.Simulacao}) A simulação pretendida.
+     */
+<span class="fc" id="L54">    public CorrerSimulacaoController(Simulacao sim) {</span>
+<span class="fc" id="L55">        this.sim = sim;</span>
+<span class="fc" id="L56">        stopSimulation = false;</span>
+<span class="fc" id="L57">        resetSimulation = true;</span>
+<span class="fc" id="L58">        timeQuantum = 0;</span>
+<span class="fc" id="L59">        deltaTime=60;</span>
+<span class="fc" id="L60">        initTemps= new double[6];</span>
+<span class="fc" id="L61">        Sala sala=sim.getSala();</span>
+<span class="fc" id="L62">        initTemps[0]=sala.getTemperaturaInterior();</span>
+<span class="fc" id="L63">        initTemps[1]=sala.getTeto().getTemperatura();</span>
+<span class="fc" id="L64">        int i=2;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        for (Parede focus:sala.getListaParedes())</span>
+        {
+<span class="fc" id="L67">            initTemps[i++]=focus.getTemperatura();</span>
+<span class="fc" id="L68">        }</span>
+<span class="fc" id="L69">    }</span>
+
+    /**
+     * Devolve a diferença de tempo entre cada passo da simulação.
+     * @return (int) A diferença de tempo.
+     */
+    public int getDeltaTime() {
+<span class="fc" id="L76">        return deltaTime;</span>
+    }
+
+    /**
+     * Atribui um novo valor à diferença de tempo entre cada passo da simulação.
+     * @param deltaTime int) A diferença de tempo.
+     */
+    public void setDeltaTime(int deltaTime) {
+<span class="fc" id="L84">        this.deltaTime = deltaTime;</span>
+<span class="fc" id="L85">    }</span>
+    
+    /**
+     * Devolve o tempo decorrido desta simulação.
+     * @return (double) O tempo decorrido.
+     */
+    public double getTimeElapsed()
+    {
+<span class="fc" id="L93">        return timeQuantum;</span>
+    }
+    
+    /**
+     * Inicia a simulação.
+     */
+    public void setupSimulation() {
+<span class="fc" id="L100">        Sala sala=sim.getSala();</span>
+<span class="fc" id="L101">        sala.setTemperaturaInterior(initTemps[0]);</span>
+<span class="fc" id="L102">        sala.getTeto().setTemperatura(initTemps[1]);</span>
+<span class="fc" id="L103">        int i=2;</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        for (Parede focus:sala.getListaParedes())</span>
+        {
+<span class="fc" id="L106">            focus.setTemperatura(initTemps[i++]);</span>
+<span class="fc" id="L107">        }</span>
+<span class="fc" id="L108">        tc = sim.setupSimulation();</span>
+<span class="fc" id="L109">        resetSimulation = false;</span>
+<span class="fc" id="L110">    }</span>
+
+    /**
+     * Atualiza as temperaturas dos objetos.
+     */
+    public void updateTemperatures() {
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if (!stopSimulation) {</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">            if (resetSimulation) {</span>
+<span class="nc" id="L118">                setupSimulation();</span>
+<span class="nc" id="L119">                timeQuantum=0;</span>
+            }
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            for (int i=0;i&lt;getDeltaTime();i++)</span>
+            {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">                for (int j=0;j&lt;100;j++)</span>
+                {
+<span class="fc" id="L125">                    tc.conductHeat();</span>
+<span class="fc" id="L126">                    tc.convectHeat();</span>
+<span class="fc" id="L127">                    tc.radiateHeat();</span>
+<span class="fc" id="L128">                    tc.stepCPUDissipation();</span>
+<span class="fc" id="L129">                    updateTemperaturaExterna();</span>
+                }
+            }
+        }
+<span class="fc" id="L133">    }</span>
+    
+
+    /**
+     * Transfere a energia sobre a forma de calor dissipada pelo cpu do servidor
+     * para o servidor.
+     * &lt;p&gt;
+     * Efetua esta operação para cada servidor.
+     */
+    protected void stepCPUDissipation()
+    {
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (!stopSimulation)</span>
+        {
+<span class="fc" id="L146">            tc.stepCPUDissipation();</span>
+        }
+<span class="fc" id="L148">    }</span>
+    
+    /**
+     * Incrementa o tempo da simulação.
+     *
+     * @return (double) O tempo incrementado.
+     */
+    public double stepTime() {
+<span class="fc" id="L156">        double result=0;</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">        if (!stopSimulation)</span>
+        {
+<span class="fc" id="L159">            timeQuantum+=deltaTime/60;</span>
+<span class="fc" id="L160">            result=timeQuantum;</span>
+        }
+<span class="fc" id="L162">        return result;</span>
+    }
+
+    /**
+     * Devolve a energia gasta para refrigerar a sala no tempo atual da
+     * simulação.
+     *
+     * @return (double) A energy, em Joule, necessária para refrigerar a sala.
+     */
+    public double getRefrigerationCost() {
+<span class="fc" id="L172">        return tc.getRefrigerationCost();</span>
+    }
+
+    /**
+     * Atualiza a temperatura externa.
+     * &lt;p&gt;
+     * Esta atualização só ocorre caso seja definida uma variação de temperatura
+     * média para a sala da simulação.
+     *
+     * @return (boolean) Verdadeiro se a temperatura foi variada. Senão,
+     * significa que não existe variação de temperatura para o exterior da sala.
+     */
+    protected boolean updateTemperaturaExterna() {
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        return (!stopSimulation) ? tc.updateTemperaturaExterna(timeQuantum) : false;</span>
+    }
+    
+    /**
+     * Devolve o valor da temperatura interior.
+     * @return (double) O valor da temperatura interior.
+     */
+    public double getTemperaturaInterior()
+    {
+<span class="nc" id="L194">        return sim.getSala().getTemperaturaInterior();</span>
+    }
+    
+    /**
+     * Devolve o valor da temperatura interior alvo.
+     * @return (double) O valor da temperatura interior alvo.
+     */
+    public double getTemperaturaInteriorAlvo()
+    {
+<span class="nc" id="L203">        return sim.getSala().getTemperaturaInteriorAlvo();</span>
+    }
+
+    /**
+     * Simula o cenário pretendido a partir do início.
+     *
+     * @return (boolean) Verdadeiro caso seja possível re-iniciar a simulação.
+     */
+    public boolean recomecarSimulacao() {
+<span class="fc" id="L212">        boolean result = false;</span>
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">        if (!resetSimulation) {</span>
+<span class="nc" id="L214">            resetSimulation = result = true;</span>
+        }
+<span class="fc" id="L216">        return result;</span>
+    }
+    
+    /**
+     * Verifica se a simulação está pronta para recomeçar.
+     * @return (boolean) Verdadeiro caso esteja a reiniciar.
+     */
+    public boolean isRestarting()
+    {
+<span class="nc" id="L225">        return resetSimulation;</span>
+    }
+
+    /**
+     * Verifica se a simulação está parada.
+     * @return (boolean) Verdadeiro caso a simulação esteja parada.
+     */
+    public boolean isStopped()
+    {
+<span class="nc" id="L234">        return stopSimulation;</span>
+    }
+    
+    /**
+     * Resume a simulação.
+     * @return (boolean) Verdadeiro caso tenha resumido a simulação.
+     */
+    public boolean continuarSimulacao() {
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        if (stopSimulation) {</span>
+<span class="fc" id="L243">            stopSimulation = false;</span>
+        }
+        else
+        {
+<span class="fc" id="L247">            return false;</span>
+        }
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">        return !stopSimulation;</span>
+    }
+
+    /**
+     * Pára a simulação.
+     * @return (boolean) Verdadeiro caso a simulação tenha parado.
+     */
+    public boolean pararSimulacao() {
+<span class="fc bfc" id="L257" title="All 2 branches covered.">        if (!stopSimulation) </span>
+        {
+<span class="fc" id="L259">            stopSimulation = true;</span>
+        }
+        else
+        {
+<span class="fc" id="L263">            return false;</span>
+        }
+<span class="fc" id="L265">        return stopSimulation;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

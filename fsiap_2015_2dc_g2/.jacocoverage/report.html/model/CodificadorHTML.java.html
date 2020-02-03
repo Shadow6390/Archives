@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CodificadorHTML.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">CodificadorHTML.java</span></div><h1>CodificadorHTML.java</h1><pre class="source lang-java linenums">package model;
+
+import controllers.CorrerSimulacaoController;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.util.List;
+
+public class CodificadorHTML implements Serializable {
+
+    /**
+     * Dados da simulação.
+     */
+    private Simulacao simulacao;
+
+    /**
+     * Controller que corre a simulação.
+     */
+    private CorrerSimulacaoController csController;
+
+    /**
+     * Diretório para o qual se pretende exportar os dados da simulação.
+     */
+    private String caminhoFicheiro;
+
+    /**
+     * Nome do ficheiro que irá conter os dados da simulação.
+     */
+    private String nomeFicheiro;
+
+    /**
+     * Constroi uma instância com apenas a simulação pretendida.
+     *
+     * @param simulacao simulação pretendida.
+     */
+<span class="fc" id="L39">    public CodificadorHTML(Simulacao simulacao) {</span>
+<span class="fc" id="L40">        this.simulacao = simulacao;</span>
+<span class="fc" id="L41">        this.csController = new CorrerSimulacaoController(simulacao);</span>
+<span class="fc" id="L42">    }</span>
+
+    /**
+     * Constroi uma instância com apenas a simulação pretendida e uma instância
+     * de CorrerSimulacaoController.
+     *
+     * @param simulacao Simulação pretendida.
+     * @param csController Instância de CorrerSimulacaoController;
+     */
+<span class="fc" id="L51">    public CodificadorHTML(Simulacao simulacao, CorrerSimulacaoController csController) {</span>
+<span class="fc" id="L52">        this.simulacao = simulacao;</span>
+<span class="fc" id="L53">        this.csController = csController;</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * Contrutor completo que constroi uma instância com todos os parâmetros
+     * desejados.
+     *
+     * @param simulacao Simulação pretendida.
+     * @param csController Instância de CorrerSimulacaoController.
+     * @param caminhoFicheiro Caminho do ficheiro pretendido.
+     * @param nomeFicheiro Nome do ficheiro pretendido.
+     */
+<span class="fc" id="L65">    public CodificadorHTML(Simulacao simulacao, CorrerSimulacaoController csController, String caminhoFicheiro, String nomeFicheiro) {</span>
+<span class="fc" id="L66">        this.simulacao = simulacao;</span>
+<span class="fc" id="L67">        this.csController = csController;</span>
+<span class="fc" id="L68">        this.caminhoFicheiro = caminhoFicheiro;</span>
+<span class="fc" id="L69">        this.nomeFicheiro = nomeFicheiro;</span>
+<span class="fc" id="L70">    }</span>
+
+    /**
+     * Construtor que constroi uma instância com todos os parâmetros desejados.
+     *
+     * @param simulacao simulação pretendida.
+     * @param caminhoFicheiro caminho do ficheiro pretendido.
+     * @param nomeFicheiro nome do ficheiro pretendido.
+     */
+<span class="nc" id="L79">    public CodificadorHTML(Simulacao simulacao, String caminhoFicheiro, String nomeFicheiro) {</span>
+<span class="nc" id="L80">        this.simulacao = simulacao;</span>
+<span class="nc" id="L81">        this.csController = new CorrerSimulacaoController(simulacao);</span>
+<span class="nc" id="L82">        this.caminhoFicheiro = caminhoFicheiro;</span>
+<span class="nc" id="L83">        this.nomeFicheiro = nomeFicheiro;</span>
+<span class="nc" id="L84">    }</span>
+
+    /**
+     * Devolve o caminho do ficheiro.
+     *
+     * @return caminho do ficheiro.
+     */
+    public String getCaminhoFicheiro() {
+<span class="fc" id="L92">        return this.caminhoFicheiro;</span>
+    }
+
+    /**
+     * Devolve o nome do ficheiro.
+     *
+     * @return nome do ficheiro.
+     */
+    public String getNomeFicheiro() {
+<span class="nc" id="L101">        return this.nomeFicheiro;</span>
+    }
+
+    /**
+     * Define o caminho do ficheiro.
+     *
+     * @param caminhoFicheiro caminho do ficheiro.
+     */
+    public void setCaminhoFicheiro(String caminhoFicheiro) {
+<span class="fc bfc" id="L110" title="All 4 branches covered.">        if (caminhoFicheiro == null || caminhoFicheiro.trim().isEmpty()) {</span>
+<span class="fc" id="L111">            throw new IllegalArgumentException();</span>
+        }
+
+<span class="fc" id="L114">        this.caminhoFicheiro = caminhoFicheiro;</span>
+<span class="fc" id="L115">    }</span>
+
+    /**
+     * Define o nome do ficheiro.
+     *
+     * @param nomeFicheiro nome do ficheiro.
+     */
+    public void setNomeFicheiro(String nomeFicheiro) {
+<span class="fc bfc" id="L123" title="All 4 branches covered.">        if (nomeFicheiro == null || nomeFicheiro.trim().isEmpty()) {</span>
+<span class="fc" id="L124">            throw new IllegalArgumentException(Simulacao.getIdiomaAtual().getString(&quot;uc8.erro.nome&quot;));</span>
+        }
+
+<span class="fc" id="L127">        this.nomeFicheiro = nomeFicheiro;</span>
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * Valida se a exportação dos dados é valida verificando se o caminho
+     * indicado existe.
+     *
+     * @return Verdadeiro se o caminho existir e falso caso não exista.
+     */
+    public boolean validarExportacao() {
+<span class="fc" id="L137">        return new File(this.caminhoFicheiro).exists();</span>
+    }
+
+    /**
+     * Exporta os dados da simulação para o ficheiro no diretório indicado.
+     *
+     * @param materiais Booleano que determina se é suposto ou não exportar os
+     * materiais utilizados na simulação.
+     * @param servidores Booleano que determina se é suposto ou não exportar os
+     * servidores utilizados na simulação.
+     * @param sala Booleano que determina se é suposto ou não exportar mais
+     * informações sobre a sala utilizada na simulação.
+     */
+    public void exportarDados(boolean materiais, boolean servidores, boolean sala) {
+        try {
+<span class="fc" id="L152">            BufferedWriter output = new BufferedWriter(</span>
+                    new OutputStreamWriter(new FileOutputStream(
+                            this.caminhoFicheiro + this.nomeFicheiro), &quot;UTF-8&quot;));
+
+            // Inicia o ficheiro HTML
+<span class="fc" id="L157">            output.write(abrirHTML(nomeFicheiro));</span>
+
+            // Adiciona os dados elementares da sala.
+<span class="fc" id="L160">            output.write(adicionarDados());</span>
+
+            // Adiciona os materiais utilizados na simulação.
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">            if (materiais) {</span>
+<span class="fc" id="L164">                output.write(adicionarDadosMateriais());</span>
+            }
+
+            // Adiciona os servidores utilizados na simulação.
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">            if (servidores) {</span>
+<span class="fc" id="L169">                output.write(adicionarDadosServidores());</span>
+            }
+
+            // Adiciona os dados utilizados na simulação relativos ao sala.
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">            if (sala) {</span>
+<span class="fc" id="L174">                output.write(adicionarDadosSala());</span>
+            }
+
+            // Termina o ficheiro HTML
+<span class="fc" id="L178">            output.write(fecharHTML());</span>
+<span class="fc" id="L179">            output.close();</span>
+<span class="nc" id="L180">        } catch (IOException ex) {</span>
+<span class="fc" id="L181">        }</span>
+<span class="fc" id="L182">    }</span>
+
+    /**
+     * Abre o documento em HTML.
+     *
+     * @param nomeFich Título.
+     * @return Abertura do documento em HTML.
+     */
+    public String abrirHTML(String nomeFich) {
+<span class="fc" id="L191">        return (&quot;&lt;!DOCTYPE html&gt;&quot;</span>
+                + &quot;&lt;html&gt;\n&quot;
+                + &quot;\t&lt;head&gt;\n&quot;
+                + &quot;\t\t&lt;title&gt;&quot; + nomeFich + &quot;&lt;/title&gt;\n&quot;
+                + &quot;\t\t&lt;meta charset='utf-8'&gt;\n&quot;
+                + &quot;\t&lt;/head&gt;\n&quot;
+                + &quot;\t&lt;body&gt;\n&quot;);
+    }
+
+    /**
+     * Adiciona todos os dados principais da simulação.
+     *
+     * @return A informação principais da simulação.
+     */
+    public String adicionarDados() {
+<span class="fc" id="L206">        StringBuilder string = new StringBuilder();</span>
+
+<span class="fc" id="L208">        string.append(&quot;\t\t&lt;h3&gt;Dados da Simulação&lt;/h3&gt;\n&quot;);</span>
+<span class="fc" id="L209">        string.append(&quot;\t\t&lt;p&gt;Quantidade de Energia necessária para refrigerar a sala à temperatura: &quot;).append(String.format(&quot;%.3f&quot;, csController.getRefrigerationCost())).append(&quot; J.&lt;/p&gt;\n&quot;);</span>
+<span class="fc" id="L210">        string.append(&quot;\t\t&lt;p&gt;Temperatura alvo da Sala: &quot;).append(this.simulacao.getSala().getTemperaturaInteriorAlvo()).append(&quot;°C.&lt;/p&gt;\n&quot;);</span>
+<span class="fc" id="L211">        string.append(&quot;\t\t&lt;p&gt;Temperatura da Sala:&quot;).append(String.format(&quot;%.3f&quot;, this.simulacao.getSala().getTemperaturaInterior())).append(&quot;°C.&lt;/p&gt;\n&quot;);</span>
+<span class="fc" id="L212">        string.append(&quot;\t\t&lt;p&gt;Tempo: &quot;).append(csController.getTimeElapsed()).append(&quot; minutos.&lt;/p&gt;\n&quot;);</span>
+<span class="fc" id="L213">        string.append(&quot;\t\t&lt;p&gt;Tipos de Servidores: &quot;).append(this.simulacao.getListaServidores().size()).append(&quot;&lt;/p&gt;\n&quot;);</span>
+<span class="fc" id="L214">        string.append(&quot;\t\t&lt;p&gt;Quantidade de Servidores na sala: &quot;).append(this.simulacao.getSala().getListaServidoresInstanciados().size()).append(&quot;&lt;/p&gt;\n&quot;);</span>
+
+<span class="fc" id="L216">        return string.toString();</span>
+    }
+
+    /**
+     * Adiciona os dados de todos os materiais usados na simulação.
+     *
+     * @return A informação de todos os materiais usados na simulação.
+     */
+    public String adicionarDadosMateriais() {
+<span class="fc" id="L225">        StringBuilder string = new StringBuilder();</span>
+
+<span class="fc" id="L227">        string.append(&quot;\t\t&lt;hr&gt;\n&quot;);</span>
+<span class="fc" id="L228">        string.append(&quot;\t\t&lt;h3&gt;Dados dos materiais usados na Simulação&lt;/h3&gt;\n&quot;);</span>
+
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        for (Material material : this.simulacao.getListaMateriaisExistentes()) {</span>
+<span class="fc" id="L231">            string.append(&quot;\t\t&lt;p&gt;Dados do material: &quot;).append(material.toString()).append(&quot;&lt;/p&gt;\n&quot;);</span>
+<span class="fc" id="L232">        }</span>
+
+<span class="fc" id="L234">        return string.toString();</span>
+    }
+
+    /**
+     * Adiciona os dados de todos os servidores usados na simulação.
+     *
+     * @return A informação de todos os servidores usados na simulação.
+     */
+    public String adicionarDadosServidores() {
+<span class="fc" id="L243">        StringBuilder string = new StringBuilder();</span>
+
+<span class="fc" id="L245">        string.append(&quot;\t\t&lt;hr&gt;\n&quot;);</span>
+<span class="fc" id="L246">        string.append(&quot;\t\t&lt;h3&gt;Dados dos servidores usados na Simulação&lt;/h3&gt;\n&quot;);</span>
+
+<span class="fc" id="L248">        List&lt;Servidor&gt; servidores = this.simulacao.getListaServidores();</span>
+<span class="fc bfc" id="L249" title="All 2 branches covered.">        for (Servidor servidor : servidores) {</span>
+<span class="fc" id="L250">            string.append(&quot;\t\t&lt;p&gt;Dados do servidor: &quot;).append(servidor.toString()).append(&quot;&lt;/p&gt;\n&quot;);</span>
+<span class="fc" id="L251">        }</span>
+
+<span class="fc" id="L253">        return string.toString();</span>
+    }
+
+    /**
+     * Adiciona todos os dados da sala usada na simulação.
+     *
+     * @return A informação da sala usada na simulação.
+     */
+    public String adicionarDadosSala() {
+<span class="fc" id="L262">        StringBuilder string = new StringBuilder();</span>
+
+<span class="fc" id="L264">        string.append(&quot;\t\t&lt;hr&gt;\n&quot;);</span>
+<span class="fc" id="L265">        string.append(&quot;\t\t&lt;h3&gt;Dados da sala usada na Simulação&lt;/h3&gt;\n&quot;);</span>
+<span class="fc" id="L266">        string.append(&quot;\t\t&lt;ul&gt;\n&quot;);</span>
+
+        // Informações da sala
+<span class="fc" id="L269">        Sala sala = this.simulacao.getSala();</span>
+<span class="fc" id="L270">        string.append(&quot;\t\t\t&lt;li&gt;Comprimento: &quot;).append(sala.getComprimento()).append(&quot; m&lt;/li&gt;\n&quot;);</span>
+<span class="fc" id="L271">        string.append(&quot;\t\t\t&lt;li&gt;Largura: &quot;).append(sala.getLargura()).append(&quot; m&lt;/li&gt;\n&quot;);</span>
+<span class="fc" id="L272">        string.append(&quot;\t\t\t&lt;li&gt;Altura: &quot;).append(sala.getAltura()).append(&quot; m&lt;/li&gt;\n&quot;);</span>
+<span class="fc" id="L273">        string.append(&quot;\t\t\t&lt;li&gt;Temperatura Exterior: &quot;).append(sala.getTemperaturaExterior()).append(&quot; ºC&lt;/li&gt;\n&quot;);</span>
+
+<span class="pc bpc" id="L275" title="1 of 2 branches missed.">        if (sala.hasTemperaturaVariation()) {</span>
+<span class="nc" id="L276">            string.append(&quot;\t\t\t&lt;li&gt;Temperatura Externa Miníma: &quot;).append(sala.getTemperaturaExternaMinima()).append(&quot; ºC&lt;/li&gt;\n&quot;);</span>
+<span class="nc" id="L277">            string.append(&quot;\t\t\t&lt;li&gt;Temperatura Externa Máxima: &quot;).append(sala.getTemperaturaExternaMaxima()).append(&quot; ºC&lt;/li&gt;\n&quot;);</span>
+        }
+
+        // Informações do teto
+<span class="fc" id="L281">        Parede teto = sala.getTeto();</span>
+<span class="fc" id="L282">        string.append(&quot;\t\t\t&lt;li&gt;Teto:\n&quot;);</span>
+<span class="fc" id="L283">        string.append(&quot;\t\t\t\t&lt;ul&gt;\n&quot;);</span>
+<span class="fc" id="L284">        string.append(&quot;\t\t\t\t\t&lt;li&gt;Espesura: &quot;).append(teto.getProfundidade()).append(&quot; m&lt;/li&gt;\n&quot;);</span>
+<span class="fc" id="L285">        string.append(&quot;\t\t\t\t\t&lt;li&gt;Resistência: &quot;).append(String.format(&quot;%.3e&quot;, teto.getResistencia(null))).append(&quot; Ω&lt;/li&gt;\n&quot;);</span>
+<span class="fc" id="L286">        string.append(&quot;\t\t\t\t&lt;/ul&gt;\n&quot;);</span>
+<span class="fc" id="L287">        string.append(&quot;\t\t\t\t&lt;ul&gt;\n&quot;);</span>
+<span class="fc" id="L288">        string.append(&quot;\t\t\t&lt;/li&gt;\n&quot;);</span>
+
+        // Informações sobre cada uma das paredes
+<span class="fc" id="L291">        string.append(&quot;\t\t\t&lt;li&gt;Paredes:\n&quot;);</span>
+<span class="fc" id="L292">        string.append(&quot;\t\t\t&lt;ul&gt;\n&quot;);</span>
+<span class="fc" id="L293">        int i = 1;</span>
+<span class="fc bfc" id="L294" title="All 2 branches covered.">        for (Parede parede : sala.getListaParedes()) {</span>
+<span class="fc" id="L295">            string.append(&quot;\t\t\t\t&lt;li&gt;&quot;).append(i++).append(&quot;ª Parede:\n&quot;);</span>
+<span class="fc" id="L296">            string.append(&quot;\t\t\t\t\t&lt;ul&gt;\n&quot;);</span>
+            
+<span class="fc" id="L298">            string.append(&quot;\t\t\t\t\t\t&lt;li&gt;Espessura: &quot;).append(parede.getProfundidade()).append(&quot; m&lt;/li&gt;\n&quot;);</span>
+<span class="fc" id="L299">            string.append(&quot;\t\t\t\t\t\t&lt;li&gt;Resistência: &quot;).append(String.format(&quot;%.3e&quot;, parede.getResistencia(null))).append(&quot; Ω&lt;/li&gt;\n&quot;);</span>
+                        
+<span class="fc" id="L301">            string.append(&quot;\t\t\t\t\t&lt;/ul&gt;\n&quot;);</span>
+<span class="fc" id="L302">            string.append(&quot;\t\t\t\t&lt;/li&gt;\n&quot;);</span>
+<span class="fc" id="L303">        }</span>
+
+<span class="fc" id="L305">        string.append(&quot;\t\t\t&lt;/ul&gt;\n&quot;);</span>
+<span class="fc" id="L306">        string.append(&quot;\t\t\t&lt;/li&gt;\n&quot;);</span>
+
+<span class="fc" id="L308">        string.append(&quot;\t\t&lt;/ul&gt;\n&quot;);</span>
+
+<span class="fc" id="L310">        return string.toString();</span>
+    }
+
+    /**
+     * Fecha o documento em HTML.
+     *
+     * @return O fecho do documento HTML.
+     */
+    public String fecharHTML() {
+<span class="fc" id="L319">        return (&quot;\t&lt;/body&gt;\n&quot;</span>
+                + &quot;&lt;/html&gt;\n&quot;);
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

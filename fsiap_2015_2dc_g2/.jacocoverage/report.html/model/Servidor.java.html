@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Servidor.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Servidor.java</span></div><h1>Servidor.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package model;
+
+import java.io.Serializable;
+
+/**
+ * Representa um servidor usado na simulação.
+ * 
+ * @author DC_G2
+ */
+public class Servidor implements Serializable{
+
+    /**
+     * Nome do servidor.
+     */
+    private String nome;
+
+    /**
+     * Material composto.
+     */
+    private Material material;
+
+    /**
+     * Massa, comprimento, largura, carga e altura do servidor.
+     */
+    private double massa, comprimento, largura, carga, altura;
+
+    /**
+     * Potência da dissipação térmica do processador deste servidor.
+     * &lt;p&gt;
+     * Assume-se que este servidor está equipado com um processador  Core i7-5820K,
+     * que dissipa 140W sob a forma de calor (https://en.wikipedia.org/wiki/List_of_CPU_power_dissipation_figures).
+     */
+    private static final double heatDissipation = 140;
+    
+    /**
+     * Contrutor vazio do Servidor.
+     */
+<span class="fc" id="L43">    public Servidor() {</span>
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * Construtor completo do servidor que constroi uma instância com os 
+     * parâmetros fornecidos.
+     *
+     * @param nome nome do servidor.
+     * @param material material composto.
+     * @param massa massa do servidor.
+     * @param comprimento comprimento do servidor.
+     * @param largura largura do servidor.
+     * @param carga carga do servidor.
+     * @param altura altura do servidor.
+     */
+    public Servidor(String nome, Material material, double massa,
+<span class="fc" id="L59">            double comprimento, double largura, double carga, double altura) {</span>
+<span class="fc" id="L60">        this.nome = nome;</span>
+<span class="fc" id="L61">        this.material = material;</span>
+<span class="fc" id="L62">        this.massa = massa;</span>
+<span class="fc" id="L63">        this.comprimento = comprimento;</span>
+<span class="fc" id="L64">        this.largura = largura;</span>
+<span class="fc" id="L65">        this.carga = carga;</span>
+<span class="fc" id="L66">        this.altura = altura;</span>
+<span class="fc" id="L67">    }</span>
+
+    /**
+     * Copia uma instância de {@link Servidor} a partir de outro servidor
+     * especificado.
+     *
+     * @param serv ({@link Servidor}) O servidor a ser copiado.
+     */
+<span class="fc" id="L75">    public Servidor(Servidor serv) {</span>
+<span class="fc" id="L76">        this.nome = serv.nome;</span>
+<span class="fc" id="L77">        this.material = serv.material;</span>
+<span class="fc" id="L78">        this.massa = serv.massa;</span>
+<span class="fc" id="L79">        this.comprimento = serv.comprimento;</span>
+<span class="fc" id="L80">        this.largura = serv.largura;</span>
+<span class="fc" id="L81">        this.carga = serv.carga;</span>
+<span class="fc" id="L82">        this.altura = serv.altura;</span>
+<span class="fc" id="L83">    }</span>
+
+    /**
+     * Devolve o nome do servidor.
+     * 
+     * @return o nome do servidor.
+     */
+    public String getNome() {
+<span class="fc" id="L91">        return this.nome;</span>
+    }
+
+    /**
+     * Devolve o material composto.
+     * 
+     * @return material composto.
+     */
+    public Material getMaterial() {
+<span class="fc" id="L100">        return this.material;</span>
+    }
+
+    /**
+     * Devolve a massa do servidor.
+     * 
+     * @return a massa do servidor.
+     */
+    public double getMassa() {
+<span class="fc" id="L109">        return this.massa;</span>
+    }
+
+    /**
+     * Devolve o comprimento do servidor.
+     * 
+     * @return o comprimento do servidor.
+     */
+    public double getComprimento() {
+<span class="fc" id="L118">        return this.comprimento;</span>
+    }
+
+    /**
+     * Devolve a largura do servidor.
+     * 
+     * @return a largura do servidor.
+     */
+    public double getLargura() {
+<span class="fc" id="L127">        return this.largura;</span>
+    }
+
+    /**
+     * Devolve a carga do servidor.
+     * 
+     * @return a carga do servidor.
+     */
+    public double getCarga() {
+<span class="fc" id="L136">        return this.carga;</span>
+    }
+
+    /**
+     * Devolve a altura do servidor.
+     * 
+     * @return a altura do servidor.
+     */
+    public double getAltura() {
+<span class="fc" id="L145">        return this.altura;</span>
+    }
+
+    /**
+     * Define o nome do servidor.
+     * 
+     * @param nome o nome do servidor pretendido.
+     */
+    public void setNome(String nome) {
+<span class="pc bpc" id="L154" title="1 of 4 branches missed.">        if (nome == null || nome.isEmpty()) {</span>
+<span class="fc" id="L155">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setNome&quot;));</span>
+        }
+<span class="fc" id="L157">        this.nome = nome;</span>
+<span class="fc" id="L158">    }</span>
+
+    /**
+     * Define o material composto.
+     * 
+     * @param material o material pretendido.
+     */
+    public void setMaterial(Material material) {
+<span class="pc bpc" id="L166" title="2 of 4 branches missed.">        if (material == null || !material.valida()) {</span>
+            //&quot;O Material informado é inválido&quot;
+<span class="nc" id="L168">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setMaterial&quot;));</span>
+        } else {
+<span class="fc" id="L170">            this.material = material;</span>
+        }
+<span class="fc" id="L172">    }</span>
+
+    /**
+     * Atribui o valor da massa do servidor.
+     * &lt;p&gt;
+     * O valor da massa encontra-se nas unidades SI (kg).
+     *
+     * @param massa a massa do servidor pretendida.
+     */
+    public void setMassa(double massa) {
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        if (massa &lt;= 0) {</span>
+            //&quot;A massa informada é inválida&quot;
+<span class="fc" id="L184">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setMassa&quot;));</span>
+        } else {
+<span class="fc" id="L186">            this.massa = massa;</span>
+        }
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * Define o comprimento do servidor.
+     * 
+     * @param comprimento o comprimento do servidor pretendido.
+     */
+    public void setComprimento(double comprimento) {
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">        if (comprimento &lt;= 0) {</span>
+            //&quot;O comprimento informado é inválido&quot;
+<span class="nc" id="L198">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setComprimento&quot;));</span>
+        } else {
+<span class="fc" id="L200">            this.comprimento = comprimento;</span>
+        }
+<span class="fc" id="L202">    }</span>
+
+    /**
+     * Define a largura do servidor.
+     * 
+     * @param largura a largura do servidor pretendida.
+     */
+    public void setLargura(double largura) {
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">        if (largura &lt;= 0) {</span>
+            //&quot;A largura informada é inválida&quot;
+<span class="nc" id="L212">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setLargura&quot;));</span>
+        } else {
+<span class="fc" id="L214">            this.largura = largura;</span>
+        }
+<span class="fc" id="L216">    }</span>
+
+    /**
+     * Define a carga do servidor.
+     * 
+     * @param carga a carga do servidor pretendida.
+     */
+    public void setCarga(double carga) {
+<span class="pc bpc" id="L224" title="2 of 4 branches missed.">        if (carga &lt;= 0 || carga &gt; 100) {</span>
+            //&quot;A carga informada é inválida&quot;
+<span class="nc" id="L226">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setCarga&quot;));</span>
+        } else {
+<span class="fc" id="L228">            this.carga = carga;</span>
+        }
+<span class="fc" id="L230">        this.carga = carga;</span>
+<span class="fc" id="L231">    }</span>
+
+    /**
+     * Define a altura do servidor.
+     * 
+     * @param altura a altura do servidor pretendida.
+     */
+    public void setAltura(double altura) {
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if (altura &lt;= 0) {</span>
+            //&quot;A altura informada é inválida&quot;
+<span class="nc" id="L241">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setAltura&quot;));</span>
+        } else {
+<span class="fc" id="L243">            this.altura = altura;</span>
+        }
+<span class="fc" id="L245">    }</span>
+
+    // ;
+    /**
+     * Valida o nome , o material , a massa, o comprimento, a largura, 
+     * a carga e a altura de um Servidor.
+     * Retorna verdadeiro se for válido (ou seja, todos os atributos são válidos)
+     * ou falso se não for válido.
+     * 
+     * @return verdadeiro se for válido, falso se não for.
+     */
+    public boolean valida() {
+<span class="pc bpc" id="L257" title="2 of 4 branches missed.">        if (nome == null || nome.isEmpty()) {</span>
+<span class="nc" id="L258">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setNome&quot;));</span>
+        }
+<span class="pc bpc" id="L260" title="2 of 4 branches missed.">        if (material == null || !material.valida()) {</span>
+            //&quot;O Material informado é inválido&quot;
+<span class="nc" id="L262">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setMaterial&quot;));</span>
+        }
+
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">        if (massa &lt;= 0) {</span>
+            //&quot;A massa informada é inválida&quot;
+<span class="nc" id="L267">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setMassa&quot;));</span>
+        }
+<span class="pc bpc" id="L269" title="1 of 2 branches missed.">        if (comprimento &lt;= 0) {</span>
+            //&quot;O comprimento informado é inválido&quot;
+<span class="nc" id="L271">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setComprimento&quot;));</span>
+        }
+
+<span class="pc bpc" id="L274" title="1 of 2 branches missed.">        if (largura &lt;= 0) {</span>
+            //&quot;A largura informada é inválida&quot;
+<span class="nc" id="L276">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setLargura&quot;));</span>
+        }
+
+<span class="pc bpc" id="L279" title="2 of 4 branches missed.">        if (carga &lt;= 0 || carga &gt; 100) {</span>
+            //&quot;A carga informada é inválida&quot;
+<span class="nc" id="L281">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setCarga&quot;));</span>
+        }
+
+<span class="pc bpc" id="L284" title="1 of 2 branches missed.">        if (altura &lt;= 0) {</span>
+            //&quot;A altura informada é inválida&quot;
+<span class="nc" id="L286">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc4.servidor.setAltura&quot;));</span>
+        }
+<span class="fc" id="L288">        return true;</span>
+    }
+    
+    /**
+     * Devolve o valor da potência da dissipação térmica.
+     * @return (double) A potência da dissipação térmica.
+     */
+    public static final double getHeatDissipation()
+    {
+<span class="fc" id="L297">        return heatDissipation;</span>
+    }
+
+    /**
+     * Compara dois objetos.
+     * 
+     * @param other outro servidor a comparar.
+     * @return verdadeiro se os servidores forem iguais, falso se não forem.
+     */
+    @Override
+    public boolean equals(Object other) {
+<span class="pc bpc" id="L308" title="2 of 4 branches missed.">        boolean result = other != null &amp;&amp; other.getClass().equals(getClass());</span>
+<span class="pc bpc" id="L309" title="1 of 2 branches missed.">        if (result) {</span>
+<span class="fc" id="L310">            Servidor o = (Servidor) other;</span>
+<span class="fc bfc" id="L311" title="All 4 branches covered.">            result = (this == o) || (nome.equals(o.nome));</span>
+        }
+<span class="fc" id="L313">        return result;</span>
+    }
+
+    /**
+     * Devolve a Informação do Servidor.
+     * 
+     * @return informação do servidor.
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L323">        return String.format(Simulacao.getFrasePelaChave(&quot;uc4.servidor.info&quot;),</span>
+<span class="fc" id="L324">                this.nome, this.massa, this.comprimento, this.largura,</span>
+<span class="fc" id="L325">                this.carga, this.altura, this.material.toString());</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

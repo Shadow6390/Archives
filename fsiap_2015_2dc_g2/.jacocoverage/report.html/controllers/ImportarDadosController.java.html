@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ImportarDadosController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">ImportarDadosController.java</span></div><h1>ImportarDadosController.java</h1><pre class="source lang-java linenums">package controllers;
+
+import java.io.IOException;
+import model.GestorDados;
+import model.Simulacao;
+
+/**
+ * Representa um controlador que gere o caso de uso 8, importar dados, através
+ * de uma simulação, um gestor de dados.
+ */
+public class ImportarDadosController {
+
+    /**
+     * Simulação que irá conter os dados importados.
+     */
+    private Simulacao simulacao;
+
+    /**
+     * Objeto que gere a importação dos dados.
+     */
+    private GestorDados gestorDados;
+
+    /**
+     * Constrói uma instância do controlador que gere o caso de uso 8, importar
+     * dados, através da simulação.
+     *
+     * @param simulacao Simulação que irá conter os dados importados.
+     */
+<span class="fc" id="L29">    public ImportarDadosController(Simulacao simulacao) {</span>
+<span class="fc" id="L30">        this.simulacao = simulacao;</span>
+<span class="fc" id="L31">    }</span>
+
+    /**
+     * Cria e associa ao controller uma instância do gestor de dados,
+     * responsável por gerir a importação dos mesmos.
+     */
+    public void iniciarImportacao() {
+<span class="fc" id="L38">        this.gestorDados = this.simulacao.iniciarImportacao();</span>
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * Associa o caminho e o nome do ficheiro no qual estão guardados os dados a
+     * serem importados.
+     *
+     * @param caminho Caminho do ficheiro.
+     * @param nome Nome do ficheiro.
+     */
+    public void setDados(String caminho, String nome) {
+<span class="fc" id="L49">        this.gestorDados.setCaminhoFicheiro(caminho);</span>
+<span class="fc" id="L50">        this.gestorDados.setNomeFicheiro(nome);</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (!this.gestorDados.validarImportacao()) {</span>
+<span class="fc" id="L53">            throw new IllegalArgumentException(</span>
+<span class="fc" id="L54">                    Simulacao.getFrasePelaChave(&quot;uc8.janela.importar.validar&quot;));</span>
+        }
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * Inicia a importação dos dados do ficheiro para dentro da simulação.
+     *
+     * @throws java.lang.ClassNotFoundException Lançada caso não seja possível
+     * fazer o downcast adequado.
+     * @throws IOException Lançada no caso de a importação falhar.
+     */
+    public Simulacao importarDados() throws ClassNotFoundException, IOException {
+<span class="nc" id="L66">        return gestorDados.importarDados();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

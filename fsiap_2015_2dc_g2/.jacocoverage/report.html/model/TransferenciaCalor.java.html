@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TransferenciaCalor.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">TransferenciaCalor.java</span></div><h1>TransferenciaCalor.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Classe responsável por transferir calor entre vários objetos e a sala.
+ */
+public class TransferenciaCalor implements Serializable{
+    
+    /**
+     * Conversão de Celsius para Joule (1J = 0.00053ºC).
+     */
+    private static final double CELSIUS_TO_JOULE_CONSTANT=0.00053;
+    
+    /**
+     * Conversão de Calorias para Joule (1J= 4.18Cal).
+     */
+    private static final double CALORIES_TO_JOULE=4.18;
+    
+    private ArrayList&lt;ObjetoCalor&gt; listaCondutores;
+    private Sala sala;
+    
+    public TransferenciaCalor()
+<span class="fc" id="L31">    {</span>
+<span class="fc" id="L32">        listaCondutores=new ArrayList();</span>
+<span class="fc" id="L33">    }</span>
+    
+    /**
+     * Efetua todas as transferência de calor sobre a forma de condução.
+     */
+    public void conductHeat()
+    {
+<span class="fc" id="L40">        ArrayList&lt;ObjetoCalor&gt; collidables = new ArrayList();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (ObjetoCalor focus:listaCondutores)</span>
+        {
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">            if (focus.isCollidable())</span>
+            {
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">                if (!collidables.add(focus)) </span>
+<span class="nc" id="L46">                    throw new RuntimeException(&quot;Erro ao agrupar objetos que admitem colisões&quot;);</span>
+            }
+<span class="fc" id="L48">        }</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        for (int i=0;i&lt;collidables.size();i++)</span>
+        {
+<span class="fc" id="L51">            ObjetoCalor element = collidables.get(i);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            for (int j=i+1;j&lt;collidables.size();j++)</span>
+            {
+<span class="fc" id="L54">                ObjetoCalor element2=collidables.get(j);</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">                if (!element.equals(element2))</span>
+                {
+<span class="fc" id="L57">                    element.conductHeat(element2);</span>
+                }
+            }
+        }        
+<span class="fc" id="L61">    }</span>
+    
+    /**
+     * Efetua todas as transferências de calor sobre a forma de convecção.
+     */
+    public void convectHeat()
+    {
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        for (int i=0;i&lt;listaCondutores.size();i++)</span>
+        {
+<span class="fc" id="L70">            ObjetoCalor element = listaCondutores.get(i);</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">            if (!(element instanceof Parede))</span>
+            {
+<span class="fc" id="L73">                element.convectHeat(sala);</span>
+            }
+        }
+<span class="fc" id="L76">        List&lt;Parede&gt; paredes=sala.getListaParedes();</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        for (Parede focus:paredes)</span>
+        {
+<span class="fc" id="L79">                focus.convectHeatExternal(sala);</span>
+<span class="fc" id="L80">        }</span>
+<span class="fc" id="L81">        sala.convectHeatToRoof();</span>
+<span class="fc" id="L82">        sala.getTeto().convectHeatExternal(sala);</span>
+<span class="fc" id="L83">    }</span>
+    
+    /**
+     * Efetua todas as transferências de calor sobre a forma de radiação.
+     */
+    public void radiateHeat()
+    {
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (int i=0;i&lt;listaCondutores.size();i++)</span>
+        {
+<span class="fc" id="L92">            ObjetoCalor element = listaCondutores.get(i);</span>
+<span class="fc" id="L93">            element.radiateHeat(sala);</span>
+        }
+<span class="fc" id="L95">    }</span>
+    
+    /**
+     * Transfere a energia sobre a forma de calor dissipada pelo cpu do servidor
+     * para o servidor.
+     * &lt;p&gt;
+     * Efetua esta operação para cada servidor.
+     */
+    public void stepCPUDissipation()
+    {
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (ObjetoCalor focus:listaCondutores)</span>
+        {
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">            if (focus instanceof ServidorInstanciado)</span>
+            {
+<span class="fc" id="L109">                ((ServidorInstanciado)focus).stepDissipation();</span>
+            }
+<span class="fc" id="L111">        }</span>
+<span class="fc" id="L112">    }</span>
+    
+    /**
+     * Atribui a sala a ser utilizada na transferencia de calor.
+     * @param sala ({@link Sala}) A sala a ser atribuida.
+     */
+    public void setSala(Sala sala)
+    {
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (sala==null)</span>
+        {
+<span class="fc" id="L122">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc10.sala.inexistente&quot;));</span>
+        }
+<span class="fc" id="L124">        this.sala = sala;</span>
+<span class="fc" id="L125">    }</span>
+    
+    /**
+     * Insere todos os objetos que conduzem calor de uma dada lista para a lista
+     * a ser utilizada na transferência de calor.
+     * @param list (ArrayList&amp;lt;{@link ObjetoCalor}&amp;gt;) A lista de objetos a serem
+     * adicionados.
+     * @return (boolean) Verdadeiro se todos os elementos foram adicionados.
+     */
+    public boolean setListaCondutores(ArrayList&lt;ObjetoCalor&gt; list)
+    {
+<span class="fc" id="L136">        listaCondutores.clear();</span>
+<span class="fc" id="L137">        return listaCondutores.addAll(list);</span>
+    }
+    
+    /**
+     * Devolve a energia necessária para refrigerar a sala desta transferência de
+     * calor.
+     * @return (double) A energia, expressa em Joule.
+     */
+    public double getRefrigerationCost()
+    {
+<span class="fc" id="L147">        double result=0;</span>
+<span class="fc" id="L148">        double tempAlvo = sala.getTemperaturaInteriorAlvo();</span>
+<span class="fc" id="L149">        double tempAtual = sala.getTemperaturaInterior();</span>
+<span class="fc" id="L150">        double diff = tempAtual-tempAlvo;</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        if (diff&gt;0)</span>
+        {
+<span class="fc" id="L153">            result=celsiusToJoule(diff);</span>
+        }
+<span class="fc" id="L155">        return result;</span>
+    }
+    
+    /**
+     * Atualiza a temperatura externa da sala, caso esta tenha uma variação de
+     * temperatura externa.
+     * @param timeQuantum (double) O tempo atual da sala.
+     * @return (boolean) Verdadeiro caso tenha alterado a temperatura externa da sala.
+     */
+    public boolean updateTemperaturaExterna(double timeQuantum)
+    {
+<span class="fc" id="L166">        boolean result=false;</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (sala.hasTemperaturaVariation()) </span>
+        {
+<span class="fc" id="L169">            double tMin = sala.getTemperaturaExternaMinima();</span>
+<span class="fc" id="L170">            double tMax = sala.getTemperaturaExternaMaxima();</span>
+            //1 dia = 1440 minutos.
+<span class="fc" id="L172">            double temp =(tMin+tMax)*0.5+(0.5*(tMax-tMin)*Math.sin(2d*Math.PI*timeQuantum/1440d));</span>
+<span class="fc" id="L173">            sala.setTemperaturaExterior(temp);</span>
+<span class="fc" id="L174">            result = true;</span>
+        }
+<span class="fc" id="L176">        return result;</span>
+    }
+    
+    /**
+     * Converte celsius em joule.
+     * @param celsius (double) O valor da temperatura em celsius.
+     * @return (double) A energia em joule.
+     */
+    public static final double celsiusToJoule(double celsius)
+    {
+<span class="fc" id="L186">        return celsius/CELSIUS_TO_JOULE_CONSTANT;</span>
+    }
+    
+    /**
+     * Converte joule em celsius.
+     * @param joule (double) O valor da energia em joule.
+     * @return (double) A temperatura em Celsius.
+     */
+    public static final double jouleToCelsius(double joule)
+    {
+<span class="fc" id="L196">        return joule*CELSIUS_TO_JOULE_CONSTANT;</span>
+    }
+    
+    /**
+     * Converte calorias em joule.
+     * @param calories (double) O valor da energia em calorias
+     * @return (double) A energia em calorias.
+     */
+    public static final double caloriesToJoule(double calories)
+    {
+<span class="fc" id="L206">        return calories*CALORIES_TO_JOULE;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

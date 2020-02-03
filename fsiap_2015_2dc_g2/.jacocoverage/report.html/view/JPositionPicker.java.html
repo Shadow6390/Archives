@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JPositionPicker.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">JPositionPicker.java</span></div><h1>JPositionPicker.java</h1><pre class="source lang-java linenums">/*
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package view;
+
+import controllers.AdicionarServidorSalaController;
+import bragasQuest.PositionPickerListener;
+import java.util.Arrays;
+import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import model.Simulacao;
+import universe.EnhancedUniverse;
+import universe.PrimitiveFactory;
+
+/**
+ *
+ * @author jbraga
+ */
+public class JPositionPicker extends javax.swing.JDialog {
+
+    /**
+     * UI pai.
+     */
+    private AdicionarServidorUI parentUI;
+    /**
+     * Class que coordena o caso de uso.
+     */
+    private AdicionarServidorSalaController controller;
+    
+    /**
+     * Universo 3D.
+     */
+    private EnhancedUniverse uv;
+    
+    /**
+     * Creates new form PositionPicker
+     */
+    public JPositionPicker(final java.awt.Frame parent, boolean modal, 
+            AdicionarServidorSalaController con,final AdicionarServidorUI parentUI,EnhancedUniverse uv) {
+<span class="nc" id="L42">        super(parent, modal);</span>
+<span class="nc" id="L43">        initComponents();</span>
+<span class="nc" id="L44">        controller=con;</span>
+<span class="nc" id="L45">        this.uv=uv;</span>
+<span class="nc" id="L46">        this.parentUI=parentUI;</span>
+<span class="nc" id="L47">        java.awt.EventQueue.invokeLater(new Runnable() {</span>
+            public void run() {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">                if (controller.getDimensoesSala()==null)</span>
+                {
+<span class="nc" id="L51">                    JOptionPane.showMessageDialog(parent, Simulacao.getFrasePelaChave(&quot;uc5.sala.inexistente&quot;),&quot;&quot;,JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L52">                    dispose();</span>
+<span class="nc" id="L53">                    parentUI.dispose();</span>
+                }
+                else
+                {
+<span class="nc" id="L57">                    double[] dim = controller.getDimensoesSala();</span>
+<span class="nc" id="L58">                    positionPickerXY.setDimensions(dim[0], dim[1]);</span>
+<span class="nc" id="L59">                    positionPickerXZ.setDimensions(dim[0], dim[2]);</span>
+<span class="nc" id="L60">                    positionPickerXY.addPositionPickerListener(new PositionPickerListener() {</span>
+
+                        @Override
+                        public void onPositionChanged() {
+<span class="nc" id="L64">                            xCoordField.setText(String.valueOf(positionPickerXY.getXCoord(2)));</span>
+<span class="nc" id="L65">                            yCoordField.setText(String.valueOf(positionPickerXY.getYCoord(2)));</span>
+<span class="nc" id="L66">                        }</span>
+                    });
+<span class="nc" id="L68">                    positionPickerXZ.addPositionPickerListener(new PositionPickerListener() {</span>
+                    
+                        @Override
+                        public void onPositionChanged() {
+<span class="nc" id="L72">                            xCoordField.setText(String.valueOf(positionPickerXZ.getXCoord(2)));</span>
+<span class="nc" id="L73">                            zCoordField.setText(String.valueOf(positionPickerXZ.getYCoord(2)));</span>
+<span class="nc" id="L74">                        }</span>
+                    });
+
+<span class="nc" id="L77">                    initTextListeners();</span>
+                }
+<span class="nc" id="L79">            }</span>
+        });
+<span class="nc" id="L81">    }</span>
+
+    private void initTextListeners() 
+    {
+<span class="nc" id="L85">        xCoordField.getDocument().addDocumentListener(new DocumentListener() {</span>
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+<span class="nc" id="L89">                warn();</span>
+<span class="nc" id="L90">            }</span>
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                //warn();
+<span class="nc" id="L95">            }</span>
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+<span class="nc" id="L99">                warn();</span>
+<span class="nc" id="L100">            }</span>
+
+            private void warn() {
+                try {
+<span class="nc" id="L104">                    double val = Double.parseDouble(xCoordField.getText());</span>
+<span class="nc" id="L105">                    positionPickerXY.setXCoord(val);</span>
+<span class="nc" id="L106">                    positionPickerXZ.setXCoord(val);</span>
+<span class="nc" id="L107">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L108">                    xCoordField.setText(&quot;0&quot;);</span>
+<span class="nc" id="L109">                    JOptionPane.showMessageDialog(null, e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L110">                } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L111">                    xCoordField.setText(&quot;0&quot;);</span>
+<span class="nc" id="L112">                    JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L113">                }</span>
+<span class="nc" id="L114">            }</span>
+        });
+<span class="nc" id="L116">        yCoordField.getDocument().addDocumentListener(new DocumentListener() {</span>
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+<span class="nc" id="L120">                warn();</span>
+<span class="nc" id="L121">            }</span>
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                //warn();
+<span class="nc" id="L126">            }</span>
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+<span class="nc" id="L130">                warn();</span>
+<span class="nc" id="L131">            }</span>
+
+            private void warn() {
+                try {
+<span class="nc" id="L135">                    double val = Double.parseDouble(yCoordField.getText());</span>
+<span class="nc" id="L136">                    positionPickerXY.setYCoord(val);</span>
+<span class="nc" id="L137">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L138">                    yCoordField.setText(&quot;0&quot;);</span>
+<span class="nc" id="L139">                    JOptionPane.showMessageDialog(null, e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L140">                } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L141">                    yCoordField.setText(&quot;0&quot;);</span>
+<span class="nc" id="L142">                    JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L143">                }</span>
+<span class="nc" id="L144">            }</span>
+        });
+<span class="nc" id="L146">        zCoordField.getDocument().addDocumentListener(new DocumentListener() {</span>
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+<span class="nc" id="L150">                warn();</span>
+<span class="nc" id="L151">            }</span>
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                //warn();
+<span class="nc" id="L156">            }</span>
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+<span class="nc" id="L160">                warn();</span>
+<span class="nc" id="L161">            }</span>
+
+            private void warn() {
+                try {
+<span class="nc" id="L165">                    double val = Double.parseDouble(zCoordField.getText());</span>
+<span class="nc" id="L166">                    positionPickerXZ.setYCoord(val);</span>
+<span class="nc" id="L167">                } catch (NumberFormatException e) {</span>
+<span class="nc" id="L168">                    zCoordField.setText(&quot;0&quot;);</span>
+<span class="nc" id="L169">                    JOptionPane.showMessageDialog(null, e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L170">                } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L171">                    zCoordField.setText(&quot;0&quot;);</span>
+<span class="nc" id="L172">                    JOptionPane.showMessageDialog(null, ex.getMessage(), null, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L173">                }</span>
+<span class="nc" id="L174">            }</span>
+        });
+<span class="nc" id="L176">    }</span>
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings(&quot;unchecked&quot;)
+    // &lt;editor-fold defaultstate=&quot;collapsed&quot; desc=&quot;Generated Code&quot;&gt;//GEN-BEGIN:initComponents
+    private void initComponents()
+    {
+
+<span class="nc" id="L188">        jPanel2 = new javax.swing.JPanel();</span>
+<span class="nc" id="L189">        jLabel4 = new javax.swing.JLabel();</span>
+<span class="nc" id="L190">        jLabel5 = new javax.swing.JLabel();</span>
+<span class="nc" id="L191">        jLabel6 = new javax.swing.JLabel();</span>
+<span class="nc" id="L192">        xCoordField = new javax.swing.JTextField();</span>
+<span class="nc" id="L193">        yCoordField = new javax.swing.JTextField();</span>
+<span class="nc" id="L194">        zCoordField = new javax.swing.JTextField();</span>
+<span class="nc" id="L195">        addServerButton = new javax.swing.JButton();</span>
+<span class="nc" id="L196">        temperatureLabel = new javax.swing.JLabel();</span>
+<span class="nc" id="L197">        tempField = new javax.swing.JTextField();</span>
+<span class="nc" id="L198">        jLabel2 = new javax.swing.JLabel();</span>
+<span class="nc" id="L199">        jLabel3 = new javax.swing.JLabel();</span>
+<span class="nc" id="L200">        positionPickerXY = new bragasQuest.JPositionPickerPanel();</span>
+<span class="nc" id="L201">        positionPickerXZ = new bragasQuest.JPositionPickerPanel();</span>
+
+<span class="nc" id="L203">        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L204">        setResizable(false);</span>
+<span class="nc" id="L205">        addWindowListener(new java.awt.event.WindowAdapter()</span>
+<span class="nc" id="L206">        {</span>
+            public void windowClosing(java.awt.event.WindowEvent evt)
+            {
+<span class="nc" id="L209">                onWindowClosing(evt);</span>
+<span class="nc" id="L210">            }</span>
+        });
+
+<span class="nc" id="L213">        jLabel4.setText(&quot;X:&quot;);</span>
+
+<span class="nc" id="L215">        jLabel5.setText(&quot;Y:&quot;);</span>
+
+<span class="nc" id="L217">        jLabel6.setText(&quot;Z:&quot;);</span>
+
+<span class="nc" id="L219">        xCoordField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);</span>
+<span class="nc" id="L220">        xCoordField.setText(&quot;0&quot;);</span>
+
+<span class="nc" id="L222">        yCoordField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);</span>
+<span class="nc" id="L223">        yCoordField.setText(&quot;0&quot;);</span>
+
+<span class="nc" id="L225">        zCoordField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);</span>
+<span class="nc" id="L226">        zCoordField.setText(&quot;0&quot;);</span>
+
+<span class="nc" id="L228">        addServerButton.setText(Simulacao.getFrasePelaChave(&quot;uc5.button.adicionar&quot;)</span>
+        );
+<span class="nc" id="L230">        addServerButton.addActionListener(new java.awt.event.ActionListener()</span>
+<span class="nc" id="L231">        {</span>
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+<span class="nc" id="L234">                addServerButtonActionPerformed(evt);</span>
+<span class="nc" id="L235">            }</span>
+        });
+
+<span class="nc" id="L238">        temperatureLabel.setText(Simulacao.getFrasePelaChave(&quot;uc5.jposition.temperature&quot;)</span>
+        );
+
+<span class="nc" id="L241">        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);</span>
+<span class="nc" id="L242">        jPanel2.setLayout(jPanel2Layout);</span>
+<span class="nc" id="L243">        jPanel2Layout.setHorizontalGroup(</span>
+<span class="nc" id="L244">            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L245">            .addGroup(jPanel2Layout.createSequentialGroup()</span>
+<span class="nc" id="L246">                .addContainerGap()</span>
+<span class="nc" id="L247">                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L248">                    .addGroup(jPanel2Layout.createSequentialGroup()</span>
+<span class="nc" id="L249">                        .addComponent(jLabel5)</span>
+<span class="nc" id="L250">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L251">                        .addComponent(yCoordField, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L252">                    .addGroup(jPanel2Layout.createSequentialGroup()</span>
+<span class="nc" id="L253">                        .addComponent(jLabel6)</span>
+<span class="nc" id="L254">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L255">                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)</span>
+<span class="nc" id="L256">                            .addComponent(addServerButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="nc" id="L257">                            .addGroup(jPanel2Layout.createSequentialGroup()</span>
+<span class="nc" id="L258">                                .addComponent(zCoordField)</span>
+<span class="nc" id="L259">                                .addGap(18, 18, 18))))</span>
+<span class="nc" id="L260">                    .addComponent(temperatureLabel)</span>
+<span class="nc" id="L261">                    .addGroup(jPanel2Layout.createSequentialGroup()</span>
+<span class="nc" id="L262">                        .addComponent(jLabel4)</span>
+<span class="nc" id="L263">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L264">                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)</span>
+<span class="nc" id="L265">                            .addComponent(tempField)</span>
+<span class="nc" id="L266">                            .addComponent(xCoordField, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))))</span>
+<span class="nc" id="L267">                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))</span>
+        );
+<span class="nc" id="L269">        jPanel2Layout.setVerticalGroup(</span>
+<span class="nc" id="L270">            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L271">            .addGroup(jPanel2Layout.createSequentialGroup()</span>
+<span class="nc" id="L272">                .addComponent(temperatureLabel)</span>
+<span class="nc" id="L273">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L274">                .addComponent(tempField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L275">                .addGap(34, 34, 34)</span>
+<span class="nc" id="L276">                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L277">                    .addComponent(jLabel4)</span>
+<span class="nc" id="L278">                    .addComponent(xCoordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L279">                .addGap(49, 49, 49)</span>
+<span class="nc" id="L280">                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L281">                    .addComponent(jLabel5)</span>
+<span class="nc" id="L282">                    .addComponent(yCoordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L283">                .addGap(54, 54, 54)</span>
+<span class="nc" id="L284">                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)</span>
+<span class="nc" id="L285">                    .addComponent(jLabel6)</span>
+<span class="nc" id="L286">                    .addComponent(zCoordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))</span>
+<span class="nc" id="L287">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)</span>
+<span class="nc" id="L288">                .addComponent(addServerButton)</span>
+<span class="nc" id="L289">                .addContainerGap())</span>
+        );
+
+<span class="nc" id="L292">        jLabel2.setText(&quot;XY&quot;);</span>
+
+<span class="nc" id="L294">        jLabel3.setText(&quot;XZ&quot;);</span>
+
+<span class="nc" id="L296">        javax.swing.GroupLayout positionPickerXYLayout = new javax.swing.GroupLayout(positionPickerXY);</span>
+<span class="nc" id="L297">        positionPickerXY.setLayout(positionPickerXYLayout);</span>
+<span class="nc" id="L298">        positionPickerXYLayout.setHorizontalGroup(</span>
+<span class="nc" id="L299">            positionPickerXYLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L300">            .addGap(0, 311, Short.MAX_VALUE)</span>
+        );
+<span class="nc" id="L302">        positionPickerXYLayout.setVerticalGroup(</span>
+<span class="nc" id="L303">            positionPickerXYLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L304">            .addGap(0, 144, Short.MAX_VALUE)</span>
+        );
+
+<span class="nc" id="L307">        javax.swing.GroupLayout positionPickerXZLayout = new javax.swing.GroupLayout(positionPickerXZ);</span>
+<span class="nc" id="L308">        positionPickerXZ.setLayout(positionPickerXZLayout);</span>
+<span class="nc" id="L309">        positionPickerXZLayout.setHorizontalGroup(</span>
+<span class="nc" id="L310">            positionPickerXZLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L311">            .addGap(0, 0, Short.MAX_VALUE)</span>
+        );
+<span class="nc" id="L313">        positionPickerXZLayout.setVerticalGroup(</span>
+<span class="nc" id="L314">            positionPickerXZLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L315">            .addGap(0, 0, Short.MAX_VALUE)</span>
+        );
+
+<span class="nc" id="L318">        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());</span>
+<span class="nc" id="L319">        getContentPane().setLayout(layout);</span>
+<span class="nc" id="L320">        layout.setHorizontalGroup(</span>
+<span class="nc" id="L321">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L322">            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L323">                .addContainerGap()</span>
+<span class="nc" id="L324">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L325">                    .addComponent(jLabel2)</span>
+<span class="nc" id="L326">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L327">                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)</span>
+<span class="nc" id="L328">                            .addComponent(jLabel3)</span>
+<span class="nc" id="L329">                            .addComponent(positionPickerXY, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)</span>
+<span class="nc" id="L330">                            .addComponent(positionPickerXZ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))</span>
+<span class="nc" id="L331">                        .addGap(18, 18, 18)</span>
+<span class="nc" id="L332">                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))</span>
+<span class="nc" id="L333">                .addContainerGap())</span>
+        );
+<span class="nc" id="L335">        layout.setVerticalGroup(</span>
+<span class="nc" id="L336">            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L337">            .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L338">                .addGap(4, 4, 4)</span>
+<span class="nc" id="L339">                .addComponent(jLabel2)</span>
+<span class="nc" id="L340">                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L341">                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)</span>
+<span class="nc" id="L342">                    .addGroup(layout.createSequentialGroup()</span>
+<span class="nc" id="L343">                        .addComponent(positionPickerXY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)</span>
+<span class="nc" id="L344">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L345">                        .addComponent(jLabel3)</span>
+<span class="nc" id="L346">                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)</span>
+<span class="nc" id="L347">                        .addComponent(positionPickerXZ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))</span>
+<span class="nc" id="L348">                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))</span>
+<span class="nc" id="L349">                .addContainerGap())</span>
+        );
+
+<span class="nc" id="L352">        pack();</span>
+<span class="nc" id="L353">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L354">    }// &lt;/editor-fold&gt;//GEN-END:initComponents</span>
+
+    private void addServerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addServerButtonActionPerformed
+        // TODO add your handling code here:
+        try
+        {
+<span class="nc" id="L360">            String nome = parentUI.getSelectedServidor();</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">            if (nome!=null)</span>
+            {
+<span class="nc" id="L363">                double[] pos = new double[3];</span>
+<span class="nc" id="L364">                pos[0]=Double.parseDouble(xCoordField.getText());</span>
+<span class="nc" id="L365">                pos[1]=Double.parseDouble(yCoordField.getText());</span>
+<span class="nc" id="L366">                pos[2]=Double.parseDouble(zCoordField.getText());</span>
+<span class="nc" id="L367">                double temp = Double.parseDouble(tempField.getText());</span>
+                
+<span class="nc" id="L369">                double[] dim = controller.getServidorDimensoes(nome);</span>
+<span class="nc" id="L370">                float[] fPos = new float[3];</span>
+<span class="nc" id="L371">                fPos[0] = (float)pos[0];</span>
+<span class="nc" id="L372">                fPos[1] = (float)pos[1];</span>
+<span class="nc" id="L373">                fPos[2] = (float)pos[2];</span>
+
+<span class="nc" id="L375">                float[] fDim = new float[3];</span>
+<span class="nc" id="L376">                fDim[0] = (float) dim[0];</span>
+<span class="nc" id="L377">                fDim[1] = (float) dim[1];</span>
+<span class="nc" id="L378">                fDim[2] = (float) dim[2];</span>
+
+<span class="nc bnc" id="L380" title="All 2 branches missed.">                if (fDim[0]+fPos[0]&gt;controller.getDimensoesSala()[0])</span>
+                {
+<span class="nc" id="L382">                    fPos[0]-=fDim[0];</span>
+<span class="nc" id="L383">                    pos[0]-=dim[0];</span>
+                }
+<span class="nc bnc" id="L385" title="All 2 branches missed.">                if (fDim[1]+fPos[1]&gt;controller.getDimensoesSala()[1])</span>
+                {
+<span class="nc" id="L387">                    fPos[1]-=fDim[1];</span>
+<span class="nc" id="L388">                    pos[1]-=dim[1];</span>
+                }
+<span class="nc bnc" id="L390" title="All 2 branches missed.">                if (fDim[2]+fPos[2]&gt;controller.getDimensoesSala()[2])</span>
+                {
+<span class="nc" id="L392">                    fPos[2]-=fDim[2];</span>
+<span class="nc" id="L393">                    pos[2]-=dim[2];</span>
+                }
+                
+<span class="nc bnc" id="L396" title="All 2 branches missed.">                if (controller.adicionarServidor(nome, pos,temp))</span>
+                {
+
+<span class="nc" id="L399">                    uv.addPrimitive(PrimitiveFactory.createTexturizedBox(fDim[0], fDim[2], fDim[1], controller.getServidorImage(nome)), </span>
+                        fPos[0]+fDim[0]*0.5f, fPos[2]+fDim[2]*0.5f, fPos[1]+fDim[1]*0.5f);
+                }
+                else
+                {
+<span class="nc" id="L404">                    JOptionPane.showMessageDialog(null, Simulacao.getFrasePelaChave(&quot;uc5.button.adicionar.erro&quot;), null, JOptionPane.ERROR_MESSAGE);</span>
+                }
+<span class="nc" id="L406">            }</span>
+            else
+            {
+<span class="nc" id="L409">                JOptionPane.showMessageDialog(null, Simulacao.getFrasePelaChave(&quot;uc5.button.adicionar.servNulo&quot;), null, JOptionPane.ERROR_MESSAGE);</span>
+            }
+        }
+<span class="nc" id="L412">        catch (NumberFormatException e)</span>
+        {
+<span class="nc" id="L414">            JOptionPane.showMessageDialog(null, Simulacao.getFrasePelaChave(&quot;uc5.jposition.temperature.invalid&quot;), null, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L415">        }</span>
+<span class="nc" id="L416">    }//GEN-LAST:event_addServerButtonActionPerformed</span>
+
+    private void onWindowClosing(java.awt.event.WindowEvent evt)//GEN-FIRST:event_onWindowClosing
+    {//GEN-HEADEREND:event_onWindowClosing
+        // TODO add your handling code here:
+<span class="nc" id="L421">        parentUI.dispose();</span>
+<span class="nc" id="L422">    }//GEN-LAST:event_onWindowClosing</span>
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addServerButton;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel2;
+    private bragasQuest.JPositionPickerPanel positionPickerXY;
+    private bragasQuest.JPositionPickerPanel positionPickerXZ;
+    private javax.swing.JTextField tempField;
+    private javax.swing.JLabel temperatureLabel;
+    private javax.swing.JTextField xCoordField;
+    private javax.swing.JTextField yCoordField;
+    private javax.swing.JTextField zCoordField;
+    // End of variables declaration//GEN-END:variables
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RegistoIdiomas.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">RegistoIdiomas.java</span></div><h1>RegistoIdiomas.java</h1><pre class="source lang-java linenums">package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Locale;
+
+/**
+ * Representa uma classe que gere os vários idiomas disponíveis na aplicação
+ * através de uma lista de idiomas.
+ */
+public class RegistoIdiomas implements Serializable {
+
+    /**
+     * Lista que contém todos os idiomas suportados pela aplicação.
+     */
+    private ArrayList&lt;Idioma&gt; listaIdiomas;
+
+    /**
+     * Constrói uma classe que gere os vários idiomas disponíveis na aplicação
+     * através de uma lista de idiomas.
+     *
+     * Inicialmente estão disponíveis os idiomas português (PT) e inglês (GB).
+     */
+<span class="fc" id="L24">    public RegistoIdiomas() {</span>
+        // Estes idiomas existem por defeito na aplicação.
+<span class="fc" id="L26">        Idioma portugues = new Idioma(</span>
+                &quot;uc12.idioma.portugues&quot;, new Locale(&quot;pt&quot;, &quot;PT&quot;));
+<span class="fc" id="L28">        Idioma inglesBritanico = new Idioma(</span>
+                &quot;uc12.idioma.ingles&quot;, new Locale(&quot;en&quot;, &quot;GB&quot;));
+
+<span class="fc" id="L31">        this.listaIdiomas = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L32">        this.listaIdiomas.add(portugues);</span>
+<span class="fc" id="L33">        this.listaIdiomas.add(inglesBritanico);</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Imprime as informações da lista de idiomas.
+     *
+     * @return Informações da lista de idiomas.
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L43">        StringBuilder stringBuilder = new StringBuilder();</span>
+
+<span class="fc" id="L45">        stringBuilder.append(Simulacao.getIdiomaAtual().getString(</span>
+<span class="fc" id="L46">                &quot;uc12.registoidiomas.lista&quot;)).append(&quot;\n&quot;);</span>
+
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (Idioma idioma : this.listaIdiomas) {</span>
+<span class="fc" id="L49">            stringBuilder.append(idioma.toString()).append(&quot;\n&quot;);</span>
+<span class="fc" id="L50">        }</span>
+
+<span class="fc" id="L52">        return stringBuilder.toString();</span>
+    }
+
+    /**
+     * Converte a lista de idiomas num vetor com o nome de cada um deles.
+     *
+     * @return Vetor com o nome de cada um dos idiomas disponíveis.
+     */
+    public String[] listaParaVetor() {
+<span class="fc" id="L61">        String[] vetorIdiomas = new String[this.listaIdiomas.size()];</span>
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        for (int i = 0; i &lt; this.listaIdiomas.size(); i++) {</span>
+<span class="fc" id="L64">            vetorIdiomas[i] = this.listaIdiomas.get(i).toString();</span>
+        }
+
+<span class="fc" id="L67">        return vetorIdiomas;</span>
+    }
+
+    /**
+     * Devolve o idioma utilizado por defeito, neste caso será o primeiro idioma
+     * na lista de idiomas.
+     *
+     * @return Idioma por defeito.
+     */
+    public Idioma getIdiomaPorDefeito() {
+<span class="fc" id="L77">        return this.listaIdiomas.get(0);</span>
+    }
+
+    /**
+     * Devolve um idioma da lista de idiomas, procurando o mesmo pelo respectivo
+     * nome, caso o idioma não exista retorna null.
+     *
+     * @param nomeIdioma Nome do idioma que se pretende obter.
+     * @return Devolve um idioma da lista de idiomas ou null caso o idioma não
+     * exista.
+     */
+    public Idioma getIdioma(String nomeIdioma) {
+<span class="fc" id="L89">        Idioma idioma = null;</span>
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        for (Idioma idiomaLista : this.listaIdiomas) {</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">            if (idiomaLista.toString().equals(nomeIdioma)) {</span>
+<span class="fc" id="L93">                idioma = idiomaLista;</span>
+            }
+<span class="fc" id="L95">        }</span>
+
+<span class="fc" id="L97">        return idioma;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

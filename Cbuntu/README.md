@@ -15,4 +15,4 @@ No further comments! :)
 
 ## Expected Changes
 
-This project has no expected changes, but is considered "incomplete/unfinished". The last time it was touched was around 2015-2016 (if newer dates are found, it's because of file-copying).
+This project has no expected changes, but is considered "incomplete/unfinished". The last time it was touched was around 2015 (if newer dates are found, it's because of file-copying).

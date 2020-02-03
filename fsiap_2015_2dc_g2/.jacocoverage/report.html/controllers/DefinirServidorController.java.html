@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DefinirServidorController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">DefinirServidorController.java</span></div><h1>DefinirServidorController.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import model.Material;
+import model.RegistoMateriais;
+import model.RegistoServidores;
+import model.Servidor;
+import model.Simulacao;
+
+/**
+ *
+ */
+public class DefinirServidorController {
+
+    /**
+     * Simulação à qual se vai adicionar um tipo de material.
+     */
+    private Simulacao simulacao;
+
+    /**
+     * Lista dos vários materiais existentes.
+     */
+    private RegistoMateriais registoMateriais;
+
+    /**
+     * Lista dos vários servidores existentes.
+     */
+    private RegistoServidores registoServidores;
+
+    /**
+     * Lista de materiais.
+     */
+    private ArrayList&lt;Material&gt; listaMateriais;
+
+    /**
+     * Servidor criado.
+     */
+    private Servidor servidor;
+
+    /**
+     * Constrói uma instância do controlador que gere o caso de uso 4, Definir 
+     * Servidor Controller, através da simulação.
+     * 
+     * @param simulacao 
+     */
+<span class="fc" id="L52">    public DefinirServidorController(Simulacao simulacao) {</span>
+<span class="fc" id="L53">        this.simulacao = simulacao;</span>
+<span class="fc" id="L54">        this.registoMateriais = simulacao.getRegistoMateriais();</span>
+<span class="fc" id="L55">        this.registoServidores = simulacao.getRegistoServidores();</span>
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * Cria uma nova instância de Servidor.
+     */
+    public void novoServidor() {
+<span class="fc" id="L62">        this.listaMateriais = registoMateriais.getMateriais();</span>
+<span class="fc" id="L63">        this.servidor = this.registoServidores.novoServidor();</span>
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * Devolve a lista de materiais da simulação.
+     * @return (List&amp;lt;{@link model.Material}&amp;gt;) A lista de materiais.
+     */
+    public List&lt;Material&gt; getListaMateriais()
+    {
+<span class="fc" id="L72">        return simulacao.getListaMateriaisExistentes();</span>
+    }
+    
+    /**
+    * Define o nome da instância de Servidor criada.
+    */
+    public void setNome(String nome) {
+<span class="fc" id="L79">        this.servidor.setNome(nome);</span>
+<span class="fc" id="L80">    }</span>
+
+    /**
+     * Define o material da instância de Servidor criada.
+     * @param mat Material a ser adicionado.
+     */
+    public void setMaterial(Material mat) {
+<span class="fc" id="L87">        this.servidor.setMaterial(mat);</span>
+<span class="fc" id="L88">    }</span>
+
+    /**
+     * 
+     * Define os dados da instância de Servidor criada.
+     * 
+     * @param massa Massa do Servidor.
+     * @param comprimento Comprimento do Servidor.
+     * @param largura Largura do Servidor.
+     * @param altura Altura do Servidor.
+     * @param carga Carga do Servidor.
+     */
+    public void setDados(double massa, double comprimento, double largura,
+            double altura, double carga) {
+<span class="fc" id="L102">        this.servidor.setMassa(massa);</span>
+<span class="fc" id="L103">        this.servidor.setComprimento(comprimento);</span>
+<span class="fc" id="L104">        this.servidor.setLargura(largura);</span>
+<span class="fc" id="L105">        this.servidor.setAltura(altura);</span>
+<span class="fc" id="L106">        this.servidor.setCarga(carga);</span>
+<span class="fc" id="L107">    }</span>
+
+    /**
+     * Retorna os dados necessários da instância de Servidor criada.
+     * 
+     * @return dados do servidor. 
+     */
+    public String getDados() {
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (this.servidor.valida()) {</span>
+<span class="fc" id="L116">            return this.servidor.toString();</span>
+        }
+<span class="nc" id="L118">        return &quot;Simulador Inválido&quot;;</span>
+    }
+
+    /**
+     * Adiciona o Servidor à lista de Servidores já existentes.
+     * 
+     * @return verdade se foi adicionado.
+     */
+    public boolean adicionarServidor() {
+<span class="fc" id="L127">        return this.registoServidores.adicionarServidor(this.servidor);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

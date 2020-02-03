@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Sala.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Sala.java</span></div><h1>Sala.java</h1><pre class="source lang-java linenums">package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import model.interfaces.CondutorCalor;
+
+/**
+ * Representa a sala da simulação.
+ *
+ */
+public class Sala extends ObjetoCalor implements Serializable {
+
+    /**
+     * O comprimento da sala.
+     */
+    private double comprimento;
+
+    /**
+     * A largura da sala.
+     */
+    private double largura;
+
+    /**
+     * A altura da sala.
+     */
+    private double altura;
+
+    /**
+     * Indica se a temperatura externa da sala pode variar sinosoidalmente com o
+     * tempo.
+     */
+    private boolean hasTemperaturaVariation;
+
+    /**
+     * A temperatura no interior da sala.
+     */
+    private double temperaturaInterior;
+
+    /**
+     * A temperatura no interior da sala.
+     */
+    private double temperaturaInteriorAlvo;
+
+    /**
+     * A temperatura no exterior mínima da sala.
+     */
+    private double temperaturaExteriorMinima;
+
+    /**
+     * A temperatura no exterior máxima da sala.
+     */
+    private double temperaturaExteriorMaxima;
+
+    /**
+     * A temperatura no exterior da sala.
+     */
+    private double temperaturaExterior;
+
+    /**
+     * O teto da sala.
+     */
+    private Parede teto;
+
+    /**
+     * As paredes da sala.
+     */
+    private List&lt;Parede&gt; listaParedes;
+
+    /**
+     * A lista de servidores instanciados.
+     */
+    private ListaServidoresInstanciados listaServidoresInstanciados;
+
+    /**
+     * Construtor nulo da sala.
+     */
+<span class="fc" id="L78">    public Sala() {</span>
+<span class="fc" id="L79">        listaParedes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L80">        listaServidoresInstanciados = new ListaServidoresInstanciados();</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Constrói uma instância de sala através de um comprimento, uma largura,
+     * uma altura, uma temperatura interior, uma temperatura interior alvo, uma
+     * temperatura exterior minima e máxima, um teto e 4 paredes.
+     *
+     * @param comprimento Comprimento da sala.
+     * @param largura Largura da sala.
+     * @param altura Altura da sala.
+     * @param temperaturaInterior Temperatura interior da sala.
+     * @param temperaturaInteriorAlvo Temperatura interior alvo da sala.
+     * @param temperaturaExterior Tempertura exterior.
+     * @param temperaturaExteriorMinima Temperatura exterior minima à sala.
+     * @param temperaturaExteriorMaxima Temperatura exterior máxima à sala.
+     * @param material Material por defeito que compõe a sala.
+     */
+    public Sala(double comprimento, double largura, double altura,
+            double temperaturaInterior, double temperaturaInteriorAlvo,
+            double temperaturaExterior, double temperaturaExteriorMinima,
+<span class="fc" id="L101">            double temperaturaExteriorMaxima, Material material) {</span>
+        // A sala tem 4 paredes e 1 teto que são criados com valores por defeito.
+<span class="fc" id="L103">        Parede parede1 = new Parede();</span>
+<span class="fc" id="L104">        Parede parede2 = new Parede();</span>
+<span class="fc" id="L105">        Parede parede3 = new Parede();</span>
+<span class="fc" id="L106">        Parede parede4 = new Parede();</span>
+<span class="fc" id="L107">        this.listaParedes = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L108">        this.listaParedes.add(parede1);</span>
+<span class="fc" id="L109">        this.listaParedes.add(parede2);</span>
+<span class="fc" id="L110">        this.listaParedes.add(parede3);</span>
+<span class="fc" id="L111">        this.listaParedes.add(parede4);</span>
+<span class="fc" id="L112">        this.teto = new Parede();</span>
+
+        // Definir o material que constitui cada parede e a sua temperatura inicial.
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        for (Parede parede : this.listaParedes) {</span>
+<span class="fc" id="L116">            parede.getListaMateriais().adicionarMaterial(material, 0.5);</span>
+<span class="fc" id="L117">            parede.setTemperatura(temperaturaInterior / 2.0);</span>
+<span class="fc" id="L118">        }</span>
+<span class="fc" id="L119">        this.teto.getListaMateriais().adicionarMaterial(material, 0.5);</span>
+<span class="fc" id="L120">        this.teto.setTemperatura(temperaturaInterior / 2.0);</span>
+
+        // Definir a posição e orientação de cada parede.
+<span class="fc" id="L123">        parede1.setPosicao(new double[]{0, -parede1.getProfundidade(), 0});</span>
+<span class="fc" id="L124">        parede2.setPosicao(new double[]{comprimento, 0, 0});</span>
+<span class="fc" id="L125">        parede3.setPosicao(new double[]{0, largura, 0});</span>
+<span class="fc" id="L126">        parede4.setPosicao(new double[]{-parede4.getProfundidade(), 0, 0});</span>
+<span class="fc" id="L127">        parede1.setOrientacaoParede(Parede.ORIENTACAO_HORIZONTAL);</span>
+<span class="fc" id="L128">        parede2.setOrientacaoParede(Parede.ORIENTACAO_VERTICAL);</span>
+<span class="fc" id="L129">        parede3.setOrientacaoParede(Parede.ORIENTACAO_HORIZONTAL);</span>
+<span class="fc" id="L130">        parede4.setOrientacaoParede(Parede.ORIENTACAO_VERTICAL);</span>
+<span class="fc" id="L131">        this.teto.setPosicao(new double[]{0, 0, altura});</span>
+<span class="fc" id="L132">        this.teto.setAltura(this.teto.getProfundidade());</span>
+<span class="fc" id="L133">        this.teto.setOrientacaoParede(Parede.ORIENTACAO_PLANA);</span>
+
+        // Definir os restantes atributos da sala.
+<span class="fc" id="L136">        setComprimento(comprimento);</span>
+<span class="fc" id="L137">        setLargura(largura);</span>
+<span class="fc" id="L138">        setAltura(altura);</span>
+<span class="fc" id="L139">        setTemperaturaInterior(temperaturaInterior);</span>
+<span class="fc" id="L140">        setTemperaturaInteriorAlvo(temperaturaInteriorAlvo);</span>
+<span class="fc" id="L141">        setTemperaturaExterior(temperaturaExterior);</span>
+<span class="fc" id="L142">        setTemperaturaExternaMinima(temperaturaExteriorMinima);</span>
+<span class="fc" id="L143">        setTemperaturaExternaMaxima(temperaturaExteriorMaxima);</span>
+
+<span class="fc" id="L145">        this.listaServidoresInstanciados = new ListaServidoresInstanciados();</span>
+<span class="fc" id="L146">    }</span>
+
+    /**
+     * Constrói uma cópia de uma instância de sala através de um comprimento,
+     * uma largura, uma altura, uma temperatura interior, uma temperatura
+     * interior alvo, uma temperatura exterior minima e máxima, um teto e 4
+     * paredes.
+     *
+     * @param outraSala Sala para a qual vai ser realizada a cópia.
+     */
+<span class="nc" id="L156">    public Sala(Sala outraSala) {</span>
+<span class="nc" id="L157">        setListaParedes(outraSala.getListaParedes());</span>
+<span class="nc" id="L158">        setTeto(outraSala.getTeto());</span>
+<span class="nc" id="L159">        setComprimento(outraSala.getComprimento());</span>
+<span class="nc" id="L160">        setLargura(outraSala.getLargura());</span>
+<span class="nc" id="L161">        setAltura(outraSala.getAltura());</span>
+<span class="nc" id="L162">        setTemperaturaInterior(outraSala.getTemperaturaInterior());</span>
+<span class="nc" id="L163">        setTemperaturaInteriorAlvo(outraSala.getTemperaturaInteriorAlvo());</span>
+<span class="nc" id="L164">        setTemperaturaExternaMinima(outraSala.getTemperaturaExternaMinima());</span>
+<span class="nc" id="L165">        setTemperaturaExternaMaxima(outraSala.getTemperaturaExternaMaxima());</span>
+<span class="nc" id="L166">        this.listaServidoresInstanciados = outraSala.listaServidoresInstanciados;</span>
+<span class="nc" id="L167">    }</span>
+
+    /**
+     * Retorna o valor do comprimento da sala.
+     *
+     * @return (double) O comprimento.
+     */
+    public double getComprimento() {
+<span class="fc" id="L175">        return comprimento;</span>
+    }
+
+    /**
+     * Retorna o valor do largura da sala.
+     *
+     * @return (double) A largura.
+     */
+    public double getLargura() {
+<span class="fc" id="L184">        return largura;</span>
+    }
+
+    /**
+     * Retorna o valor do altura da sala.
+     *
+     * @return (double) A altura.
+     */
+    public double getAltura() {
+<span class="fc" id="L193">        return altura;</span>
+    }
+
+    /**
+     * Retorna o valor da temperatura interior da sala.
+     *
+     * @return (double) A temperatura interior.
+     */
+    public double getTemperaturaInterior() {
+<span class="fc" id="L202">        return temperaturaInterior;</span>
+    }
+
+    /**
+     * Retorna o valor da temperatura interior alvo da sala.
+     *
+     * @return (double) A temperatura interior alvo.
+     */
+    public double getTemperaturaInteriorAlvo() {
+<span class="fc" id="L211">        return temperaturaInteriorAlvo;</span>
+    }
+
+    /**
+     * Retorna o valor da temperatura exterior minima da sala.
+     *
+     * @return (double) A temperatura exterior minima.
+     */
+    public double getTemperaturaExternaMinima() {
+<span class="fc" id="L220">        return temperaturaExteriorMinima;</span>
+    }
+
+    /**
+     * Retorna o valor da temperatura exterior maxima da sala.
+     *
+     * @return (double) A temperatura exterior maxima.
+     */
+    public double getTemperaturaExternaMaxima() {
+<span class="fc" id="L229">        return temperaturaExteriorMaxima;</span>
+    }
+
+    /**
+     * Retorna o teto da sala.
+     *
+     * @return (parede) O teto.
+     */
+    public Parede getTeto() {
+<span class="fc" id="L238">        return teto;</span>
+    }
+
+    /**
+     * Retorna as paredes da sala.
+     *
+     * @return (list de paredes) As paredes.
+     */
+    public List&lt;Parede&gt; getListaParedes() {
+<span class="fc" id="L247">        return listaParedes;</span>
+    }
+
+    /**
+     * Devolve uma lista com os servidores instanciados na sala.
+     *
+     * @return (List&amp;lt;{@link ServidorInstanciado}&amp;gt;) A lista de servidores
+     * instanciados.
+     */
+    public List&lt;ServidorInstanciado&gt; getListaServidoresInstanciados() {
+<span class="fc" id="L257">        return listaServidoresInstanciados.getListaServidoresInstanciados();</span>
+    }
+
+    /**
+     * Altera o valor do comprimento da sala.
+     *
+     * @param comprimento (double) O comprimento.
+     */
+    public final void setComprimento(double comprimento) {
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        if (comprimento &lt;= 0) {</span>
+<span class="fc" id="L267">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.setComprimento&quot;));
+        }
+
+<span class="fc" id="L271">        this.teto.setComprimento(comprimento);</span>
+<span class="fc bfc" id="L272" title="All 2 branches covered.">        for (Parede parede : this.listaParedes) {</span>
+<span class="fc bfc" id="L273" title="All 2 branches covered.">            if (parede.getOrientacaoParede() == Parede.ORIENTACAO_HORIZONTAL) {</span>
+<span class="fc" id="L274">                parede.setComprimento(comprimento);</span>
+            } else {
+<span class="fc" id="L276">                parede.setComprimento(parede.getProfundidade());</span>
+            }
+<span class="fc" id="L278">        }</span>
+
+<span class="fc" id="L280">        this.comprimento = comprimento;</span>
+<span class="fc" id="L281">    }</span>
+
+    /**
+     * Altera o valor do comprimento da sala.
+     *
+     * @param largura (double) A largura.
+     */
+    public final void setLargura(double largura) {
+<span class="fc bfc" id="L289" title="All 2 branches covered.">        if (largura &lt;= 0) {</span>
+<span class="fc" id="L290">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setLargura&quot;));
+        }
+
+<span class="fc" id="L294">        this.teto.setLargura(largura);</span>
+<span class="fc bfc" id="L295" title="All 2 branches covered.">        for (Parede parede : this.listaParedes) {</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">            if (parede.getOrientacaoParede() == Parede.ORIENTACAO_VERTICAL) {</span>
+<span class="fc" id="L297">                parede.setLargura(largura);</span>
+            } else {
+<span class="fc" id="L299">                parede.setLargura(parede.getProfundidade());</span>
+            }
+<span class="fc" id="L301">        }</span>
+
+<span class="fc" id="L303">        this.largura = largura;</span>
+<span class="fc" id="L304">    }</span>
+
+    /**
+     * Altera o valor do altura da sala.
+     *
+     * @param altura (double) A altura.
+     */
+    public final void setAltura(double altura) {
+<span class="fc bfc" id="L312" title="All 2 branches covered.">        if (altura &lt;= 0) {</span>
+<span class="fc" id="L313">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.setAltura&quot;));
+        }
+
+<span class="fc bfc" id="L317" title="All 2 branches covered.">        for (Parede parede : this.listaParedes) {</span>
+<span class="fc" id="L318">            parede.setAltura(altura);</span>
+<span class="fc" id="L319">        }</span>
+
+<span class="fc" id="L321">        this.altura = altura;</span>
+<span class="fc" id="L322">    }</span>
+
+    /**
+     * Altera o valor da temperatura interior da sala.
+     *
+     * @param temperaturaInterior (double) A temperatura interior.
+     */
+    public final void setTemperaturaInterior(double temperaturaInterior) {
+<span class="fc bfc" id="L330" title="All 2 branches covered.">        if (temperaturaInterior &lt; -273.15) {</span>
+<span class="fc" id="L331">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setTemperaturaInteriror&quot;));
+        }
+
+<span class="fc" id="L335">        this.temperaturaInterior = temperaturaInterior;</span>
+<span class="fc" id="L336">    }</span>
+
+    /**
+     * Altera o valor da temperatura interior alvo da sala.
+     *
+     * @param temperaturaInteriorAlvo (double) A temperatura interior alvo.
+     */
+    public final void setTemperaturaInteriorAlvo(double temperaturaInteriorAlvo) {
+<span class="fc bfc" id="L344" title="All 2 branches covered.">        if (temperaturaInteriorAlvo &lt; -273.15) {</span>
+<span class="fc" id="L345">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setTemperaturaInterirorAlvo&quot;));
+        }
+
+<span class="fc" id="L349">        this.temperaturaInteriorAlvo = temperaturaInteriorAlvo;</span>
+<span class="fc" id="L350">    }</span>
+
+    /**
+     * Altera o valor da temperatura exterior minima da sala.
+     *
+     * @param temperaturaExteriorMinima (double) A temperatura exterior minima.
+     */
+    public final void setTemperaturaExternaMinima(double temperaturaExteriorMinima) {
+<span class="fc bfc" id="L358" title="All 2 branches covered.">        if (temperaturaExteriorMinima &lt; -273.15) {</span>
+<span class="fc" id="L359">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setTemperaturaExternaMinima&quot;));
+        }
+
+<span class="fc" id="L363">        this.temperaturaExteriorMinima = temperaturaExteriorMinima;</span>
+<span class="fc" id="L364">    }</span>
+
+    /**
+     * Altera o valor da temperatura exterior maxima da sala.
+     *
+     * @param temperaturaExteriorMaxima (double) A temperatura exterior maxima.
+     */
+    public final void setTemperaturaExternaMaxima(double temperaturaExteriorMaxima) {
+<span class="fc bfc" id="L372" title="All 2 branches covered.">        if (temperaturaExteriorMaxima &lt; this.temperaturaExteriorMinima) {</span>
+<span class="fc" id="L373">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setTemperaturaExternaMaxima&quot;));
+        }
+
+<span class="fc" id="L377">        this.temperaturaExteriorMaxima = temperaturaExteriorMaxima;</span>
+<span class="fc" id="L378">    }</span>
+
+    /**
+     * Altera o teto da sala.
+     *
+     * @param teto(parede) O teto.
+     */
+    public final void setTeto(Parede teto) {
+<span class="fc bfc" id="L386" title="All 2 branches covered.">        if (teto == null) {</span>
+<span class="fc" id="L387">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setTeto&quot;));
+        }
+
+<span class="fc" id="L391">        this.teto = teto;</span>
+<span class="fc" id="L392">    }</span>
+
+    /**
+     * Altera o teto da sala.
+     *
+     * @param listaParedes (list de parede) As paredes.
+     */
+    public final void setListaParedes(List&lt;Parede&gt; listaParedes) {
+<span class="fc bfc" id="L400" title="All 4 branches covered.">        if (listaParedes == null || listaParedes.size() != 4) {</span>
+<span class="fc" id="L401">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setListaParedes&quot;));
+        }
+
+<span class="fc" id="L405">        this.listaParedes = listaParedes;</span>
+<span class="fc" id="L406">    }</span>
+
+    /**
+     * Adicionar servidor à sala.
+     *
+     * @param servidor servidor a adicionar
+     * @param pos posição do servidor
+     * @param temp (double) A temperatura inicial do servidor.
+     * @return true caso o servidor tenha sido adicionado, false caso contrário.
+     *
+     */
+    public boolean addServidor(Servidor servidor, double[] pos, double temp) {
+<span class="fc" id="L418">        return this.listaServidoresInstanciados.addServidor(servidor, pos, temp);</span>
+    }
+
+    /**
+     * Imprime a informação da sala.
+     *
+     * @return Informação da sala.
+     */
+    @Override
+    public String toString() {
+<span class="nc" id="L428">        String str = &quot;&quot;;</span>
+<span class="nc bnc" id="L429" title="All 2 branches missed.">        for (int i = 0; i &lt; 4; i++) {</span>
+<span class="nc" id="L430">            str += &quot;\n&quot; + (i + 1) + &quot;:\n&quot; + this.listaParedes.get(i);</span>
+        }
+<span class="nc" id="L432">        return String.format(Simulacao.getFrasePelaChave(&quot;uc1.sala.info&quot;),</span>
+<span class="nc" id="L433">                this.comprimento, this.altura, this.largura,</span>
+<span class="nc" id="L434">                this.temperaturaInterior, this.temperaturaExterior,</span>
+<span class="nc" id="L435">                this.temperaturaExteriorMinima, this.temperaturaExteriorMaxima,</span>
+<span class="nc" id="L436">                this.teto.toString(), str);</span>
+    }
+
+    /**
+     * Valida uma sala.
+     *
+     * @return true se válida; false se inválida
+     */
+    public boolean validar() {
+<span class="pc bpc" id="L445" title="1 of 2 branches missed.">        if (this.comprimento &lt;= 0) {</span>
+<span class="nc" id="L446">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.setComprimento&quot;));
+        }
+<span class="pc bpc" id="L449" title="1 of 2 branches missed.">        if (this.largura &lt;= 0) {</span>
+<span class="nc" id="L450">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setLargura&quot;));
+        }
+
+<span class="pc bpc" id="L454" title="1 of 2 branches missed.">        if (this.altura &lt;= 0) {</span>
+<span class="nc" id="L455">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.setAltura&quot;));
+        }
+
+<span class="pc bpc" id="L459" title="1 of 2 branches missed.">        if (this.temperaturaInterior &lt; -273.15) {</span>
+<span class="nc" id="L460">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setTemperaturaInteriror&quot;));
+        }
+
+<span class="pc bpc" id="L464" title="1 of 2 branches missed.">        if (this.temperaturaInteriorAlvo &lt; -273.15) {</span>
+<span class="nc" id="L465">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setTemperaturaInterirorAlvo&quot;));
+        }
+<span class="pc bpc" id="L468" title="1 of 2 branches missed.">        if (hasTemperaturaVariation) {</span>
+<span class="nc bnc" id="L469" title="All 2 branches missed.">            if (this.temperaturaExteriorMinima &lt; -273.15) {</span>
+<span class="nc" id="L470">                throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                        &quot;uc1.sala.setTemperaturaExternaMinima&quot;));
+            }
+
+<span class="nc bnc" id="L474" title="All 2 branches missed.">            if (this.temperaturaExteriorMaxima &lt; this.temperaturaExteriorMinima) {</span>
+<span class="nc" id="L475">                throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                        &quot;uc1.sala.setTemperaturaExternaMaxima&quot;));
+            }
+        }
+
+<span class="pc bpc" id="L480" title="1 of 2 branches missed.">        if (this.teto == null) {</span>
+<span class="nc" id="L481">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setTeto&quot;));
+        }
+
+<span class="pc bpc" id="L485" title="2 of 4 branches missed.">        if (this.listaParedes == null || this.listaParedes.size() != 4) {</span>
+<span class="nc" id="L486">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(</span>
+                    &quot;uc1.sala.setListaParedes&quot;));
+        }
+
+<span class="fc bfc" id="L490" title="All 2 branches covered.">        for (Parede p : this.listaParedes) {</span>
+<span class="fc" id="L491">            p.validar();</span>
+<span class="fc" id="L492">        }</span>
+
+<span class="fc" id="L494">        return this.teto.validar();</span>
+    }
+
+    /**
+     * Transfere a energia da sala para o teto, sobre a forma de calor.
+     */
+    public void convectHeatToRoof() {
+<span class="fc" id="L501">        double myArea = this.teto.getAreaContactoConveccao();</span>
+        double deltaT, deltaEnergy, deltaTemperatura;
+        //for (int i=0;i&lt;deltaTime;i++)
+        {
+<span class="fc" id="L505">            deltaT = getTemperaturaInterior() - this.teto.getTemperatura();</span>
+<span class="pc bpc" id="L506" title="1 of 2 branches missed.">            if (deltaT &gt; 0) {</span>
+<span class="fc" id="L507">                deltaEnergy = 15d* myArea * deltaT*0.01;</span>
+<span class="fc" id="L508">                deltaTemperatura = TransferenciaCalor.jouleToCelsius(deltaEnergy);</span>
+<span class="fc" id="L509">                this.teto.setTemperatura(this.teto.getTemperatura() + deltaTemperatura);</span>
+<span class="fc" id="L510">                setTemperaturaInterior(getTemperatura() - deltaTemperatura);</span>
+                //System.out.println(&quot;Teto temperatura: &quot;+teto.getTemperatura());
+            }
+        }
+<span class="fc" id="L514">    }</span>
+
+    /**
+     * Retorna os dados para gerar um mapa térmico.
+     *
+     * @return ({@link MapaTermicoData}) Os dados do mapa térmico.
+     */
+    public MapaTermicoData getMapaTermico() {
+<span class="nc" id="L522">        MapaTermicoData result = new MapaTermicoData();</span>
+<span class="nc" id="L523">        result.setTemperaturaInterna(this.temperaturaInterior);</span>
+<span class="nc" id="L524">        result.setTemperaturaExterna(this.temperaturaExteriorMinima);</span>
+<span class="nc" id="L525">        this.listaServidoresInstanciados.adicionaInstanciasA(result);</span>
+<span class="nc" id="L526">        return result;</span>
+    }
+    
+    /**
+     * Remove todos os servidos instanciados desta sala.
+     */
+    public void removeServidoresInstanciados()
+    {
+<span class="nc" id="L534">        listaServidoresInstanciados.removeServidoresInstanciados();</span>
+<span class="nc" id="L535">    }</span>
+
+    /**
+     * Indica se esta sala permite a variação da temperatura externa.
+     *
+     * @return (boolean) Verdadeiro caso permita.
+     */
+    public boolean hasTemperaturaVariation() {
+<span class="fc" id="L543">        return this.hasTemperaturaVariation;</span>
+    }
+
+    /**
+     * Permite determinar se a sala irá variar a temperatura externa ou não.
+     *
+     * @param hasTemperaturaVariation (boolean) O valor booleano da condição
+     * especificada.
+     */
+    public void setHasTemperaturaVariation(boolean hasTemperaturaVariation) {
+<span class="fc" id="L553">        this.hasTemperaturaVariation = hasTemperaturaVariation;</span>
+<span class="fc" id="L554">    }</span>
+
+    /**
+     * Devolve a temperatura no exterior da sala.
+     *
+     * @return (double) O valor da temperatura na exterior da sala.
+     */
+    public double getTemperaturaExterior() {
+<span class="fc" id="L562">        return this.temperaturaExterior;</span>
+    }
+
+    /**
+     * Atribui a temperatura no exterior da sala.
+     *
+     * @param temperaturaExterior (double) O valor da temperatura exterior À
+     * sala.
+     */
+    public final void setTemperaturaExterior(double temperaturaExterior) {
+<span class="fc bfc" id="L572" title="All 2 branches covered.">        if (temperaturaExterior&lt;-273.15)</span>
+        {
+<span class="fc" id="L574">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.tempExterior.invalid&quot;));</span>
+        }
+<span class="fc" id="L576">        this.temperaturaExterior = temperaturaExterior;</span>
+<span class="fc" id="L577">    }</span>
+
+    @Override
+    public double getAreaContactoConveccao() {
+<span class="fc" id="L581">        return 0;</span>
+    }
+
+    @Override
+    public double getMassa() {
+<span class="fc" id="L586">        return 0;</span>
+    }
+
+    @Override
+    public double getTemperatura() {
+<span class="fc" id="L591">        return this.temperaturaInterior;</span>
+    }
+
+    @Override
+    public Material getMaterial() {
+<span class="fc" id="L596">        return null;</span>
+    }
+
+    @Override
+    public void setTemperatura(double temp) {
+<span class="fc" id="L601">        setTemperaturaInterior(temp);</span>
+<span class="fc" id="L602">    }</span>
+
+    @Override
+    public boolean isCollidable() {
+<span class="fc" id="L606">        return false;</span>
+    }
+
+    @Override
+    public double[] getPosicao() {
+<span class="fc" id="L611">        return null;</span>
+    }
+
+    @Override
+    public double[] getDimensoes() {
+<span class="fc" id="L616">        double[] result = new double[3];</span>
+<span class="fc" id="L617">        result[0] = this.comprimento;</span>
+<span class="fc" id="L618">        result[1] = this.largura;</span>
+<span class="fc" id="L619">        result[2] = this.altura;</span>
+<span class="fc" id="L620">        return result;</span>
+    }
+
+    @Override
+    public double getResistencia(CondutorCalor other) {
+<span class="fc" id="L625">        return 0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RegistoServidores.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">RegistoServidores.java</span></div><h1>RegistoServidores.java</h1><pre class="source lang-java linenums">package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+/**
+ * Representa uma classe que gere os vários tipos de servidores disponíveis na
+ * aplicação através de uma lista de servidores.
+ */
+public class RegistoServidores implements Serializable {
+
+    /**
+     * A lista de servidores deste registo.
+     */
+    private ArrayList&lt;Servidor&gt; listaServidores;
+
+    /**
+     * Cria uma instância de {@link RegistoServidores} com parâmetros nulos.
+     */
+<span class="fc" id="L20">    public RegistoServidores() {</span>
+<span class="fc" id="L21">        listaServidores = new ArrayList();</span>
+<span class="fc" id="L22">    }</span>
+
+    /**
+     * Cria uma instância de {@link RegistoServidores} com os parâmetros
+     * especificados.
+     *
+     * @param listaServidores (ArrayList&amp;lt;{@link Servidor}&amp;gt;) Uma lista de
+     * servidores para popular este registo de servidores. É realizada uma cópia
+     * manual.
+     */
+<span class="fc" id="L32">    public RegistoServidores(ArrayList&lt;Servidor&gt; listaServidores) {</span>
+<span class="fc" id="L33">        this.listaServidores = new ArrayList();</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        for (Servidor element : listaServidores) {</span>
+<span class="fc" id="L35">            this.listaServidores.add(element);</span>
+<span class="fc" id="L36">        }</span>
+<span class="fc" id="L37">    }</span>
+
+    /**
+     * Retorna a lista de servidores deste registo.
+     *
+     * @return (ArrayList&amp;lt;{@link Servidor}&amp;gt;) A lista de servidores.
+     */
+    public ArrayList&lt;Servidor&gt; getListaServidores() {
+<span class="fc" id="L45">        ArrayList&lt;Servidor&gt; result = new ArrayList();</span>
+<span class="fc" id="L46">        result.addAll(listaServidores);</span>
+<span class="fc" id="L47">        return result;</span>
+    }
+
+    /**
+     * Cria uma nova instância de servidor.
+     * 
+     * @return Nova instância de servidor
+     */
+    public Servidor novoServidor() {
+<span class="fc" id="L56">        return new Servidor();</span>
+    }
+
+    /**
+     * Adiciona um servidor à lista de servidores após a validação do mesmo.
+     * 
+     * @param servidor Servidor que vai ser adicionado.
+     * @return Verdadeiro se o servidor for adicionado com successo ou falso
+     * caso não o seja.
+     */
+    public boolean adicionarServidor(Servidor servidor) {
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (servidor.valida()) {</span>
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">            if (getIndexOf(servidor)==-1)</span>
+            {
+<span class="fc" id="L70">                return this.listaServidores.add(servidor);</span>
+            }
+        }
+<span class="nc" id="L73">        return false;</span>
+    }
+
+    /**
+     * Retorna a posição do servidor especificado neste registo de servidores.
+     *
+     * @param serv ({@link Servidor}) O servidor especificado.
+     * @return (int) A posição do servidor na lista. -1 se o servidor não
+     * existir na lista.
+     */
+    public int getIndexOf(Servidor serv) {
+<span class="fc" id="L84">        return listaServidores.indexOf(serv);</span>
+    }
+
+    /**
+     * Regista a alteração de um servidor neste registo de servidores.
+     *
+     * @param serv ({@link Servidor}) O servidor com as novas alterações.
+     * @param index (int) O índice do servidor original.
+     * @return (boolean) Verdadeiro caso a alteração tenha sido registada com
+     * sucesso.
+     */
+    public boolean registaAlteracao(Servidor serv, int index) {
+<span class="pc bpc" id="L96" title="1 of 4 branches missed.">        boolean result = 0 &lt;= index &amp;&amp; index &lt; listaServidores.size();</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (result) {</span>
+<span class="fc" id="L98">            result = validaServidor(serv, index);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            if (result) {</span>
+<span class="fc" id="L100">                listaServidores.set(index, serv);</span>
+            }
+        }
+<span class="fc" id="L103">        return result;</span>
+    }
+
+    /**
+     * Verifica se o servidor especificado já existe em qualquer outra posição
+     * que não a posição original.
+     *
+     * @param serv ({@link Servidor}) O servidor especificado.
+     * @param index (int) A posição original do servidor.
+     * @return (boolean) Verdadeiro se o servidor não tiver conflito com
+     * qualquer outro servidor.
+     */
+    private boolean validaServidor(Servidor serv, int index) {
+<span class="fc" id="L116">        boolean result = true;</span>
+<span class="pc bpc" id="L117" title="1 of 4 branches missed.">        for (int i = 0; i &lt; listaServidores.size() &amp;&amp; result; i++) {</span>
+<span class="fc bfc" id="L118" title="All 4 branches covered.">            if (serv.equals(listaServidores.get(i)) &amp;&amp; i != index) {</span>
+<span class="fc" id="L119">                result = false;</span>
+            }
+        }
+<span class="fc" id="L122">        return result;</span>
+    }
+
+    /**
+     * Obtém um servidor a partir do seu nome.
+     *
+     * @param nome nome do servidor
+     * @return servidor
+     */
+    public Servidor getServidor(String nome) {
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        for (Servidor servidor : listaServidores) {</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">            if (servidor.getNome().equalsIgnoreCase(nome)) {</span>
+<span class="fc" id="L134">                return servidor;</span>
+            }
+<span class="nc" id="L136">        }</span>
+<span class="nc" id="L137">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

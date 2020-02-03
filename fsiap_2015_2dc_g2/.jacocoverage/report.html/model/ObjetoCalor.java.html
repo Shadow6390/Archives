@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ObjetoCalor.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">ObjetoCalor.java</span></div><h1>ObjetoCalor.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package model;
+
+import java.util.ArrayList;
+import model.interfaces.CondutorCalor;
+
+/**
+ * Class abstrata com implementação geral dos métodos de {@link model.interfaces.CondutorCalor}.
+ * @author DC_G2
+ */
+<span class="fc" id="L15">public abstract class ObjetoCalor implements CondutorCalor{</span>
+    
+    /**
+     * A precisão da colisão utilizada no cálculo da área de colisão.
+     */
+    private static final double COLLISION_PRECISION=0.1;
+    
+    /**
+     * A constante de stefan-boltzmann.
+     */
+<span class="fc" id="L25">    private static final double STEFAN_BOLTZMANN_CONSTANT=5.67*Math.pow(10,-8);</span>
+    
+    /**
+     * O tempo (em segundos) que passa por cada passo da simulação.
+     */
+<span class="fc" id="L30">    protected static double deltaTime = 60;</span>
+    
+    /**
+     * Transfere calor deste objeto para outro sobre a forma de condução.
+     * @param other ({@link CondutorCalor}) O outro objeto a conduzir.
+     */
+    public void conductHeat(CondutorCalor other)
+    {
+        /*CondutorCalor highest=this;
+        if (highest.getTemperatura()&lt;other.getTemperatura())
+        {
+            highest=other;
+        }*/
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">        if (isCollidingWith(other))</span>
+        {
+            //for (int i=0;i&lt;deltaTime;i++)
+            {
+<span class="fc" id="L47">                double deltaTemp = getTemperatura()-other.getTemperatura();</span>
+<span class="fc" id="L48">                ArrayList&lt;CondutorCalor&gt; list = new ArrayList();</span>
+<span class="fc" id="L49">                list.add(this);</span>
+<span class="fc" id="L50">                list.add(other);</span>
+            
+<span class="fc" id="L52">                double Rt = getResistenciaTotalEmSerie(list);</span>
+<span class="fc" id="L53">                double deltaEnergy = deltaTemp/**deltaTime*/*Rt;</span>
+<span class="fc" id="L54">                deltaEnergy = TransferenciaCalor.caloriesToJoule(deltaEnergy)*0.01;</span>
+<span class="fc" id="L55">                double deltaTemperatura = TransferenciaCalor.jouleToCelsius(deltaEnergy);</span>
+            
+<span class="fc" id="L57">                setTemperatura(getTemperatura()-deltaTemperatura);</span>
+<span class="fc" id="L58">                other.setTemperatura(other.getTemperatura()+deltaTemperatura);</span>
+            }
+        }
+<span class="fc" id="L61">    }</span>
+    /**
+     * Transfere calor deste objeto para outro sobre a forma de convecção.
+     * @param other ({@link CondutorCalor}) O outro objeto a conduzir.
+     */
+     public void convectHeat(CondutorCalor other)
+    {
+<span class="fc" id="L68">        double myArea =getAreaContactoConveccao();</span>
+        double deltaT,deltaEnergy,deltaTemperatura;
+        //for (int i=0;i&lt;deltaTime;i++)
+        {
+<span class="fc" id="L72">            deltaT = getTemperatura()-other.getTemperatura();</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            if (deltaT&gt;0)</span>
+            {
+<span class="fc" id="L75">                deltaEnergy = getMaterial().getCoeficienteConveccao()*myArea*deltaT*0.01;</span>
+<span class="fc" id="L76">                deltaTemperatura = TransferenciaCalor.jouleToCelsius(deltaEnergy);</span>
+<span class="fc" id="L77">                this.setTemperatura(getTemperatura()-deltaTemperatura);</span>
+<span class="fc" id="L78">                other.setTemperatura(other.getTemperatura()+deltaTemperatura);</span>
+            }
+        }
+<span class="fc" id="L81">    }</span>
+    /**
+     * Transfere calor deste objeto para outro sobre a forma de radiação.
+     * O for existe devido ao facto de que a expressão da emissão de energia
+     * sob a forma de radição não depende de deltaT (embora esteja expressa em J/S).
+     * Logo, para fazer uma representação correta, terá de se efetuar a mesma operção
+     * t vezes.
+     * @param other ({@link CondutorCalor}) O outro objeto a conduzir.
+     * //@deprecated Método de resolução da emição de radiação ainda não concluído.
+     */
+    public void radiateHeat(CondutorCalor other)
+    {
+        //for (int i=0;i&lt;deltaTime;i++)
+        {
+<span class="fc" id="L95">            double kelvin = Math.pow(getTemperatura()+273.15d,4);</span>
+<span class="fc" id="L96">            double energiaRadiada = getMaterial().getCoeficienteRadiacao()*STEFAN_BOLTZMANN_CONSTANT</span>
+<span class="fc" id="L97">                *getAreaContactoConveccao()*kelvin*0.01;</span>
+        
+<span class="fc" id="L99">            double otherKelvin = Math.pow(other.getTemperatura()+273.15d,4)*0.01;</span>
+<span class="fc" id="L100">            double otherEnergiaRadiada = getMaterial().getCoeficienteRadiacao()*STEFAN_BOLTZMANN_CONSTANT</span>
+<span class="fc" id="L101">                *getAreaContactoConveccao()*otherKelvin;</span>
+        
+        
+<span class="fc" id="L104">            setTemperatura(getTemperatura()+(TransferenciaCalor.jouleToCelsius(otherEnergiaRadiada)));</span>
+<span class="fc" id="L105">            setTemperatura(getTemperatura()-(TransferenciaCalor.jouleToCelsius(energiaRadiada)));</span>
+        
+<span class="fc" id="L107">            other.setTemperatura(other.getTemperatura()-(TransferenciaCalor.jouleToCelsius(otherEnergiaRadiada)));</span>
+<span class="fc" id="L108">            other.setTemperatura(other.getTemperatura()+TransferenciaCalor.jouleToCelsius(energiaRadiada));</span>
+        }
+<span class="fc" id="L110">    }</span>
+    @Override
+    public boolean isCollidingWith(CondutorCalor other)
+    {
+<span class="fc" id="L114">        boolean result = false;</span>
+<span class="fc" id="L115">        double[] myPos = getPosicao();</span>
+<span class="fc" id="L116">        double[] otherPos = other.getPosicao();</span>
+<span class="fc" id="L117">        double[] myDim = getDimensoes();</span>
+<span class="fc" id="L118">        double[] otherDim = other.getDimensoes();</span>
+        //Using AABB method.
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if(Math.abs(myPos[0] - otherPos[0]) &lt;= myDim[0]*0.5 + otherDim[0]*0.5)</span>
+        {
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">            if(Math.abs(myPos[1] - otherPos[1]) &lt;= myDim[1]*0.5+ otherDim[1]*0.5)</span>
+            {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">                if(Math.abs(myPos[2] - otherPos[2]) &lt;= myDim[2]*0.5+ otherDim[2]*0.5)</span>
+                {
+<span class="fc" id="L126">                    result=true;</span>
+                }
+            }
+        }
+<span class="fc" id="L130">        return result;</span>
+    }
+    @Override
+    public double getCollidingArea(CondutorCalor other)
+    {
+<span class="fc" id="L135">        double result=0;</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">        if (isCollidingWith(other))</span>
+        {
+<span class="fc" id="L138">            double[] myDim = getDimensoes();</span>
+<span class="fc" id="L139">            double[] posicao = getPosicao();</span>
+<span class="fc" id="L140">            double[] otherDim = other.getDimensoes();</span>
+<span class="fc" id="L141">            double[] otherPos=other.getPosicao();</span>
+                    
+<span class="fc" id="L143">            ServidorInstanciado.Plane myTop = new ServidorInstanciado.Plane(posicao[0],posicao[1],myDim[0],myDim[1]);</span>
+<span class="fc" id="L144">            ServidorInstanciado.Plane otherBottom = new ServidorInstanciado.Plane(otherPos[0],otherPos[1],otherDim[0],otherDim[1]);</span>
+            //Se os planos coincidirem
+<span class="fc bfc" id="L146" title="All 2 branches covered.">            if (Math.abs(posicao[2]+myDim[2]-otherPos[2])&lt;COLLISION_PRECISION)</span>
+            {
+<span class="fc" id="L148">                result+=myTop.getCollisionArea(otherBottom);</span>
+            }
+            
+<span class="fc" id="L151">            ServidorInstanciado.Plane myBottom = new ServidorInstanciado.Plane(posicao[0],posicao[1],myDim[0],myDim[1]);</span>
+<span class="fc" id="L152">            ServidorInstanciado.Plane otherTop = new ServidorInstanciado.Plane(otherPos[0],otherPos[1],otherDim[0],otherDim[1]);</span>
+            //Se os planos coincidirem
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">            if (Math.abs(posicao[2]-(otherPos[2]+otherDim[2]))&lt;COLLISION_PRECISION)</span>
+            {
+<span class="nc" id="L156">                result+=myBottom.getCollisionArea(otherTop);</span>
+            }
+            
+<span class="fc" id="L159">            ServidorInstanciado.Plane myLeft = new ServidorInstanciado.Plane(posicao[0],posicao[2],myDim[0],myDim[2]);</span>
+<span class="fc" id="L160">            ServidorInstanciado.Plane otherRight = new ServidorInstanciado.Plane(otherPos[0],otherPos[2],otherDim[0],otherDim[2]);</span>
+            //Se os planos coincidirem
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">            if (Math.abs(posicao[1]-(otherPos[1]+otherDim[1]))&lt;COLLISION_PRECISION)</span>
+            {
+<span class="nc" id="L164">                result+=myLeft.getCollisionArea(otherRight);</span>
+            }
+            
+<span class="fc" id="L167">            ServidorInstanciado.Plane myRight = new ServidorInstanciado.Plane(posicao[0],posicao[2],myDim[0],myDim[2]);</span>
+<span class="fc" id="L168">            ServidorInstanciado.Plane otherLeft = new ServidorInstanciado.Plane(otherPos[0],otherPos[2],otherDim[0],otherDim[2]);</span>
+            //Se os planos coincidirem
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">            if (Math.abs(posicao[1]+myDim[1]-otherPos[1])&lt;COLLISION_PRECISION)</span>
+            {
+<span class="nc" id="L172">                result+=myRight.getCollisionArea(otherLeft);</span>
+            }
+            
+<span class="fc" id="L175">            ServidorInstanciado.Plane myFront = new ServidorInstanciado.Plane(posicao[2],posicao[1],myDim[2],myDim[1]);</span>
+<span class="fc" id="L176">            ServidorInstanciado.Plane otherBack = new ServidorInstanciado.Plane(otherPos[2],otherPos[1],otherDim[2],otherDim[1]);</span>
+            //Se os planos coincidirem
+<span class="fc bfc" id="L178" title="All 2 branches covered.">            if (Math.abs(posicao[0]+myDim[0]-otherPos[0])&lt;COLLISION_PRECISION)</span>
+            {
+<span class="fc" id="L180">                result+=myFront.getCollisionArea(otherBack);</span>
+            }
+            
+<span class="fc" id="L183">            ServidorInstanciado.Plane myBack = new ServidorInstanciado.Plane(posicao[2],posicao[1],myDim[2],myDim[1]);</span>
+<span class="fc" id="L184">            ServidorInstanciado.Plane otherFront = new ServidorInstanciado.Plane(otherPos[2],otherPos[1],otherDim[2],otherDim[1]);</span>
+            //Se os planos coincidirem
+<span class="fc bfc" id="L186" title="All 2 branches covered.">            if (Math.abs(posicao[0]-(otherPos[0]+otherDim[0]))&lt;COLLISION_PRECISION)</span>
+            {
+<span class="fc" id="L188">                result+=myBack.getCollisionArea(otherFront);</span>
+            }
+        }
+<span class="fc" id="L191">        return result;</span>
+    }
+    
+    /**
+     * Verifica se este objeto encontra-se dentro de outro objeto.
+     * Este método deve ser utilizado para verificar se os objetos intersetam-se.
+     * @param other ({@link ObjetoCalor}) O outro objeto a verificar.
+     * @return (boolean) Verdadeiros se estiverem dentro um do outro.
+     */
+    public boolean isInsideOf(ObjetoCalor other)
+    {
+<span class="fc" id="L202">        boolean result = false;</span>
+<span class="fc" id="L203">        double[] myPos = getPosicao();</span>
+<span class="fc" id="L204">        double[] otherPos = other.getPosicao();</span>
+<span class="fc" id="L205">        double[] myDim = getDimensoes();</span>
+<span class="fc" id="L206">        double[] otherDim = other.getDimensoes();</span>
+        //Using AABB method.
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if(Math.abs(myPos[0] - otherPos[0]) &lt; myDim[0]*0.5+ otherDim[0]*0.5)</span>
+        {
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">            if(Math.abs(myPos[1] - otherPos[1]) &lt; myDim[1]*0.5+ otherDim[1]*0.5)</span>
+            {
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">                if(Math.abs(myPos[2] - otherPos[2]) &lt; myDim[2]*0.5+ otherDim[2]*0.5)</span>
+                {
+<span class="fc" id="L214">                    result=true;</span>
+                }
+            }
+        }
+<span class="fc" id="L218">        return result;</span>
+    }
+
+    /**
+     * Devolve a resistencia total de todos os objetos da lista, assumindo que todos 
+     * estes estão em série uns com os outros.
+     * @param objects (ArrayList&amp;lt;{@link CondutorCalor}&amp;gt;) A lista de objetos condutores
+     * de calores.
+     * @return (double) A resistência total.
+     */
+    public static double getResistenciaTotalEmSerie(ArrayList&lt;CondutorCalor&gt; objects)
+    {
+<span class="fc" id="L230">        double result=0;</span>
+<span class="fc bfc" id="L231" title="All 2 branches covered.">        for (int i=0;i&lt;objects.size()-1;i++)</span>
+        {
+<span class="fc" id="L233">            result+=objects.get(i).getResistencia(objects.get(i+1));</span>
+        }
+<span class="fc" id="L235">        result+=objects.get(objects.size()-1).getResistencia(objects.get(objects.size()-2));</span>
+<span class="fc" id="L236">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

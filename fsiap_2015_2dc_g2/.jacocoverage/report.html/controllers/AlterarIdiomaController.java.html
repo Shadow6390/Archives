@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>AlterarIdiomaController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">AlterarIdiomaController.java</span></div><h1>AlterarIdiomaController.java</h1><pre class="source lang-java linenums">package controllers;
+
+import model.Idioma;
+import model.RegistoIdiomas;
+import model.Simulacao;
+
+/**
+ * Representa um controlador que gere o caso de uso 12, alterar idioma, através
+ * de uma simulação, um registo de idiomas e um idioma.
+ */
+public class AlterarIdiomaController {
+
+    /**
+     * Simulação à qual se vai alterar o idioma.
+     */
+    private Simulacao simulacao;
+
+    /**
+     * Lista dos vários idiomas disponíveis.
+     */
+    private RegistoIdiomas registoIdiomas;
+
+    /**
+     * Idioma selecionado.
+     */
+    private Idioma idioma;
+
+    /**
+     * Constrói uma instância do controlador que gere o caso de uso 12, alterar
+     * idioma, através da simulação.
+     *
+     * @param simulacao Simulação cujo idioma vai ser alterado.
+     */
+<span class="fc" id="L34">    public AlterarIdiomaController(Simulacao simulacao) {</span>
+<span class="fc" id="L35">        this.simulacao = simulacao;</span>
+<span class="fc" id="L36">    }</span>
+
+    /**
+     * Devolve a lista de idiomas disponíveis.
+     *
+     * @return Lista de idiomas disponíveis.
+     */
+    public String[] iniciarAlteracaoIdioma() {
+<span class="fc" id="L44">        this.registoIdiomas = simulacao.getRegistoIdiomas();</span>
+
+<span class="fc" id="L46">        return this.registoIdiomas.listaParaVetor();</span>
+    }
+
+    /**
+     * Seleciona um idioma de entre os disponíveis e valida se o mesmo não é
+     * igual ao atual.
+     *
+     * @param idioma Idioma selecionado.
+     * @return Verdadeiro se for possível alterar o idioma e falso caso o idioma
+     * selecionado seja o atual.
+     */
+    public boolean selecionarIdioma(String idioma) {
+<span class="fc" id="L58">        this.idioma = this.registoIdiomas.getIdioma(idioma);</span>
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (!this.simulacao.validarIdioma(this.idioma.importarIdioma())) {</span>
+<span class="fc" id="L61">            throw new IllegalArgumentException(</span>
+<span class="fc" id="L62">                    Simulacao.getIdiomaAtual().getString(&quot;uc12.erro.selecionaridioma&quot;));</span>
+        }
+
+<span class="fc" id="L65">        return true;</span>
+    }
+
+    /**
+     * Procede à alteração do idioma para o escolhido previamente.
+     */
+    public void confirmarIdioma() {
+<span class="fc" id="L72">        Simulacao.setIdiomaAtual(this.idioma.importarIdioma());</span>
+<span class="fc" id="L73">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

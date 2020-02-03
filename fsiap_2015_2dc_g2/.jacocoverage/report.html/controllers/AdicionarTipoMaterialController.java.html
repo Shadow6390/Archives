@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>AdicionarTipoMaterialController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">AdicionarTipoMaterialController.java</span></div><h1>AdicionarTipoMaterialController.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package controllers;
+
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import model.Material;
+import model.RegistoMateriais;
+import model.Simulacao;
+
+/**
+ * Classe controller que coordena a adição de um novo tipo de material.
+ * 
+ * @author DC_G2
+ */
+public class AdicionarTipoMaterialController {
+
+    /**
+     * Simulação à qual se vai adicionar um tipo de material.
+     */
+    private Simulacao simulacao;
+
+    /**
+     * Lista dos vários materiais existentes.
+     */
+    private RegistoMateriais registoMateriais;
+
+    /**
+     * Material criado.
+     */
+    private Material material;
+
+    /**
+     * Constrói uma instância do controlador que gere o caso de uso 3, Adicionar
+     * Tipo de Material, através da simulação.
+     *
+     * @param simulacao Simulação onde material vai ser adicionado.
+     */
+<span class="fc" id="L43">    public AdicionarTipoMaterialController(Simulacao simulacao) {</span>
+<span class="fc" id="L44">        this.simulacao = simulacao;</span>
+<span class="fc" id="L45">        registoMateriais = simulacao.getRegistoMateriais();</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Método que permite obter a lista de materiais existentes;
+     *
+     * @return lista de materiais existentes.
+     */
+    private List&lt;Material&gt; getListaMateriais() {
+<span class="fc" id="L54">        return simulacao.getListaMateriaisExistentes();</span>
+    }
+
+    /**
+     * Método que permite obter os dados das listas de materiais existentes;
+     *
+     * @return lista de materiais existentes.
+     */
+    public ArrayList&lt;String&gt; getListaMateriaisString() {
+<span class="fc" id="L63">        ArrayList&lt;String&gt; lista = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        for (Material mat : this.getListaMateriais()) {</span>
+<span class="fc" id="L65">            lista.add(mat.getNome());</span>
+<span class="fc" id="L66">        }</span>
+<span class="fc" id="L67">        return lista;</span>
+    }
+
+    /**
+     * Método que permite a criação de um novo tipo de material;
+     *
+     * @param nome nome do material.
+     * @param descricao descrição do material.
+     * @param coeficienteConducao Coeficiente de condução do material
+     * @param coeficienteConveccao Coeficiente de convecção do material
+     * @param coeficienteRadiacao Coeficiente de radiação do material
+     * @param imagem imagem do material.
+     * @return Verdadeiro se foi criado, falso se não foi.
+     */
+    public boolean novoMaterial(String nome, String descricao, double coeficienteConducao,
+            double coeficienteConveccao, double coeficienteRadiacao, BufferedImage imagem) {
+<span class="fc" id="L83">        this.material = new Material(nome, descricao, coeficienteConducao, </span>
+                coeficienteConveccao, coeficienteRadiacao, imagem);
+<span class="pc bpc" id="L85" title="2 of 4 branches missed.">        if (this.material != null &amp;&amp; this.material.valida()) {</span>
+<span class="fc" id="L86">            return true;</span>
+        }
+<span class="nc" id="L88">        return false;</span>
+    }
+
+    /**
+     * Método que permite obter os dados do material criado.
+     *
+     * @return dados do material.
+     */
+    public String getInfo() {
+<span class="fc" id="L97">        return this.material.toString();</span>
+    }
+
+    /**
+     * Método que permite registar o novo material na lista de materiais
+     * existentes.
+     *
+     * @return Verdadeiro se foi adicionado ou falso se não foi.
+     */
+    public boolean RegistaMaterial() {
+<span class="fc" id="L107">        return this.registoMateriais.addMaterial(this.material);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

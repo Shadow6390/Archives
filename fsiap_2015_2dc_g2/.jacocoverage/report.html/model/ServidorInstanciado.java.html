@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ServidorInstanciado.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">ServidorInstanciado.java</span></div><h1>ServidorInstanciado.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package model;
+
+import bragasQuest.Vector3D;
+import java.io.Serializable;
+import static model.Simulacao.getIdiomaAtual;
+import model.interfaces.CondutorCalor;
+
+/**
+ * Representa a instância de um servidor.
+ * @author DC_G2
+ */
+public class ServidorInstanciado extends ObjetoCalor implements Serializable{
+    
+    /**
+     * O servidor do qual esta instância se baseia.
+     */
+    private Servidor servidor;
+    /**
+     * A carga do servidor.
+     */
+    private double carga;
+    /**
+     * A posição em três dimensões.
+     */
+    private double[] posicao;
+    
+    /**
+     * A temperatura desta instância.
+     */
+    private double temperatura;
+    
+    /**
+     * A mínima temperatura máxima e a máxima temperatura máxima a que um servidor pode estar.
+     */
+    private static final double minMaxTemp=25,maxMaxTemp=90;
+    
+    /**
+     * O identificar único desta instância.
+     */
+    private final int id;
+    
+    /**
+     * O contador de identificadores.
+     */
+<span class="fc" id="L50">    private static int idCounter=0;</span>
+    
+    /**
+     * Construtor nulo de {@link ServidorInstanciado}.
+     */
+    public ServidorInstanciado()
+<span class="fc" id="L56">    {</span>
+<span class="fc" id="L57">        posicao = new double[3];</span>
+<span class="fc" id="L58">        id=idCounter++;</span>
+<span class="fc" id="L59">    }</span>
+    
+    /**
+     * Cria uma instância de {@link ServidorInstanciado} com os parâmetros
+     * especificados.
+     * @param servidor ({@link Servidor}) O servidor que esta instância tem
+     * de representar.
+     */
+    public ServidorInstanciado(Servidor servidor)
+<span class="fc" id="L68">    {</span>
+<span class="fc" id="L69">        setServidor(servidor);</span>
+<span class="fc" id="L70">        setCarga(servidor.getCarga());</span>
+<span class="fc" id="L71">        id=idCounter++;</span>
+<span class="fc" id="L72">    }</span>
+    
+    /**
+     * Atribui o tipo de servidor que esta instância representa.
+     * @param serv ({@link Servidor}) O tipo de servidor pretendido.
+     */
+    public void setServidor(Servidor serv)
+    {
+<span class="fc" id="L80">        servidor=serv;</span>
+<span class="fc" id="L81">    }</span>
+    
+    /**
+     * Atribui um novo valor à carga desta instância.
+     * &lt;p&gt;
+     * A carga de um servidor varia entre 0 e 100%.
+     * @param carga (double) O novo valor da carga.
+     */
+    public void setCarga(double carga)
+    {
+<span class="pc bpc" id="L91" title="1 of 4 branches missed.">        if (carga&lt;0 || carga&gt;100)</span>
+        {
+            //To be replaced with Locale.
+<span class="fc" id="L94">            throw new IllegalArgumentException(getIdiomaAtual().getString(&quot;uc10.servidor_instanciado.carga_invalida&quot;));</span>
+        }
+<span class="fc" id="L96">        this.carga=carga;</span>
+<span class="fc" id="L97">    }</span>
+    
+    /**
+     * Atribui a temperatura desta instância.
+     * @param temp (double) O novo valor da temperatura.
+     */
+    public void setTemperatura(double temp)
+    {
+<span class="fc" id="L105">        temperatura=temp;</span>
+<span class="fc" id="L106">    }</span>
+    /**
+     * Atribui a posição desta instância.
+     * @param pos (double[]) A nova posição da instância.
+     */
+    public void setPosicao(double[] pos)
+    {
+<span class="fc" id="L113">        posicao=pos;</span>
+<span class="fc" id="L114">    }</span>
+    
+    /**
+     * Retorna o valor da carga desta instância de servidor.
+     * @return (double) O valor da carga.
+     */
+    public double getCarga()
+    {
+<span class="fc" id="L122">        return carga;</span>
+    }
+    
+    /**
+     * Retorna o valor da temperatura desta instância.
+     * @return (double) A temperatura da instância
+     */
+    public double getTemperatura()
+    {
+<span class="fc" id="L131">        return temperatura;</span>
+    }
+    
+    /**
+     * Retorna a posicao desta instância de servidor.
+     * @return (double[]) A posicao desta instância.
+     */
+    public double[] getPosicao()
+    {
+<span class="fc" id="L140">        return posicao;</span>
+    }
+    
+    /**
+     * Transfere a energia sobre a forma de calor dissipada pelo cpu do servidor
+     * para o servidor.
+     */
+    public void stepDissipation()
+    {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (temperatura&lt;((maxMaxTemp-minMaxTemp)*carga*0.01)+25)</span>
+        {
+<span class="fc" id="L151">            temperatura+=carga*0.01*TransferenciaCalor.jouleToCelsius(Servidor.getHeatDissipation())*0.001;</span>
+        }
+<span class="fc" id="L153">    }</span>
+
+    @Override
+    public double getAreaContactoConveccao() {
+        //Let's assume that it will be in contact with 5 faces of this server.
+<span class="fc" id="L158">        double[] myDim = getDimensoes();</span>
+<span class="fc" id="L159">        double a1 = (myDim[0])*(myDim[1]); //Bottom and up areas.</span>
+<span class="fc" id="L160">        double a2 = (myDim[1])*(myDim[2]); //Front and back areas.</span>
+<span class="fc" id="L161">        double a3 = (myDim[0])*(myDim[2]); //Left and right areas.</span>
+<span class="fc" id="L162">        return a1+2d*a2+2d*a3;</span>
+    }
+
+    @Override
+    public double getMassa() {
+<span class="fc" id="L167">        return servidor.getMassa();</span>
+    }
+
+    @Override
+    public Material getMaterial() {
+<span class="fc" id="L172">        return servidor.getMaterial();</span>
+    }
+
+    @Override
+    public boolean isCollidable() {
+<span class="fc" id="L177">        return true;</span>
+    }
+
+    @Override
+    public double[] getDimensoes() {
+<span class="fc" id="L182">        double[] result = new double[3];</span>
+<span class="fc" id="L183">        result[0]=servidor.getComprimento();</span>
+<span class="fc" id="L184">        result[1]=servidor.getLargura();</span>
+<span class="fc" id="L185">        result[2]=servidor.getAltura();</span>
+<span class="fc" id="L186">        return result;</span>
+    }
+
+    @Override
+    public double getResistencia(CondutorCalor other) {
+        /*
+        TO-DO: GET ORIENTATION FROM getCollidingArea(other) AND CHANGE servidor.getComprimento()
+        ACCORDINGLY.
+        */
+<span class="fc" id="L195">        double depth=0;</span>
+<span class="fc" id="L196">        Vector3D myPos = new Vector3D(posicao);</span>
+<span class="fc" id="L197">        Vector3D otherPos = new Vector3D(other.getPosicao());</span>
+<span class="fc" id="L198">        Vector3D result = myPos.minus(otherPos);</span>
+<span class="fc" id="L199">        double angleHor = Vector3D.getAngleBetween(new Vector3D(0,1,0), otherPos);</span>
+<span class="fc" id="L200">        double angleVer = Vector3D.getAngleBetween(new Vector3D(1,0,0), otherPos);</span>
+<span class="fc" id="L201">        double anglePlane = Vector3D.getAngleBetween(new Vector3D(0,0,1), otherPos);</span>
+        
+<span class="fc" id="L203">        double minAngle = Math.min(Math.min(angleHor,angleVer), anglePlane);</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        if (minAngle==angleHor)</span>
+        {
+<span class="fc" id="L206">            depth=servidor.getComprimento();</span>
+        }
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">        else if (minAngle==anglePlane)</span>
+        {
+<span class="nc" id="L210">            depth=servidor.getAltura();</span>
+        }
+<span class="fc bfc" id="L212" title="All 2 branches covered.">        else if (minAngle==angleVer)</span>
+        {
+<span class="fc" id="L214">            depth=servidor.getLargura();</span>
+        }
+<span class="fc" id="L216">        return depth/(servidor.getMaterial().getCoeficienteConducao()*getCollidingArea(other));</span>
+    }
+    
+    @Override
+    public String toString()
+    {
+<span class="nc" id="L222">        return String.format(getIdiomaAtual().getString(&quot;uc10.servidor_instanciado.info&quot;), posicao[0],posicao[1],posicao[2],carga,getTemperatura(),servidor.getNome());</span>
+    }
+    
+    @Override
+    public boolean equals(Object other)
+    {
+<span class="pc bpc" id="L228" title="2 of 4 branches missed.">        boolean result = other!=null &amp;&amp; getClass().equals(other.getClass());</span>
+<span class="pc bpc" id="L229" title="1 of 2 branches missed.">        if (result)</span>
+        {
+<span class="fc" id="L231">            ServidorInstanciado i = (ServidorInstanciado) other;</span>
+<span class="pc bpc" id="L232" title="2 of 4 branches missed.">            result = this==other || id==i.id;</span>
+        }
+<span class="fc" id="L234">        return result;</span>
+    }
+    
+    /**
+     * Representa um plano paralelo a dois eixos.
+     */
+    protected static class Plane
+    {
+        public double x;
+        public double y;
+        public double width;
+        public double height;
+    
+        /**
+         * Construtor nulo de {@link Plane}.
+         */
+        public Plane()
+<span class="nc" id="L251">        {</span>
+            
+<span class="nc" id="L253">        }</span>
+        /**
+         * Cria uma instância de {@link Plane} com os parâmetros especificados.
+         * @param x (double) A posição x deste plano.
+         * @param y (double) A posição y deste plano.
+         * @param w (double) O comprimento deste plano.
+         * @param h (double) A largura deste plano.
+         */
+        public Plane(double x,double y,double w,double h)
+<span class="fc" id="L262">        {</span>
+<span class="fc" id="L263">            this.x=x;</span>
+<span class="fc" id="L264">            this.y=y;</span>
+<span class="fc" id="L265">            width=w;</span>
+<span class="fc" id="L266">            height=h;</span>
+<span class="fc" id="L267">        }</span>
+        /**
+         * Retorna a área de colisão com outro plano.
+         * @param other ({@link Plane}) O plano com que este irá colidir.
+         * @return (double) O valor da área.
+         * Devolve zero se não estiverem a colidir.
+         */
+        public double getCollisionArea(Plane other)
+        {
+<span class="fc" id="L276">            double result=0;</span>
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">            if (isCollidingWith(other))</span>
+            {
+            
+<span class="fc" id="L280">                result = Math.max(0d,Math.min(x+width,other.x+other.width)-Math.max(x,other.x))</span>
+<span class="fc" id="L281">                    * Math.max(0d,Math.min(y+height, other.y+height)-Math.max(y,other.y));</span>
+            }
+            
+<span class="fc" id="L284">            return result;</span>
+        }
+        /**
+         * Verifica se este plano está a colidir com um outro plano especificado.
+         * @param other ({@link Plane}) O plano especificado.
+         * @return (boolean) Verdadeiro se estiver a colidir.
+         */
+        public boolean isCollidingWith(Plane other)
+        {
+<span class="fc" id="L293">            boolean result = false;</span>
+            //Using AABB method.
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">            if(Math.abs(x - other.x) &lt;= width+ other.width)</span>
+            {
+<span class="pc bpc" id="L297" title="1 of 2 branches missed.">                if(Math.abs(y - other.y) &lt;= height+ other.height)</span>
+                {
+<span class="fc" id="L299">                    result=true;</span>
+                }
+            }
+<span class="fc" id="L302">            return result;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

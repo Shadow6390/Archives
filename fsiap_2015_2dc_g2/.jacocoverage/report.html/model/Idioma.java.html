@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Idioma.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">Idioma.java</span></div><h1>Idioma.java</h1><pre class="source lang-java linenums">package model;
+
+import java.io.Serializable;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+/**
+ * Representa um idioma através da sua localização, a sigla utilizada para o
+ * representar (e.g. Portugal = pt_PT).
+ */
+public class Idioma implements Serializable {
+
+    /**
+     * Nome do idioma.
+     */
+    private String idioma;
+
+    /**
+     * Localização do idioma
+     */
+    private Locale localizacao;
+
+    /**
+     * Constrói uma instância de idioma através da sua localização.
+     *
+     * @param idioma Nome do idioma.
+     * @param localizacao Localização do idioma.
+     */
+<span class="fc" id="L29">    public Idioma(String idioma, Locale localizacao) {</span>
+<span class="fc" id="L30">        setIdioma(idioma);</span>
+<span class="fc" id="L31">        setLocalizacao(localizacao);</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Devolve o nome do idioma.
+     *
+     * @return Nome do idioma.
+     */
+    public String getIdioma() {
+<span class="fc" id="L40">        return this.idioma;</span>
+    }
+
+    /**
+     * Devolve a localização do idioma.
+     *
+     * @return Localização do idioma.
+     */
+    public Locale getLocalizacao() {
+<span class="fc" id="L49">        return this.localizacao;</span>
+    }
+
+    /**
+     * Modifica o nome do idioma.
+     *
+     * @param idioma Novo nome do idioma.
+     */
+    public final void setIdioma(String idioma) {
+<span class="fc bfc" id="L58" title="All 4 branches covered.">        if (idioma == null || idioma.trim().isEmpty()) {</span>
+<span class="fc" id="L59">            throw new IllegalArgumentException(&quot;uc12.erro.idioma&quot;);</span>
+        }
+
+<span class="fc" id="L62">        this.idioma = idioma;</span>
+<span class="fc" id="L63">    }</span>
+
+    /**
+     * Modifica a localização do idioma.
+     *
+     * @param localizacao Nova localização do idioma.
+     */
+    public final void setLocalizacao(Locale localizacao) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (localizacao == null) {</span>
+<span class="fc" id="L72">            throw new IllegalArgumentException(&quot;uc12.erro.localizacao&quot;);</span>
+        }
+
+<span class="fc" id="L75">        this.localizacao = localizacao;</span>
+<span class="fc" id="L76">    }</span>
+
+    /**
+     * Imprime o nome do Idioma dependendo do idioma atual em utilização.
+     *
+     * @return Nome do idioma.
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L85">        return Simulacao.getIdiomaAtual().getString(idioma);</span>
+    }
+
+    /**
+     * Verifica se dois objetos são iguais, comparando inicialmente a posição da
+     * memória, de seguida se o segundo está a null ou se as classes de cada um
+     * são diferentes e finalmente os seus atributos.
+     *
+     * @param otherObject Objecto que irá ser usado na comparação.
+     * @return Verdadeiro se os objetos forem iguais e falso caso não sejam.
+     */
+    @Override
+    public boolean equals(Object otherObject) {
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if (this == otherObject) {</span>
+<span class="nc" id="L99">            return true;</span>
+        }
+
+<span class="pc bpc" id="L102" title="2 of 4 branches missed.">        if (otherObject == null || this.getClass() != otherObject.getClass()) {</span>
+<span class="nc" id="L103">            return false;</span>
+        }
+
+<span class="fc" id="L106">        Idioma otherIdioma = (Idioma) otherObject;</span>
+
+<span class="fc" id="L108">        return this.localizacao.equals(otherIdioma.localizacao);</span>
+
+    }
+
+    /**
+     * Carrega para memória o ficheiro que contém a tradução de todas as
+     * palavras/frases referentes à localização do idioma.
+     *
+     * @return Objeto com as strings de um determinado idioma.
+     */
+    public ResourceBundle importarIdioma() {
+<span class="fc" id="L119">        return ResourceBundle.getBundle(&quot;languages/language&quot;, localizacao);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

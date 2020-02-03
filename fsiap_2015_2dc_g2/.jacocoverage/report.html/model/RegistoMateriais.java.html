@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RegistoMateriais.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">RegistoMateriais.java</span></div><h1>RegistoMateriais.java</h1><pre class="source lang-java linenums">package model;
+
+import java.awt.image.BufferedImage;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+/**
+ * Representa uma instância de registo de materiais através de uma lista com os
+ * mesmos.
+ */
+public class RegistoMateriais implements Serializable {
+
+    /**
+     * Lista de Materiais existentes.
+     */
+    private ArrayList&lt;Material&gt; materiais;
+
+    /**
+     * Construstor da classe RegistoMateriais que cria uma nova lista de
+     * materiais.
+     */
+<span class="fc" id="L22">    public RegistoMateriais() {</span>
+<span class="fc" id="L23">        this.materiais = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L24">    }</span>
+
+    /**
+     * Construtor da classe RegistoMateriais que inicia a lista de de materias
+     * com uma lista recebida por parâmetro.
+     *
+     * @param materiais Lista de Materiais
+     */
+<span class="nc" id="L32">    public RegistoMateriais(ArrayList&lt;Material&gt; materiais) {</span>
+<span class="nc" id="L33">        this.materiais = materiais;</span>
+<span class="nc" id="L34">    }</span>
+
+    /**
+     * Devolve a lista de materiais.
+     *
+     * @return Lista de materiais
+     */
+    public ArrayList&lt;Material&gt; getMateriais() {
+<span class="fc" id="L42">        return materiais;</span>
+    }
+
+    /**
+     * Modifica a lista de materiais.
+     *
+     * @param materiais Nova lista de materiais
+     */
+    public void setMateriais(ArrayList&lt;Material&gt; materiais) {
+<span class="fc" id="L51">        this.materiais = materiais;</span>
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * Método que cria um novo tipo de material.
+     *
+     * @param nome Nome do material.
+     * @param descricao Descrição do material.
+     * @param coeficienteConveccao Coeficiente de convecção
+     * @param coeficienteConducao Coeficiente de condução
+     * @param coeficienteRadiacao Coeficiente de radiação
+     * @param imagem Imagem do material.
+     *
+     * @return Retorna o material criado com os dados passados por parâmetro se
+     * este for válido, senão retorna null;
+     */
+    public Material novoMaterial(String nome, String descricao,
+            double coeficienteConveccao, double coeficienteConducao,
+            double coeficienteRadiacao, BufferedImage imagem) {
+<span class="fc" id="L70">        Material material = new Material(nome, descricao, coeficienteConveccao,</span>
+                coeficienteConducao, coeficienteRadiacao, imagem);
+
+<span class="pc bpc" id="L73" title="2 of 4 branches missed.">        if (this.validaMaterial(material) &amp;&amp; material.valida()) {</span>
+<span class="fc" id="L74">            return material;</span>
+        }
+
+<span class="nc" id="L77">        return null;</span>
+    }
+
+    /**
+     * Método que permite obter a informação do material criado.
+     *
+     * @param material Novo tipo de material criado.
+     * @return Retorna a informação do material.
+     */
+    public String getInfo(Material material) {
+<span class="fc" id="L87">        return material.toString();</span>
+    }
+
+    /**
+     * Método que permite validar se um material já existe na lista ou não.
+     *
+     * @param material Novo tipo de material criado.
+     *
+     * @return Retorna verdadeiro se o material não estiver presente na lista de
+     * materiais existentes ou falso se já lá se encontrar
+     */
+    public boolean validaMaterial(Material material) {
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        for (Material mat : this.materiais) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">            if (material.equals(mat)) {</span>
+<span class="nc" id="L101">                return false;</span>
+            }
+<span class="nc" id="L103">        }</span>
+<span class="fc" id="L104">        return true;</span>
+    }
+
+    /**
+     * Método que permite adicionar o material à lista de materiais já
+     * existente.
+     *
+     * @param material Novo tipo de material.
+     *
+     * @return Retorna verdadeiro se foi adicionado ou falso se não foi
+     * adicionado.
+     */
+    public boolean addMaterial(Material material) {
+<span class="fc" id="L117">        return this.materiais.add(material);</span>
+    }
+
+    /**
+     * Método que permite procurar um material na lista pelo seu nome.
+     *
+     * @param nomeMaterial Nome do material.
+     *
+     * @return Retorna o material se ele existir ou null se ele não existir na
+     * lista.
+     */
+    public Material procuraMaterial(String nomeMaterial) {
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        for (Material material : this.materiais) {</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            if (material.getNome().compareToIgnoreCase(nomeMaterial) == 0) {</span>
+<span class="fc" id="L131">                return material;</span>
+            }
+<span class="fc" id="L133">        }</span>
+
+<span class="nc" id="L135">        return null;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L140">        return materiais.toString();</span>
+    }
+
+    /**
+     * Método que compara dois objetos.
+     *
+     * @param obj
+     * @return
+     */
+    public boolean equals(Object obj) {
+<span class="pc bpc" id="L150" title="2 of 4 branches missed.">        if (obj == null || obj.getClass() != this.getClass()) {</span>
+<span class="nc" id="L151">            return false;</span>
+        }
+<span class="fc" id="L153">        RegistoMateriais rm = (RegistoMateriais) obj;</span>
+<span class="fc" id="L154">        return materiais.equals(rm.getMateriais());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

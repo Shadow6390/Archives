@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ListaMateriaisParede.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;FSIAP&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">model</a> &gt; <span class="el_source">ListaMateriaisParede.java</span></div><h1>ListaMateriaisParede.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author DC_G2
+ */
+public class ListaMateriaisParede implements Serializable {
+
+    /**
+     * Lista de materiais da parede.
+     */
+    private List&lt;Material&gt; listaMateriais;
+
+    /**
+     * Lista de espessuras da parede.
+     */
+    private List&lt;Double&gt; listaEspessuras;
+
+    /**
+     * Construtor vazio da lista de materiais da parede.
+     */
+<span class="fc" id="L31">    public ListaMateriaisParede() {</span>
+<span class="fc" id="L32">        listaMateriais = new ArrayList();</span>
+<span class="fc" id="L33">        listaEspessuras = new ArrayList();</span>
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Construtor completo da lista de materiais da parede.
+     *
+     * @param listaMateriais (lista de materiais) A lista de materiais.
+     * @param listaEspessuras (lista de double) A lista de espessuras dos materiais. 
+     */
+<span class="fc" id="L42">    public ListaMateriaisParede(List&lt;Material&gt; listaMateriais, List&lt;Double&gt; listaEspessuras) {</span>
+<span class="fc" id="L43">        setListaMateriais(listaMateriais);</span>
+<span class="fc" id="L44">        setListaEspessuras(listaEspessuras);</span>
+<span class="fc" id="L45">    }</span>
+    
+    public ListaMateriaisParede(ListaMateriaisParede origin)
+<span class="nc" id="L48">    {</span>
+<span class="nc" id="L49">        listaMateriais = new ArrayList();</span>
+<span class="nc" id="L50">        listaEspessuras = new ArrayList();</span>
+<span class="nc" id="L51">        listaMateriais.addAll(origin.listaMateriais);</span>
+<span class="nc" id="L52">        listaEspessuras.addAll(origin.listaEspessuras);</span>
+<span class="nc" id="L53">    }</span>
+
+    /**
+     * Retorna a lista de materiais da parede.
+     *
+     * @return (lista de materiais) A lista de materiais.
+     */
+    public List&lt;Material&gt; getListaMateriais() {
+<span class="fc" id="L61">        return listaMateriais;</span>
+    }
+
+    /**
+     * Retorna a lista de espessuras dos diferentes materiais da parede.
+     *
+     * @return (lista de double) A lista de espessuras.
+     */
+    public List&lt;Double&gt; getListaEspessuras() {
+<span class="fc" id="L70">        return listaEspessuras;</span>
+    }
+
+    /**
+     * Retorna o material da parede que corresponde á posição i.
+     *
+     * @return (material) O material de indice i.
+     */
+    public Material getMaterial(int i) {
+<span class="fc" id="L79">        return listaMateriais.get(i);</span>
+    }
+
+    /**
+     * Retorna a espessura do material da parede que corresponde á posição i.
+     *
+     * @return (double) A espessura do material de indice i.
+     */
+    public double getEspessura(int i) {
+<span class="fc" id="L88">        return listaEspessuras.get(i);</span>
+    }
+
+    /**
+     * Altera a lista de materiais da parede.
+     *
+     * @param listaMateriais (lista de materiais) A lista de materiais.
+     */
+    public void setListaMateriais(List&lt;Material&gt; listaMateriais) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (listaMateriais == null) {</span>
+<span class="fc" id="L98">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.setListaMateriais&quot;));</span>
+        }
+<span class="fc" id="L100">        this.listaMateriais = listaMateriais;</span>
+<span class="fc" id="L101">    }</span>
+
+    /**
+     * Altera a lista de espessuras dos diferentes materiais da parede.
+     *
+     * @param listaEspessuras (lista de double) A lista de espessuras dos
+     * diferentes materiais.
+     */
+    public void setListaEspessuras(List&lt;Double&gt; listaEspessuras) {
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (listaEspessuras == null) {</span>
+<span class="fc" id="L111">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.listaMateriaisParede.setListaEspessuras&quot;));</span>
+        }
+<span class="fc" id="L113">        this.listaEspessuras = listaEspessuras;</span>
+
+<span class="fc" id="L115">    }</span>
+
+    /**
+     * Altera o material da parede que corresponde á posição i.
+     *
+     * @param i A posição para a qual estamos a alterar o material
+     * @param material (material) O material.
+     */
+    public void setMaterial(int i, Material material) {
+<span class="pc bpc" id="L124" title="1 of 4 branches missed.">        if (material == null || i &gt;= listaMateriais.size()) {</span>
+<span class="fc" id="L125">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.listaMateriaisParede.setMaterial&quot;));</span>
+        }
+<span class="nc" id="L127">        listaMateriais.remove(i);</span>
+<span class="nc" id="L128">        listaMateriais.add(i, material);</span>
+<span class="nc" id="L129">    }</span>
+
+    /**
+     * Altera a espessura do material da parede que corresponde á posição i.
+     *
+     * @param i (int) A posição para a qual estamos a alterar a espessura do
+     * material
+     * @param espessura (double) A espessura.
+     */
+    public void setEspessura(int i, double espessura) {
+<span class="pc bpc" id="L139" title="1 of 4 branches missed.">        if (espessura &lt;= 0 || i &gt;= listaEspessuras.size()) {</span>
+<span class="fc" id="L140">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.listaMateriaisParede.setEspessura&quot;));</span>
+        }
+<span class="nc" id="L142">        listaEspessuras.remove(i);</span>
+<span class="nc" id="L143">        listaEspessuras.add(i, espessura);</span>
+<span class="nc" id="L144">    }</span>
+
+    /**
+     * Adiciona um novo material á lista de materiais, adicionando a respetiva
+     * espessura á lista de espessuras.
+     *
+     * @param material (material) O material
+     * @param espessura (double) A espessura
+     */
+    public void adicionarMaterial(Material material, double espessura) {
+<span class="fc bfc" id="L154" title="All 4 branches covered.">        if (espessura &lt;= 0 || material == null) {</span>
+<span class="fc" id="L155">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.listaMateriaisParede.adicionarMaterial.espessura&quot;));</span>
+        }
+<span class="fc" id="L157">        listaMateriais.add(material);</span>
+<span class="fc" id="L158">        listaEspessuras.add(espessura);</span>
+<span class="fc" id="L159">    }</span>
+
+    public void removerMaterial (int index){
+<span class="nc bnc" id="L162" title="All 4 branches missed.">        if ( index &lt; 0 || index &gt;= listaEspessuras.size()){</span>
+<span class="nc" id="L163">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc11.listaMateriaisParede.removerMaterial&quot;));</span>
+        }
+<span class="nc" id="L165">        listaEspessuras.remove(index);</span>
+<span class="nc" id="L166">        listaMateriais.remove(index);</span>
+<span class="nc" id="L167">    }</span>
+    
+    /**
+     * Retorna o numero de materiais da parede.
+     *
+     * @return (int) O tamanho da lista de materiais.
+     */
+    public int size() {
+<span class="fc" id="L175">        return listaMateriais.size();</span>
+    }
+
+    /**
+     * Valida a ListaMateriaisParede.
+     * 
+     * @return true caso seja válida; lançamento de exceções caso contrário
+     */
+    public boolean validar() {
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        if (listaMateriais == null) {</span>
+<span class="nc" id="L185">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.setListaMateriais&quot;));</span>
+        }
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">        if (listaEspessuras == null) {</span>
+<span class="nc" id="L188">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.listaMateriaisParede.setListaEspessuras&quot;));</span>
+        }
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">        if (listaMateriais.size() != listaEspessuras.size()) {</span>
+            // &quot;O numero de materiais e de espessuras mão são coerentes.&quot;
+<span class="nc" id="L192">            throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;&quot;));</span>
+        }
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        for (Material m : listaMateriais) {</span>
+<span class="fc" id="L195">            m.valida();</span>
+<span class="fc" id="L196">        }</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        for (Double d : listaEspessuras) {</span>
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">            if (d &lt;= 0) {</span>
+<span class="nc" id="L199">                throw new IllegalArgumentException(Simulacao.getFrasePelaChave(&quot;uc1.listaMateriaisParede.setEspessura&quot;));</span>
+            }
+<span class="fc" id="L201">        }</span>
+<span class="fc" id="L202">        return true;</span>
+    }
+
+    /**
+     * Compara dois objetos.
+     * 
+     * @param obj Obejto a comparar
+     * @return true caso sejam iguais; false caso contrário
+     */
+    public boolean equals(Object obj) {
+<span class="pc bpc" id="L212" title="1 of 4 branches missed.">        if (obj == null || obj.getClass() != this.getClass()) {</span>
+<span class="fc" id="L213">            return false;</span>
+        }
+<span class="fc" id="L215">        ListaMateriaisParede lmp = (ListaMateriaisParede) obj;</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        return listaMateriais.equals(lmp.getListaMateriais())</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">                &amp;&amp; listaEspessuras.equals(lmp.getListaEspessuras());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
