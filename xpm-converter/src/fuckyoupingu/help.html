@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Help</title>
+<meta charset="UTF-8"/>
+</head>
+<body>
+<h1>Functionalities</h1>
+
+<ul>
+    <li>Image Convertion</li>
+    <li>Image Edition (Rotate, Scaling & Simple Edit)</li>
+    <li>Image Preview</li>
+</ul>
+
+<h2 id="imgConv">Image Convertion</h2>
+
+<p>
+This program can convert an image to an XPM image. The resulting XPM image
+will have up to 64 different colors. The algorithm chooses the color that best
+fits the current pixel being evaluated.
+</p>
+<p>
+    <b>NOTE:</b> This program considers that the color with index 5 is the transparency color.
+</p>
+<br>
+The format of the supported images are: JPEG and PNG.
+<br>
+<br>
+How to use:
+<ol>
+    <li>Press the 'Add Image' button to add images to be converted. Multiple images can be added.</li> 
+    <li>Check 'generate code-format' if you want the output to be in a format recognized in code (for copy-paste purposes).</li>
+    <li>Press 'Output Path" to specifiy the folder where the generated files be placed.</li>
+    <li>Click the 'Convert Images' button to convert all images in the list.</li>
+</ol>
+
+<p>
+    The convertion process uses multiple threads by default (the number of threads will be equal
+    to half of the logical cores available). You can change the amount of threads used and whether to
+    use multiple threads in the settings section. It is not recommended that you disable multiple thread
+    usage, as it will slow the conversion process greatly.
+</p>
+<br>
+<br>
+<h2>Image Edition (Rotate, Scaling & Simple Edit)</h2>
+
+<p>
+    You can rotate and scale an image by going on the 'Transform' option on the menu bar and selecting
+    the desired transformation.
+</p>
+
+<p>
+    This software also allows simple edition of an XPM image. You can do so by pressing the 'Edit XPM' button.
+    After choosing the desired XPM to edit, a window will open containing the image to edit and the 64
+    colors you can use to paint it.
+</p>
+<br>
+<br>
+<h2>Image Preview</h2>
+<p>
+    You can view an XPM image by pressing the 'Preview XPM' button. After selecting the desired XPM file
+    to preview, a window will open containing the XPM image.
+</p>
+</body>
+</html>
+
